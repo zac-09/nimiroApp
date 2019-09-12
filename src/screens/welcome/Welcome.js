@@ -56,6 +56,6 @@ const Slogan = styled.Text`
 `
 
 const CompanyLogo = styled.Image`
-    width: 90%;
+    width: 100%;
     margin-bottom: 10;
 `
