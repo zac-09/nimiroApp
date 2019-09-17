@@ -11,7 +11,7 @@ const SignInForm = props => {
                 label='Email'
                 keyboardType='email-address'
                 value={props.email}
-                onChangeText={(text) => props.onUsernameChange(text)}
+                onChangeText={(text) => props.onEmailChange(text)}
             />
             <UnderlinedInput
                 label='Password'

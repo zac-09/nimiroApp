@@ -6,12 +6,29 @@ import { TouchableOpacity, Text } from 'react-native';
 
 class Login extends React.Component {
 
+    state = {
+        checked: false,
+        email: '',
+        password: ''
+    }
+
+    handleLogin = () => {
+        //write login logic here
+    }
+
     render(){
+        const { email, password } = this.state
         return (
             <Container source={bg2}>
                 <Content>
                     <Logo source={logo} resizeMode='contain' />
-                    <Forms.SignInForm checked={true}/>
+                    <Forms.SignInForm 
+                        email={email} 
+                        password={password} 
+                        onEmailChange={ text => this.setState({ email: text})}
+                        onPasswordChange={ text => this.setState({ password: text})}
+                        onSubmitPress={this.handleLogin}
+                        checked={true}/>
                     <TouchableOpacity style={styles.accountContainer}>
                         <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
                     </TouchableOpacity>
