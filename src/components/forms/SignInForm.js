@@ -20,18 +20,21 @@ const SignInForm = props => {
                 onChangeText={(text) => props.onPasswordChange(text)}
             />
             <View style={styles.checkContainer}>
-                <TouchableOpacity style={{flexShrink: 1, alignItems: 'center', flexDirection: 'row'}}>
+                <TouchableOpacity 
+                    onPress={() => props.onRemeberChange()}
+                    style={{flexShrink: 1, alignItems: 'center', flexDirection: 'row'}}>
                     <CheckBox
                         center
                         checked={props.checked}
+                        onPress={() => props.onRemeberChange()}
                         titleProps={{style:styles.rememberText}}
                         containerStyle={{backgroundColor: "transparent", borderWidth: 0}}
                     />
                     <Text style={styles.rememberText}>Remember me</Text>
                 </TouchableOpacity>
-                <View style={{flexShrink: 1}}>
+                <TouchableOpacity style={{flexShrink: 1}}  onPress={() => props.onPasswordRecovery()}>
                     <Text style={styles.forgotText}>Forgot Password?</Text>
-                </View>
+                </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
                 <LgButton text='Login' onPress={() => props.onSubmitPress()} />

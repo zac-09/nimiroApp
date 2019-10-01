@@ -12,12 +12,16 @@ class Login extends React.Component {
         password: ''
     }
 
+    navigate = route => {
+        this.props.navigation.navigate(route)
+    }
+
     handleLogin = () => {
         //write login logic here
     }
 
     render(){
-        const { email, password } = this.state
+        const { email, password, checked } = this.state
         return (
             <Container source={bg2}>
                 <Content>
@@ -27,9 +31,11 @@ class Login extends React.Component {
                         password={password} 
                         onEmailChange={ text => this.setState({ email: text})}
                         onPasswordChange={ text => this.setState({ password: text})}
+                        onRemeberChange={() => this.setState(prev => ({ checked: !prev.checked}))}
+                        onPasswordRecovery={() => this.navigate('Forgot')}
                         onSubmitPress={this.handleLogin}
-                        checked={true}/>
-                    <TouchableOpacity style={styles.accountContainer}>
+                        checked={checked}/>
+                    <TouchableOpacity style={styles.accountContainer} onPress={() => this.navigate('Register')}>
                         <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
                     </TouchableOpacity>
                 </Content>
@@ -75,13 +81,4 @@ const Content = styled.View`
 const Logo = styled.Image`
     width: 70%;
     margin-bottom: 20;
-`
-
-const Slogan = styled.Text`
-    text-align: center;
-    font-size: 16;
-    font-weight: bold;
-    color: #850127;
-    text-transform: capitalize;
-    font-style: italic;
 `
