@@ -11,12 +11,12 @@ const RegisterForm = props => {
                 onChangeText={(text) => props.onUsernameChange(text)}
             />
             <BlockInput
-                label='Other names'
+                placeholder='Last name'
                 value={props.sName}
                 onChangeText={(text) => props.onOtherNameChange(text)}
             />
             <BlockInput
-                label='Display name'
+                placeholder='Display name'
                 value={props.sName}
                 onChangeText={(text) => props.onDisplayNameChange(text)}
             />

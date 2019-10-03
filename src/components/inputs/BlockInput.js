@@ -28,8 +28,10 @@ const styles = {
         height: 40,
         width: '100%',
         padding: 10,
+        marginTop: 5,
+        marginBottom: 5,
         justifyContent: 'center',
-        alignItems: 'center'
+        borderRadius: 5
     },
     textInput: {
         backgroundColor: 'transparent',

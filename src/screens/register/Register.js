@@ -10,7 +10,9 @@ export default class Register extends React.Component{
         return(
             <ImageBackground style={{width: '100%', height: '100%'}} source={bg2}>
                 <View style={styles.container}>
-                    <Forms.AvatorForm avator={{uri: 'https://images.pexels.com/photos/2601464/pexels-photo-2601464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'}}/>
+                    <Forms.AvatorForm 
+                        avator={PROFILE_IMAGE}/>
+                    <Forms.RegisterForm/>
                 </View>
             </ImageBackground>
         )
@@ -23,3 +25,5 @@ const styles = {
         height: '100%'
     }
 }
+
+const PROFILE_IMAGE = {uri: 'https://images.pexels.com/photos/2601464/pexels-photo-2601464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'}
