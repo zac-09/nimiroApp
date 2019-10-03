@@ -15,6 +15,7 @@ const BlockInput = props => {
                 value={props.value}
                 onChangeText={text => props.onChangeText(text)}
                 placeholder={props.placeholder}
+                placeholderTextColor='#fff'
             />
         </View>
     )
@@ -24,7 +25,7 @@ export default BlockInput;
 
 const styles = {
     textContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
         height: 40,
         width: '100%',
         padding: 10,
