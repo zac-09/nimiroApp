@@ -100,7 +100,7 @@ const RegisterForm = props => {
                 <LgButton text='Connect to Fraternity' onPress={() => props.onSubmitPress()} />
             </View>
             <Text style={{textAlign: 'center', color: '#F80A0A', marginVertical: 10}}>
-                By clicking “Connect to fertanity” below, you agree to 
+                By clicking “Connect to fraternity” below, you agree to 
                 our terms of service and privacy policy.
             </Text>
         </Form>

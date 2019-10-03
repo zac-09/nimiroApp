@@ -25,6 +25,15 @@ export default class Register extends React.Component{
         rotaryLevelIndex: 0
     }
 
+    navigate = route => {
+        this.props.navigation.navigate(route)
+    }
+
+    signUp = () => {
+        //do signup here
+        this.navigate('Chat')
+    }
+
     render(){
         const {fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification, email, password, genderIndex, rotaryLevelIndex} = this.state;
         return(
@@ -68,6 +77,7 @@ export default class Register extends React.Component{
                             onChangeFraternity={text => this.setState({fraternity: text})}
                             onChangeBuddy={text => this.setState({buddy: text})}
                             onChangeClassification={text => this.setState({classification: text})}
+                            onSubmitPress={() => this.signUp()}
                         />
                     </View>
                 </ImageBackground>
