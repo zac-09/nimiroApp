@@ -18,6 +18,7 @@ class Login extends React.Component {
 
     handleLogin = () => {
         //write login logic here
+        this.navigate('SignedIn');
     }
 
     render(){
