@@ -6,6 +6,7 @@ import cmp1 from './rotary_logo.png';
 import cmp2 from './rotaract_logo.png';
 import cmp3 from './interact_logo.png';
 import smallLogo from './small_logo.png';
+import connect from './rotary_connect.png';
 
 
 export {
@@ -16,5 +17,6 @@ export {
     cmp1,
     cmp2,
     cmp3,
-    smallLogo
+    smallLogo,
+    connect
 }

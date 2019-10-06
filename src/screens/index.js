@@ -9,6 +9,7 @@ import Register from './register/Register';
 import Reset from './reset/Reset';
 import Roc from './roc/Roc';
 import Welcome from './welcome/Welcome';
+import Main from './main/Main';
 
 export {
     Splash,
@@ -21,5 +22,6 @@ export {
     Register,
     Reset,
     Roc,
-    Welcome
+    Welcome,
+    Main
 }

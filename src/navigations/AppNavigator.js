@@ -18,7 +18,7 @@ const AuthStack = createStackNavigator(
     }
 );
 
-const HomeStack = createMaterialTopTabNavigator(
+export const HomeStack = createMaterialTopTabNavigator(
     {
         ROC: Screens.Roc,
         Feed: Screens.Feed,
@@ -34,7 +34,7 @@ const HomeStack = createMaterialTopTabNavigator(
               width: 100,
             },
             style: {
-              backgroundColor: 'blue',
+              backgroundColor: 'transparent',
             },
         }
     }
@@ -45,7 +45,7 @@ export default createRootNavigator = (signedIn = false) => {
     return createAppContainer(createSwitchNavigator(
       {
         SignedIn: {
-          screen: HomeStack
+          screen: Screens.Main
         },
         SignedOut: {
           screen: AuthStack

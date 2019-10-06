@@ -31,7 +31,7 @@ export default class Register extends React.Component{
 
     signUp = () => {
         //do signup here
-        this.navigate('Chat')
+        this.navigate('SignedIn')
     }
 
     render(){
