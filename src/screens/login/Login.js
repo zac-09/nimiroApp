@@ -1,15 +1,20 @@
 import React from 'react';
 import styled from 'styled-components/native'
+import AnimatedLoader from "react-native-animated-loader";
 import { logo, bg2} from '../../assets'
 import { Forms } from '../../components';
 import { TouchableOpacity, Text } from 'react-native';
+import firebaseSDK from '../../backend/Firebase';
+import Toast from 'react-native-root-toast';
+import { validateEmail, validatePassword } from '../../utils/Validations';
 
 class Login extends React.Component {
 
     state = {
         checked: false,
         email: '',
-        password: ''
+        password: '',
+        loading: false
     }
 
     navigate = route => {
@@ -18,11 +23,45 @@ class Login extends React.Component {
 
     handleLogin = () => {
         //write login logic here
+        const { email, password } = this.state
+        const isValidEmail = validateEmail(email);
+        const isValidPassword = validatePassword(password);
+        if(isValidEmail !== true){
+            this.showToast(isValidEmail);
+        }else if(isValidPassword !== true){
+            this.showToast(isValidPassword);
+        }else{
+            const user = {
+                email,
+                password
+            }
+            firebaseSDK.login(user, this.success, this.failure)
+        }
+    }
+
+    showToast = message => {
+        Toast.show(message, {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+    }
+
+    success = () => {
+        this.setState({loading: false});
         this.navigate('SignedIn');
     }
 
+    failure = error => {
+        this.setState({loading: false});
+        this.showToast(error.toString());
+    }
+
     render(){
-        const { email, password, checked } = this.state
+        const { email, password, checked, loading } = this.state
         return (
             <Container source={bg2}>
                 <Content>
@@ -40,6 +79,13 @@ class Login extends React.Component {
                         <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
                     </TouchableOpacity>
                 </Content>
+                <AnimatedLoader
+                    visible={loading}
+                    overlayColor="rgba(255,255,255,0.75)"
+                    source={require("../../assets/anim/trail_loading.json")}
+                    animationStyle={styles.lottie}
+                    speed={1}
+                />
             </Container>
         )
     }
@@ -64,6 +110,10 @@ const styles = {
         color: '#fff',
         fontFamily: 'Roboto',
         textAlign: 'center'
+    },
+    lottie: {
+        width: 100,
+        height: 100
     }
 }
 const Container = styled.ImageBackground`

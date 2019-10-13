@@ -23,7 +23,7 @@ class FirebaseSDK {
         .then(success_callback, failed_callback);
     };
 
-    createAccount = async user => {
+    createAccount = async (user, success_callback, failed_callback) => {
         firebase
           .auth()
           .createUserWithEmailAndPassword(user.email, user.password)
@@ -35,22 +35,20 @@ class FirebaseSDK {
                   ' name:' +
                   user.name
               );
-              var userf = firebase.auth().currentUser;
+              const userf = firebase.auth().currentUser;
               userf.updateProfile({ displayName: user.name }).then(
                 function() {
                   console.log('Updated displayName successfully. name:' + user.name);
-                  alert(
-                    'User ' + user.name + ' was created successfully. Please login.'
-                  );
+                  success_callback(userf.uid);
                 },
                 function(error) {
-                  console.warn('Error update displayName.');
+                  failed_callback(error)
                 }
               );
             },
             function(error) {
               console.error('got error:' + typeof error + ' string:' + error.message);
-              alert('Create account failed. Error: ' + error.message);
+              failed_callback(error)
             }
           );
     };
@@ -100,6 +98,80 @@ class FirebaseSDK {
           alert('Unable to update avatar. You must login first.');
         }
     };
+
+    //////////////////////  CHAT  ////////////////////
+    createOne2OneChannel = channelData => {
+      firebase
+      .firestore()
+      .collection('channels')
+      .add(channelData)
+      .then(function(docRef) {
+        channelData.id = docRef.id;
+        channelData.participants = that.state.channel.participants;
+       //TODO that.setState({ channel: channelData });
+
+        const participationData = {
+          channel: docRef.id,
+          user: that.props.user.id,
+        };
+        firebase
+          .firestore()
+          .collection('channel_participation')
+          .add(participationData);
+        const created = Date.now();
+        channelData.participants.forEach(friend => {
+          const participationData = {
+            channel: docRef.id,
+            user: friend.id,
+          };
+          firebase
+            .firestore()
+            .collection('channel_participation')
+            .add(participationData);
+
+          const data = {
+            content: that.state.input,
+            created,
+            recipientFirstName: friend.firstName,
+            recipientID: friend.id,
+            recipientLastName: '',
+            recipientProfilePictureURL: friend.profilePictureURL,
+            senderFirstName: firstName,
+            senderID: id,
+            senderLastName: '',
+            senderProfilePictureURL: profilePictureURL,
+            url: that.state.downloadUrl,
+          };
+
+          firebase
+            .firestore()
+            .collection('channels')
+            .doc(channelData.id)
+            .collection('threads')
+            .add(data)
+            .then(function(docRef) {
+              // alert('Successfully sent friend request!');
+            })
+            .catch(function(error) {
+              alert(error);
+            });
+        });
+
+        that.threadsRef = firebase
+          .firestore()
+          .collection('channels')
+          .doc(channelData.id)
+          .collection('threads')
+          .orderBy('created', 'desc');
+        that.threadsUnscribe = that.threadsRef.onSnapshot(that.onThreadsCollectionUpdate);
+
+        that.setState({ input: '', downloadUrl: '', photo: '' });
+      })
+      .catch(function(error) {
+        alert(error);
+      });
+
+    }
 }
 
 const firebaseSDK = new FirebaseSDK();

@@ -40,12 +40,23 @@ export const HomeStack = createMaterialTopTabNavigator(
     }
 );
 
+const MainStack = createStackNavigator(
+  {
+    Main: Screens.Main,
+    ChatScreen: Screens.ChatScreen
+  },
+  {
+      initialRouteName: "Main",
+      headerMode: "none"
+  }
+)
+
 
 export default createRootNavigator = (signedIn = false) => {
     return createAppContainer(createSwitchNavigator(
       {
         SignedIn: {
-          screen: Screens.Main
+          screen: MainStack
         },
         SignedOut: {
           screen: AuthStack

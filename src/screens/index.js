@@ -10,6 +10,7 @@ import Reset from './reset/Reset';
 import Roc from './roc/Roc';
 import Welcome from './welcome/Welcome';
 import Main from './main/Main';
+import ChatScreen from './chatscreen/ChatScreen';
 
 export {
     Splash,
@@ -23,5 +24,6 @@ export {
     Reset,
     Roc,
     Welcome,
-    Main
+    Main,
+    ChatScreen
 }
