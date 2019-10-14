@@ -57,7 +57,7 @@ class Login extends React.Component {
 
     failure = error => {
         this.setState({loading: false});
-        this.showToast(error.toString());
+        this.showToast(error.message.toString());
     }
 
     render(){

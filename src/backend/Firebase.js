@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import { Platform } from 'react-native';
 
 class FirebaseSDK {
     constructor() {
@@ -42,60 +43,48 @@ class FirebaseSDK {
                   success_callback(userf.uid);
                 },
                 function(error) {
-                  failed_callback(error)
+                  failed_callback(error.message)
                 }
               );
             },
             function(error) {
               console.error('got error:' + typeof error + ' string:' + error.message);
-              failed_callback(error)
+              failed_callback(error.message)
             }
           );
     };
+
+    uploadAvator = async (uri, success_callback, failed_callback) => {
+      const uri = this.state.photo;
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      const uid = firebase.auth().currentUser.uid
+      const that = this
       
-    uploadImage = async uri => {
-        console.log('got image to upload. uri:' + uri);
-        try {
-          const response = await fetch(uri);
-          const blob = await response.blob();
-          const ref = firebase
-            .storage()
-            .ref('avatar')
-            .child(uuid.v4());
-          const task = ref.put(blob);
-      
-          return new Promise((resolve, reject) => {
-            task.on(
-              'state_changed',
-              () => {
-      
-              },
-              reject,
-              () => resolve(task.snapshot.downloadURL)
-            );
-          });
-        } catch (err) {
-          console.log('uploadImage try/catch error: ' + err.message);
-        }
+      await firebase
+        .storage()
+        .ref('avatar')
+        .child(uid)
+        .putFile(uploadUri)
+        .then(snapshot => that.updateAvatar(snapshot.downloadURL, success_callback, failed_callback), error => failed_callback(error.message));
     };
       
-    updateAvatar = url => {
+    updateAvatar = (url, success_callback, failed_callback) => {
       
         var userf = firebase.auth().currentUser;
         if (userf != null) {
           userf.updateProfile({ avatar: url }).then(
             function() {
               console.log('Updated avatar successfully. url:' + url);
-              alert('Avatar image is saved successfully.');
+              success_callback(url)
             },
             function(error) {
               console.warn('Error update avatar.');
-              alert('Error update avatar. Error:' + error.message);
+              failed_callback(error.message)
             }
           );
         } else {
           console.log("can't update avatar, user is not login.");
-          alert('Unable to update avatar. You must login first.');
+          failed_callback('Unable to update avatar. You must login first.');
         }
     };
 
