@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
 import { Platform } from 'react-native';
+import 'firebase/firestore';
 
 class FirebaseSDK {
     constructor() {
@@ -55,17 +56,20 @@ class FirebaseSDK {
     };
 
     uploadAvator = async (uri, success_callback, failed_callback) => {
-      const uri = this.state.photo;
       const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       const uid = firebase.auth().currentUser.uid
       const that = this
-      
-      await firebase
-        .storage()
-        .ref('avatar')
-        .child(uid)
-        .putFile(uploadUri)
-        .then(snapshot => that.updateAvatar(snapshot.downloadURL, success_callback, failed_callback), error => failed_callback(error.message));
+
+      const response = await fetch(uploadUri);
+      const blob = await response.blob();
+
+      const imageRef = firebase.storage().ref('avatar').child(uid)
+
+      return imageRef.put(blob)
+                .then( snapshot => that.updateAvatar(snapshot.downloadURL, success_callback, failed_callback), 
+                       error => failed_callback(error.message)
+                )
+                .catch( error => failed_callback(error.message))
     };
       
     updateAvatar = (url, success_callback, failed_callback) => {
@@ -81,12 +85,28 @@ class FirebaseSDK {
               console.warn('Error update avatar.');
               failed_callback(error.message)
             }
-          );
+          ).catch( error => failed_callback(error.message));
         } else {
           console.log("can't update avatar, user is not login.");
           failed_callback('Unable to update avatar. You must login first.');
         }
     };
+
+    uploadUserData = (data, success_callback, failed_callback) => {
+      const uid = firebase.auth().currentUser.uid
+      firebase.firestore().collection("user_data").doc(uid).set({
+          ...data,
+          createdAt: firebase.firestore.Timestamp.fromDate(new Date())
+      })
+      .then(function() {
+          console.log("Document successfully written!");
+          success_callback()
+      })
+      .catch(function(error) {
+          console.error("Error writing document: ", error);
+          failed_callback(error.message)
+      });
+    }
 
     //////////////////////  CHAT  ////////////////////
     createOne2OneChannel = channelData => {

@@ -1,10 +1,17 @@
 import React from 'react'
 import { View, Text } from 'native-base'
 import { SafeAreaView } from "react-navigation";
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Forms } from '../../components'
 import { logo, bg2} from '../../assets'
 import { ImageBackground } from 'react-native'
+import firebaseSDK from '../../backend/Firebase';
+import Toast from 'react-native-root-toast';
+import AnimatedLoader from "react-native-animated-loader";
+import { validateEmail, validatePassword } from '../../utils/Validations';
 
 export default class Register extends React.Component{
 
@@ -22,20 +29,114 @@ export default class Register extends React.Component{
         email: '',
         password: '',
         genderIndex: 0,
-        rotaryLevelIndex: 0
+        rotaryLevelIndex: 0,
+        image: PROFILE_IMAGE,
+        loading: false
     }
 
     navigate = route => {
         this.props.navigation.navigate(route)
     }
 
+    componentDidMount() {
+        this.getPermissionAsync();
+    }
+
     signUp = () => {
         //do signup here
-        this.navigate('SignedIn')
+        this.setState({loading: true})
+        const { email, password } = this.state;
+        const isValidEmail = validateEmail(email)
+        const isValidPassword = validatePassword(password)
+        if(isValidEmail !== true){
+            this.showToast(isValidEmail);
+        }else if(isValidPassword !== true){
+            this.showToast(isValidPassword);
+        }else{
+            const user = {
+                email,
+                password
+            }
+            firebaseSDK.createAccount(user, this.uploadUserImage, this.failure)
+        }
+    }
+
+    uploadUserImage = () => {
+        const { image } = this.state
+
+        if(image !== PROFILE_IMAGE){
+            firebaseSDK.uploadAvator(image, this.uploadUserData, this.failure)
+        }else {
+            this.uploadUserData()
+        }
+    }
+
+    uploadUserData = () => {
+        const { fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification} = this.state;
+
+        const data = {
+            fName,
+            lName,
+            dName,
+            phoneNumber,
+            gender,
+            rotaryLevel,
+            club,
+            fraternity,
+            buddy,
+            classification
+        }
+      
+        firebaseSDK.uploadUserData(data, this.success, this.failure)
+    }
+
+
+    getPermissionAsync = async () => {
+        if (Constants.platform.ios) {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+            this.showToast('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    }
+
+    _pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+        });
+    
+        console.log(result);
+    
+        if (!result.cancelled) {
+          this.setState({ image: result.uri });
+        }
+    };
+
+    showToast = message => {
+        Toast.show(message, {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+    }
+
+    success = () => {
+        this.setState({loading: false});
+        this.navigate('Login');
+    }
+
+    failure = error => {
+        this.setState({loading: false});
+        this.showToast(error.toString());
     }
 
     render(){
-        const {fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification, email, password, genderIndex, rotaryLevelIndex} = this.state;
+        const { loading, image, fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification, email, password, genderIndex, rotaryLevelIndex} = this.state;
         return(
             <SafeAreaView
                 style={{ backgroundColor: "#FFF", flex: 1 }}
@@ -49,7 +150,8 @@ export default class Register extends React.Component{
                 <ImageBackground style={{width: '100%', height: '100%'}} source={bg2}>
                     <View style={styles.container}>
                         <Forms.AvatorForm 
-                            avator={PROFILE_IMAGE}/>
+                            changeAvator={() => this._pickImage()}
+                            avator={image}/>
                         <Forms.RegisterForm
                             fName={fName}
                             lName={lName}
@@ -82,6 +184,13 @@ export default class Register extends React.Component{
                     </View>
                 </ImageBackground>
                 </KeyboardAwareScrollView>
+                <AnimatedLoader
+                    visible={loading}
+                    overlayColor="rgba(255,255,255,0.75)"
+                    source={require("../../assets/anim/trail_loading.json")}
+                    animationStyle={styles.lottie}
+                    speed={1}
+                />
             </SafeAreaView>
         )
     }
@@ -93,4 +202,4 @@ const styles = {
     }
 }
 
-const PROFILE_IMAGE = {uri: 'https://images.pexels.com/photos/2601464/pexels-photo-2601464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'}
+const PROFILE_IMAGE = 'https://images.pexels.com/photos/2601464/pexels-photo-2601464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'

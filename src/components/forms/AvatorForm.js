@@ -6,11 +6,11 @@ const avator = ({avator, changeAvator}) => {
     return (
         <View style={styles.container}>
             <View style={styles.positionContainer}>
-                <View style={styles.avator} onPress={() => changeAvator()}>
-                    <Image style={styles.image} source={avator}/>
+                <View style={styles.avator}>
+                    <Image style={styles.image} source={{uri: avator}}/>
                 </View>
                 <View style={styles.iconContainer}>
-                    <Ionicons name='ios-camera' size={32} color='white'/>
+                    <Ionicons name='ios-camera' size={32} onPress={() => changeAvator()} color='white'/>
                 </View>
             </View>
         </View>
