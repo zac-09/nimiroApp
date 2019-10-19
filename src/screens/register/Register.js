@@ -199,6 +199,10 @@ export default class Register extends React.Component{
 const styles = {
     container: {
         flex: 1
+    },
+    lottie: {
+        width: 200,
+        height: 200
     }
 }
 

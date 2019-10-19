@@ -7,6 +7,7 @@ import { TouchableOpacity, Text } from 'react-native';
 import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
 import { validateEmail, validatePassword } from '../../utils/Validations';
+import Storage from '../../utils/Storage';
 
 class Login extends React.Component {
 
@@ -31,6 +32,7 @@ class Login extends React.Component {
         }else if(isValidPassword !== true){
             this.showToast(isValidPassword);
         }else{
+            this.setState({loading: true})
             const user = {
                 email,
                 password
@@ -50,7 +52,8 @@ class Login extends React.Component {
         });
     }
 
-    success = () => {
+    success = uid => {
+        Storage.set('userid', uid)
         this.setState({loading: false});
         this.navigate('SignedIn');
     }
@@ -112,8 +115,8 @@ const styles = {
         textAlign: 'center'
     },
     lottie: {
-        width: 100,
-        height: 100
+        width: 200,
+        height: 200
     }
 }
 const Container = styled.ImageBackground`

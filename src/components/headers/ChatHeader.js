@@ -9,7 +9,7 @@ function ChatHeader (props) {
     <Header
       iosBarStyle="dark-content"
       androidStatusBarColor="#000"
-      style={getHeaderContainerStyle(props.nomargin)}
+      style={styles.header}
     >
       <Left style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.imageContainer}>
@@ -17,7 +17,7 @@ function ChatHeader (props) {
         </View>
       </Left>
       <Body>
-        {!!props.title && <Title style={styles.title}>{props.name}</Title>}
+        {!!props.name && <Title style={styles.title}>{props.name}</Title>}
       </Body>
       <Right>
         <Ionicons 
@@ -31,10 +31,16 @@ function ChatHeader (props) {
 }
 
 const styles = {
+  header: {
+    backgroundColor: "#4291ee",
+    borderBottomColor: "#4291ee",
+    boxShadow: "none",
+    elevation: 3,
+  },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#fff",
-    paddingLeft: 20,
+    paddingLeft: 10,
   },
   imageContainer: {
     width: 50,

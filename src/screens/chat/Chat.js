@@ -5,10 +5,24 @@ import { Ionicons } from '@expo/vector-icons'
 
 export default class Chat extends React.Component{
 
+    state = {
+        chats: CHAT_DUMMY
+    }
+
+    navigate = (route, data) => {
+        this.props.navigation.navigate(route, data)
+    }
+
+    openChat = id => {
+        const user = this.state.chats.find(chat => chat.id === id);
+        this.navigate("ChatScreen", {user})
+    }
+
     render(){
+        const { chats } = this.state
         return(
             <View style={{flex: 1, position: 'relative'}}>
-                <Lists.ChatList chat={CHAT_DUMMY} onChatItemClicked={() => {}}/>
+                <Lists.ChatList chat={chats} onChatItemClicked={this.openChat}/>
                 <View style={{zIndex: 2, position: 'absolute', bottom: 40, right: 20, backgroundColor: '#53C41A', width: 50, height: 50, borderRadius: 25, overflow: 'hidden', justifyContent: 'center', alignItems: 'center'}}>
                     <Ionicons name="ios-chatbubbles" size={32} color='#fff' />
                 </View>

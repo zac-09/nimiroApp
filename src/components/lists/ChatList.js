@@ -7,6 +7,7 @@ function ChatList(props) {
     <List
       dataArray={props.chat}
       renderRow={chat => <ChatItem {...chat} onItemPressed={id => props.onChatItemClicked(id)} />}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 }

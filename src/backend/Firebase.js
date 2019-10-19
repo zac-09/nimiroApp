@@ -22,7 +22,10 @@ class FirebaseSDK {
       await firebase
         .auth()
         .signInWithEmailAndPassword(user.email, user.password)
-        .then(success_callback, failed_callback);
+        .then(() => {
+          const uid = firebase.auth().currentUser.uid
+          return success_callback(uid)
+        }, failed_callback);
     };
 
     createAccount = async (user, success_callback, failed_callback) => {

@@ -1,7 +1,8 @@
-import { createAppContainer, createSwitchNavigator} from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import * as Screens from '../screens';
+
 
 
 const AuthStack = createStackNavigator(
@@ -40,27 +41,17 @@ export const HomeStack = createMaterialTopTabNavigator(
     }
 );
 
-/* const MainStack = createStackNavigator(
-  {
-    Main: Screens.Main,
-    ChatScreen: Screens.ChatScreen
-  },
-  {
-      initialRouteName: "Main",
-      headerMode: "none"
-  }
-) */
 
 
 export default createRootNavigator = (signedIn = false) => {
     return createAppContainer(createSwitchNavigator(
       {
         SignedIn: {
-          screen: Screens.Main
+          screen: Screens.ChatScreen
         },
         SignedOut: {
           screen: AuthStack
-        }
+        },
       },
       {
         initialRouteName: signedIn ? "SignedIn" : "SignedOut"
