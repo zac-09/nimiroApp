@@ -56,6 +56,7 @@ class ChatScreen extends React.Component {
     }
 
     componentWillUnmount() {
+        this.threadsUnscribe();
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
     }

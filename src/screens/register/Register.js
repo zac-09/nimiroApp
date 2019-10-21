@@ -11,7 +11,7 @@ import { ImageBackground } from 'react-native'
 import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
 import AnimatedLoader from "react-native-animated-loader";
-import { validateEmail, validatePassword } from '../../utils/Validations';
+import { validateEmail, validatePassword, validatePhone, formatPhoneNumber } from '../../utils/Validations';
 import Storage from '../../utils/Storage';
 import * as firebase from 'firebase';
 
@@ -46,15 +46,18 @@ export default class Register extends React.Component{
 
     signUp = () => {
         //do signup here
-        this.setState({loading: true})
-        const { email, password, dName } = this.state;
+        const { email, password, dName, phoneNumber } = this.state;
         const isValidEmail = validateEmail(email)
         const isValidPassword = validatePassword(password)
+        const isValidNumber = validatePhone(phoneNumber)
         if(isValidEmail !== true){
             this.showToast(isValidEmail);
         }else if(isValidPassword !== true){
             this.showToast(isValidPassword);
+        }else if(isValidNumber !== true){
+            this.showToast(isValidNumber + " " +  formatPhoneNumber(phoneNumber))
         }else{
+            this.setState({loading: true})
             const user = {
                 email,
                 password,
@@ -195,7 +198,7 @@ export default class Register extends React.Component{
                 </KeyboardAwareScrollView>
                 <AnimatedLoader
                     visible={loading}
-                    overlayColor="rgba(255,255,255,0.75)"
+                    overlayColor="rgba(0,0,0,0.25)"
                     source={require("../../assets/anim/trail_loading.json")}
                     animationStyle={styles.lottie}
                     speed={1}

@@ -2,6 +2,7 @@ import * as firebase from 'firebase';
 import { Platform } from 'react-native';
 import 'firebase/firestore';
 import Storage from '../utils/Storage'
+import { formatPhoneNumber } from '../utils/Validations';
 
 class FirebaseSDK {
     constructor() {
@@ -109,15 +110,18 @@ class FirebaseSDK {
         }
     };
 
-    uploadUserData = (data, success_callback, failed_callback) => {
+    uploadUserData = async(data, success_callback, failed_callback) => {
       const uid = firebase.auth().currentUser.uid
-      firebase.firestore().collection("user_data").doc(uid).set({
+      await firebase.firestore().collection("user_data").doc(uid).set({
           ...data,
           createdAt: firebase.firestore.Timestamp.fromDate(new Date())
       })
-      .then(function() {
+      .then(async () => {
           console.log("Document successfully written!");
-          success_callback()
+          const phone = formatPhoneNumber(data.phoneNumber)
+          await firebase.firestore().collection('contacts').doc(phone).set({
+            uid: firebase.auth().currentUser.uid
+          }).then(() => success_callback(), reason => failed_callback(reason.message)).catch(err => failed_callback(err.message))
       })
       .catch(function(error) {
           console.error("Error writing document: ", error);
@@ -145,6 +149,24 @@ class FirebaseSDK {
                 )
                 .catch( error => failed_callback(error.message))
     };
+
+    syncContacts = async (data = []) => {
+      data.forEach(async (phone) => {
+        firebase.firestore().collection('user_data').where('phoneNumber', "==", phone)
+        .get()
+        .then(async (querySnapshot) => {
+          querySnapshot.forEach(async (doc) => {
+            const uid = firebase.auth().currentUser.uid
+            await firebase.firestore().collection('friends').doc(uid).collection('list').doc(phone).set({
+              ...doc.data(),
+              unread: 0,
+              lastMessage: '',
+              lastMessageDate: new Date()
+            }); 
+          })
+        })
+      })
+    }
 
 }
 
