@@ -8,6 +8,7 @@ import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
 import { validateEmail, validatePassword } from '../../utils/Validations';
 import Storage from '../../utils/Storage';
+import * as firebase from 'firebase';
 
 class Login extends React.Component {
 
@@ -52,7 +53,8 @@ class Login extends React.Component {
         });
     }
 
-    success = uid => {
+    success = async() => {
+        const uid = await firebase.auth().currentUser.uid
         Storage.set('userid', uid)
         this.setState({loading: false});
         this.navigate('SignedIn');

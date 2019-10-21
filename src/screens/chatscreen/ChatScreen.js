@@ -6,32 +6,28 @@ import styled from 'styled-components';
 import { bg2} from '../../assets'
 import { GiftedChat } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-root-toast';
 import { Input } from 'native-base';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import AnimatedLoader from 'react-native-animated-loader';
+import firebaseSDK from '../../backend/Firebase';
 
 class ChatScreen extends React.Component {
     constructor(props){
         super(props);
 
-        //const channel = props.navigation.getParam('channel');
-        const channel = {id: 'thisisafakeuidconcatenationstandinginplace'}
+        const channel = props.navigation.getParam('channel');
+        //const channel = {id: 'thisisafakeuidconcatenationstandinginplace'}
 
         this.state = {
-            //user: this.props.navigation.getParams('user')
+            channel: channel,
             isTyping: false,
             inputHeight: 50,
             currentMessage: '',
             minInputToolbarHeight: 50,
-            user:  {
-                _id: 'chat_01',
-                avatar: 'https://images.pexels.com/photos/2128807/pexels-photo-2128807.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                name: 'Mungujakisa Nickson',
-                desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                time: '18:10',
-                unread: 5
-            },
+            user:  channel.currentUser,
+            friend: channel.friend,
             messages: [],
             loading: false
         }
@@ -40,7 +36,8 @@ class ChatScreen extends React.Component {
             .firestore()
             .collection('channels')
             .doc(channel.id)
-            .collection('messages');
+            .collection('messages')
+            .orderBy('createdAt', 'desc');;
 
         this.threadsUnscribe = 'null';
     }
@@ -80,17 +77,34 @@ class ChatScreen extends React.Component {
 
     onThreadsCollectionUpdate = querySnapshot => {
         const data = [];
-        querySnapshot.forEach(doc => {
-          const message = doc.data();
-          message._id = doc.id;
-    
-          if (!this.existSameSentMessage(data, message)) {
-            data.push(message);
-          }
-        });
+        try{
+            querySnapshot.forEach(doc => {
+                const message = doc.data();
+                message._id = doc.id;
+                message.createdAt = doc.data().createdAt.toDate()
+          
+                if (!this.existSameSentMessage(data, message)) {
+                  data.push(message);
+                }
+              })
+        } catch(error) {
+            this.showToast(error)
+        }
+        
     
         this.setState({ messages: data, loading: false });
     };
+
+    showToast = message => {
+        Toast.show(message, {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });
+    }
 
     _keyboardDidShow = (e) => {
        this.setState({isTyping: true});
@@ -115,20 +129,28 @@ class ChatScreen extends React.Component {
         });
     
         console.log(result);
+        const { channel } = this.state
     
         if (!result.cancelled) {
-            const message = {
-                _id: new Date().getMilliseconds().toString(),
-                createdAt: new Date(),
-                image: result.uri,
-                user: this.state.user
-            }
+            this.setState({loading: true})
+            await firebaseSDK.uploadBlob(result.uri, channel.id, this.sendImage, this.showToast)
             await this.setState(prevState => ({
-                messages: GiftedChat.append(prevState.messages, message),
                 currentMessage: ''
             }))
+            await this.setState({loading: false})
         }
     };
+
+    sendImage = url => {
+        const message = {
+            createdAt: new Date(),
+            image: url,
+            text: this.state.currentMessage,
+            user: this.state.user
+        }
+        
+        this.updateDB(message)
+    }
 
     renderInputToolbar = () => {
         const {isTyping} = this.state
@@ -162,20 +184,29 @@ class ChatScreen extends React.Component {
     onSend = async() => {
         if(this.state.currentMessage.length > 0){
             const message = {
-                _id: new Date().getMilliseconds().toString(),
                 createdAt: new Date(),
                 text: this.state.currentMessage,
                 user: this.state.user
             }
             await this.setState(prevState => ({
-                messages: GiftedChat.append(prevState.messages, message),
+                //messages: GiftedChat.append(prevState.messages, message),
                 currentMessage: ''
             }))
+            this.updateDB(message)
         }
     }
 
+    updateDB = async(message) => {
+        firebase
+        .firestore()
+        .collection('channels')
+        .doc(this.state.channel.id)
+        .collection('messages')
+        .add(message)
+    }
+
     render(){
-        const {avatar, name} = this.state.user
+        const {avatar, name} = this.state.friend
         return (
             <View style={{flex: 1}}>
                 <Container source={bg2}>

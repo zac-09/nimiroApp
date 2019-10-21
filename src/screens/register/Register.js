@@ -13,6 +13,7 @@ import Toast from 'react-native-root-toast';
 import AnimatedLoader from "react-native-animated-loader";
 import { validateEmail, validatePassword } from '../../utils/Validations';
 import Storage from '../../utils/Storage';
+import * as firebase from 'firebase';
 
 export default class Register extends React.Component{
 
@@ -46,7 +47,7 @@ export default class Register extends React.Component{
     signUp = () => {
         //do signup here
         this.setState({loading: true})
-        const { email, password } = this.state;
+        const { email, password, dName } = this.state;
         const isValidEmail = validateEmail(email)
         const isValidPassword = validatePassword(password)
         if(isValidEmail !== true){
@@ -56,27 +57,28 @@ export default class Register extends React.Component{
         }else{
             const user = {
                 email,
-                password
+                password,
+                name: dName
             }
             firebaseSDK.createAccount(user, this.uploadUserImage, this.failure)
         }
     }
 
-    uploadUserImage = uid => {
+    uploadUserImage = async(uid) => {
 
-        Storage.set('uid', uid)
+        await Storage.set('uid', uid)
         const { image } = this.state
 
         if(image !== PROFILE_IMAGE){
             firebaseSDK.uploadAvator(image, this.uploadUserData, this.failure)
         }else {
-            this.uploadUserData()
+            this.uploadUserData('')
         }
     }
 
     uploadUserData = avatar => {
         const { fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification} = this.state;
-        const _id = Storage.get('uid');
+        let _id = firebase.auth().currentUser.uid
 
         const data = {
             fName,
@@ -136,7 +138,8 @@ export default class Register extends React.Component{
         this.navigate('Login');
     }
 
-    failure = error => {
+    failure = async (error) => {
+        await firebaseSDK.deleteAccount();
         this.setState({loading: false});
         this.showToast(error.toString());
     }

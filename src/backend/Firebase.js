@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import { Platform } from 'react-native';
 import 'firebase/firestore';
+import Storage from '../utils/Storage'
 
 class FirebaseSDK {
     constructor() {
@@ -36,9 +37,7 @@ class FirebaseSDK {
             function() {
               console.log(
                 'created user successfully. User email:' +
-                  user.email +
-                  ' name:' +
-                  user.name
+                  user.email 
               );
               const userf = firebase.auth().currentUser;
               userf.updateProfile({ displayName: user.name }).then(
@@ -58,6 +57,16 @@ class FirebaseSDK {
           );
     };
 
+    deleteAccount = async () => {
+      var user = firebase.auth().currentUser;
+
+      await user.delete().then(function() {
+        // User deleted.
+      }).catch(function(error) {
+        // An error happened.
+      });
+    }
+
     uploadAvator = async (uri, success_callback, failed_callback) => {
       const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       const uid = firebase.auth().currentUser.uid
@@ -69,7 +78,12 @@ class FirebaseSDK {
       const imageRef = firebase.storage().ref('avatar').child(uid)
 
       return imageRef.put(blob)
-                .then( snapshot => that.updateAvatar(snapshot.downloadURL, success_callback, failed_callback), 
+                .then( async() => {
+                  let url = ''
+                  await imageRef.getDownloadURL().then(res => url = res).catch(() => console.log('Error occured'));
+                  console.log(url);
+                  that.updateAvatar(url, success_callback, failed_callback);
+                }, 
                        error => failed_callback(error.message)
                 )
                 .catch( error => failed_callback(error.message))
@@ -79,7 +93,7 @@ class FirebaseSDK {
       
         var userf = firebase.auth().currentUser;
         if (userf != null) {
-          userf.updateProfile({ avatar: url }).then(
+          userf.updateProfile({ photoURL: url }).then(
             function() {
               console.log('Updated avatar successfully. url:' + url);
               success_callback(url)
@@ -91,7 +105,7 @@ class FirebaseSDK {
           ).catch( error => failed_callback(error.message));
         } else {
           console.log("can't update avatar, user is not login.");
-          failed_callback('Unable to update avatar. You must login first.');
+          failed_callback('Unable to update avatar. You must sign up first.');
         }
     };
 
@@ -111,79 +125,27 @@ class FirebaseSDK {
       });
     }
 
-    //////////////////////  CHAT  ////////////////////
-    createOne2OneChannel = channelData => {
-      firebase
-      .firestore()
-      .collection('channels')
-      .add(channelData)
-      .then(function(docRef) {
-        channelData.id = docRef.id;
-        channelData.participants = that.state.channel.participants;
-       //TODO that.setState({ channel: channelData });
+    uploadBlob = async (uri, id, success_callback, failed_callback) => {
+      const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      const that = this
 
-        const participationData = {
-          channel: docRef.id,
-          user: that.props.user.id,
-        };
-        firebase
-          .firestore()
-          .collection('channel_participation')
-          .add(participationData);
-        const created = Date.now();
-        channelData.participants.forEach(friend => {
-          const participationData = {
-            channel: docRef.id,
-            user: friend.id,
-          };
-          firebase
-            .firestore()
-            .collection('channel_participation')
-            .add(participationData);
+      const response = await fetch(uploadUri);
+      const blob = await response.blob();
 
-          const data = {
-            content: that.state.input,
-            created,
-            recipientFirstName: friend.firstName,
-            recipientID: friend.id,
-            recipientLastName: '',
-            recipientProfilePictureURL: friend.profilePictureURL,
-            senderFirstName: firstName,
-            senderID: id,
-            senderLastName: '',
-            senderProfilePictureURL: profilePictureURL,
-            url: that.state.downloadUrl,
-          };
+      const imageRef = firebase.storage().ref('media').child(id)
 
-          firebase
-            .firestore()
-            .collection('channels')
-            .doc(channelData.id)
-            .collection('threads')
-            .add(data)
-            .then(function(docRef) {
-              // alert('Successfully sent friend request!');
-            })
-            .catch(function(error) {
-              alert(error);
-            });
-        });
+      return imageRef.put(blob)
+                .then( async() => {
+                  let url = ''
+                  await imageRef.getDownloadURL().then(res => url = res).catch(() => console.log('Error occured'));
+                  console.log(url);
+                  success_callback(url);
+                }, 
+                       error => failed_callback(error.message)
+                )
+                .catch( error => failed_callback(error.message))
+    };
 
-        that.threadsRef = firebase
-          .firestore()
-          .collection('channels')
-          .doc(channelData.id)
-          .collection('threads')
-          .orderBy('created', 'desc');
-        that.threadsUnscribe = that.threadsRef.onSnapshot(that.onThreadsCollectionUpdate);
-
-        that.setState({ input: '', downloadUrl: '', photo: '' });
-      })
-      .catch(function(error) {
-        alert(error);
-      });
-
-    }
 }
 
 const firebaseSDK = new FirebaseSDK();

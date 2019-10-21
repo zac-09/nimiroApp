@@ -7,7 +7,7 @@ const ChatItem = props => (
     <TouchableHighlight onPress={() => props.onItemPressed(props.id)} activeOpacity={0.985} underlayColor='#06545A'>
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image style={styles.avator} source={{uri: props.avator}}/>
+                <Image style={styles.avator} source={{uri: props.avatar}}/>
             </View>
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
