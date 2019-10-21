@@ -11,12 +11,12 @@ const ChatItem = props => (
             </View>
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
-                    <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 20, marginTop: 5}}>{props.name}</Text>
+                    <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 10, marginTop: 2.5}}>{props.name}</Text>
                     <Text numberOfLines={1} style={{ width: 200, color: 'gray', fontSize: 13 }}>{props.desc}</Text>
                 </View>
                 <Right>
                     <View style={styles.detailContainer}>
-                        <Text style={{color: '#53C41A', marginBottom: 20, marginTop: 5}}>{props.time}</Text>
+                        <Text style={{color: '#53C41A', marginBottom: 10, marginTop: 2.5}}>{props.time}</Text>
                         {props.unread > 0 && <Badge value={props.unread} status="success" />}
                     </View>
                 </Right>
@@ -35,9 +35,9 @@ const styles = {
         alignItems: 'center'
     },
     imageContainer: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
         overflow: 'hidden'
     },
     avator: {
@@ -48,7 +48,7 @@ const styles = {
         marginLeft: 10,
         borderBottomColor: '#ccc',
         flexDirection: 'row',
-        height: 80,
+        height: 60,
         flex: 1
     },
     textContainer: {
@@ -56,7 +56,7 @@ const styles = {
     },
     detailContainer: {
         justifyContent: 'flex-start',
-        height: 80,
+        height: 60,
     }
 
 }

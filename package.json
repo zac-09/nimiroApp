@@ -11,6 +11,7 @@
     "@babel/plugin-proposal-decorators": "^7.6.0",
     "add": "^2.0.6",
     "expo": "^34.0.1",
+    "expo-camera": "~6.0.0",
     "expo-font": "^6.0.1",
     "expo-image-picker": "~6.0.0",
     "firebase": "^6.6.0",

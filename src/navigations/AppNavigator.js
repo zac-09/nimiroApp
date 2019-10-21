@@ -1,7 +1,13 @@
+import React from 'react'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import * as Screens from '../screens';
+import ChatScreen from '../screens/chatscreen/ChatScreen'
+import Chat from '../screens/chat/Chat';
+import { ImageBackground } from 'react-native';
+import { bg2 } from '../assets';
+import Header from '../components/headers/Header'
 
 
 
@@ -19,9 +25,28 @@ const AuthStack = createStackNavigator(
     }
 );
 
+const ChatStack = createStackNavigator(
+  {
+    Chat: {
+      screen: Chat,
+    },
+    ChatScreen: {
+      screen: ChatScreen,
+    }
+  },
+  {
+      initialRouteName: "Chat",
+      headerMode: "none",
+      cardStyle: {backgroundColor: 'transparent'}
+  }
+)
+
+
 export const HomeStack = createMaterialTopTabNavigator(
     {
-        ROC: Screens.Roc,
+        ROC: {
+          screen: Screens.Roc
+        },
         Feed: Screens.Feed,
         Chat: Screens.Chat,
         Maps: Screens.Maps
@@ -37,9 +62,44 @@ export const HomeStack = createMaterialTopTabNavigator(
             style: {
               backgroundColor: 'transparent',
             },
-        }
+        },
+        navigationOptions: ({navigation}) => ({
+          header: (
+            <Header nomargin title='RotaApp'/>
+          )
+        })
     }
 );
+
+const InitialStack = createStackNavigator(
+  {
+    MainScreen: {
+      screen: HomeStack,
+      navigationOptions: {
+        header: <Header nomargin title='RotaApp'/>
+      }
+    },
+    ChatScreen: {
+      screen: ChatScreen,
+      navigationOptions: {
+        header: null
+      }
+    }
+  },
+  {
+      initialRouteName: "MainScreen",
+      cardStyle: {backgroundColor: 'rgba(0,0,0,0)', backfaceVisibility: 'hidden'}
+  }
+)
+const MainStack = createAppContainer(InitialStack);
+
+const Main = ({navigation}) => {
+  return (
+    <ImageBackground source={bg2} style={{flex: 1}}>
+        <MainStack/>
+    </ImageBackground>
+  )
+}
 
 
 
@@ -47,7 +107,7 @@ export default createRootNavigator = (signedIn = false) => {
     return createAppContainer(createSwitchNavigator(
       {
         SignedIn: {
-          screen: Screens.ChatScreen
+          screen: Main
         },
         SignedOut: {
           screen: AuthStack

@@ -12,6 +12,7 @@ import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
 import AnimatedLoader from "react-native-animated-loader";
 import { validateEmail, validatePassword } from '../../utils/Validations';
+import Storage from '../../utils/Storage';
 
 export default class Register extends React.Component{
 
@@ -61,7 +62,9 @@ export default class Register extends React.Component{
         }
     }
 
-    uploadUserImage = () => {
+    uploadUserImage = uid => {
+
+        Storage.set('uid', uid)
         const { image } = this.state
 
         if(image !== PROFILE_IMAGE){
@@ -71,20 +74,23 @@ export default class Register extends React.Component{
         }
     }
 
-    uploadUserData = () => {
+    uploadUserData = avatar => {
         const { fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification} = this.state;
+        const _id = Storage.get('uid');
 
         const data = {
             fName,
             lName,
-            dName,
+            name: dName,
             phoneNumber,
             gender,
             rotaryLevel,
             club,
             fraternity,
             buddy,
-            classification
+            classification,
+            avatar,
+            _id
         }
       
         firebaseSDK.uploadUserData(data, this.success, this.failure)
