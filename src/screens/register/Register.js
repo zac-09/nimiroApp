@@ -87,7 +87,7 @@ export default class Register extends React.Component{
             fName,
             lName,
             name: dName,
-            phoneNumber,
+            phoneNumber: formatPhoneNumber(phoneNumber),
             gender,
             rotaryLevel,
             club,

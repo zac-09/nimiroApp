@@ -7,7 +7,6 @@ import { bg2} from '../../assets'
 import { GiftedChat } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-root-toast';
-import { Input } from 'native-base';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import AnimatedLoader from 'react-native-animated-loader';
@@ -18,7 +17,6 @@ class ChatScreen extends React.Component {
         super(props);
 
         const channel = props.navigation.getParam('channel');
-        //const channel = {id: 'thisisafakeuidconcatenationstandinginplace'}
 
         this.state = {
             channel: channel,
@@ -37,7 +35,7 @@ class ChatScreen extends React.Component {
             .collection('channels')
             .doc(channel.id)
             .collection('messages')
-            .orderBy('createdAt', 'desc');;
+            .orderBy('createdAt', 'desc');
 
         this.threadsUnscribe = 'null';
     }
@@ -189,10 +187,9 @@ class ChatScreen extends React.Component {
                 text: this.state.currentMessage,
                 user: this.state.user
             }
-            await this.setState(prevState => ({
-                //messages: GiftedChat.append(prevState.messages, message),
+            await this.setState({
                 currentMessage: ''
-            }))
+            })
             this.updateDB(message)
         }
     }
@@ -223,7 +220,7 @@ class ChatScreen extends React.Component {
                 </Container>
                 <AnimatedLoader
                     visible={this.state.loading}
-                    overlayColor="rgba(255,255,255,0.75)"
+                    overlayColor="rgba(0,0,0,0.25)"
                     source={require("../../assets/anim/trail_loading.json")}
                     animationStyle={styles.lottie}
                     speed={1}

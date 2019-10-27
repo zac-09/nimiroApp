@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import Storage from './src/utils/Storage';
 import createRootNavigator from './src/navigations/AppNavigator';
 import {StatusBar} from 'react-native';
+import firebaseSDK from './src/backend/Firebase';
 
 export default class App extends React.Component {
 
@@ -38,6 +39,9 @@ export default class App extends React.Component {
     //@TODO 1: If we haven't checked AsyncStorage yet, don't render anything (better ways to do this)
     if (!checkedSignIn) {
       return <Splash />;
+    }
+    if(signedIn) {
+      firebaseSDK.loginFromCache()
     }
     const Layout = createRootNavigator(signedIn);
     return this.state.fontLoaded ? <Layout />: <Splash />

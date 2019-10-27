@@ -54,8 +54,15 @@ class Login extends React.Component {
     }
 
     success = async() => {
+        const { email, password, checked } = this.state
         const uid = await firebase.auth().currentUser.uid
-        Storage.set('userid', uid)
+        console.log(`Your user id is: ${uid}`)
+        if(checked) {
+            Storage.set('userid', uid)
+            Storage.set('password', password);
+            Storage.set('email', email)
+        }
+        
         this.setState({loading: false});
         this.navigate('SignedIn');
     }
@@ -86,7 +93,7 @@ class Login extends React.Component {
                 </Content>
                 <AnimatedLoader
                     visible={loading}
-                    overlayColor="rgba(255,255,255,0.75)"
+                    overlayColor="rgba(0,0,0,0.25)"
                     source={require("../../assets/anim/trail_loading.json")}
                     animationStyle={styles.lottie}
                     speed={1}

@@ -30,6 +30,16 @@ class FirebaseSDK {
         }, failed_callback);
     };
 
+    loginFromCache = async () => {
+      let email = '';
+      let password = '';
+      await Storage.get('email').then(res => email = res)
+      await Storage.get('password').then(res => password = res)
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+    };
+
     createAccount = async (user, success_callback, failed_callback) => {
         firebase
           .auth()
@@ -65,6 +75,14 @@ class FirebaseSDK {
         // User deleted.
       }).catch(function(error) {
         // An error happened.
+      });
+    }
+
+    resetPassword = async (email, success_callback, failed_callback) => {
+      await firebase.auth().sendPasswordResetEmail(email).then(function() {
+        success_callback()
+      }).catch(function(error) {
+        failed_callback(error.message)
       });
     }
 

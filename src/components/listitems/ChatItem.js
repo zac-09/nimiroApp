@@ -2,9 +2,10 @@ import React from 'react';
 import { TouchableWithoutFeedback, View, Image, TouchableHighlight } from 'react-native';
 import { Text, Right } from 'native-base';
 import { Badge } from 'react-native-elements';
+import { formatDate } from '../../utils/Validations';
 
 const ChatItem = props => (
-    <TouchableHighlight onPress={() => props.onItemPressed(props.id)} activeOpacity={0.985} underlayColor='#06545A'>
+    <TouchableHighlight onPress={() => props.onItemPressed(props._id)} activeOpacity={0.985} underlayColor='#06545A'>
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image style={styles.avator} source={{uri: props.avatar}}/>
@@ -12,14 +13,12 @@ const ChatItem = props => (
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
                     <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 10, marginTop: 2.5}}>{props.name}</Text>
-                    <Text numberOfLines={1} style={{ width: 200, color: 'gray', fontSize: 13 }}>{props.lastMessage}</Text>
+                    <Text style={{color: props.unread > 0 ? '#53C41A' : '#ddd', marginBottom: 10, marginTop: 2.5, fontSize: 12}}>{formatDate(props.lastMessageDate)}</Text>
                 </View>
-                <Right>
-                    <View style={styles.detailContainer}>
-                        <Text style={{color: '#53C41A', marginBottom: 10, marginTop: 2.5}}>{props.lastMessageDate}</Text>
-                        {props.unread > 0 && <Badge value={props.unread} status="success" />}
-                    </View>
-                </Right>
+                <View style={styles.detailContainer}>
+                    <Text numberOfLines={1} style={{ width: 200, color: '#ddd', fontSize: 13 }}>{props.lastMessage}</Text>
+                    {props.unread > 0 && <Badge value={props.unread} status="success" />}
+                </View>
             </View>
         </View>
     </TouchableHighlight>
@@ -47,16 +46,22 @@ const styles = {
     contentContainer: {
         marginLeft: 10,
         borderBottomColor: '#ccc',
-        flexDirection: 'row',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         height: 60,
         flex: 1
     },
     textContainer: {
-        justifyContent: 'flex-start',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     detailContainer: {
-        justifyContent: 'flex-start',
-        height: 60,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     }
 
 }

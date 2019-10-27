@@ -6,33 +6,46 @@ import Storage from '../../utils/Storage'
 import Toast from 'react-native-root-toast';
 import * as firebase from 'firebase'
 import * as Contacts from 'expo-contacts';
+import * as Permissions from 'expo-permissions';
 import firebaseSDK from '../../backend/Firebase'
+import { formatPhoneNumber } from '../../utils/Validations'
 
 export default class Chat extends React.Component{
 
     constructor(props){
         super(props);
         this.state = {
-            chats: []
+            chats: [],
+            loading: false,
         }
-        this.syncContacts()
         this.threadsRef = firebase
             .firestore()
             .collection('friends')
             .doc(firebase.auth().currentUser.uid)
             .collection('list')
-            .orderBy('lastMessageDate', 'desc');;
+            .orderBy('lastMessageDate', 'desc');
 
         this.threadsUnscribe = 'null';
     }
 
     componentDidMount(){  
+        this.checkMultiPermissions()
         this.setState({loading: true})
         this.threadsUnscribe = this.threadsRef.onSnapshot(this.loadChatList);
     }
 
     componentWillUnmount(){
         this.threadsUnscribe();
+    }
+
+    checkMultiPermissions = async() => {
+        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
+ 
+        if (status !== 'granted') {
+          console.log("User has not allowed read contacts")
+        }else {   
+            this.scanContacts()
+        }
     }
 
     existSameSentChat = (chats, newChat) => {
@@ -86,25 +99,33 @@ export default class Chat extends React.Component{
         const { data } = await Contacts.getContactsAsync({
             fields: [Contacts.Fields.PhoneNumbers],
         });
+
+        const filteredNumbers = []
           
         if (data.length > 0) {
-            firebaseSDK.syncContacts(data)
+            data.map(el => {
+                if(el.phoneNumbers !== undefined){
+                    el.phoneNumbers.map(num => {
+                        filteredNumbers.push(formatPhoneNumber(num.number))
+                    })
+                }
+            })
+            firebaseSDK.syncContacts(filteredNumbers)
         }
     }
 
     openChat = async (id) => {
-        let id1 = '';
-        await Storage.getUserid().then(res => id1 = res).catch(() => 'An error occured')
+        let id1 = firebase.auth().currentUser.uid;
         let id2 = id;
-        const friend = this.state.chats.find(el => el.id === id)
+        const friend = this.state.chats.find(el => el._id === id)
         //hardcoded user
         const user = {
-            _id: id1,
+            _id: firebase.auth().currentUser.uid,
             avatar: firebase.auth().currentUser.photoURL,
             name: firebase.auth().currentUser.displayName,
         }
         let channel = {
-                name: friend.name,
+                name: friend.dName,
                 id: (id1 < id2 ? id1 + id2 : id2 + id1),
                 currentUser: user,
                 friend: friend,
