@@ -30,6 +30,13 @@ class FirebaseSDK {
         }, failed_callback);
     };
 
+    persistLogin = async (user, success_callback, failed_callback) => {
+      const that = this
+      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(that.login(user, success_callback, failed_callback), failed_callback)
+        .catch(failed_callback)
+    }
+
     loginFromCache = async () => {
       let email = '';
       let password = '';
@@ -179,7 +186,8 @@ class FirebaseSDK {
               ...doc.data(),
               unread: 0,
               lastMessage: '',
-              lastMessageDate: new Date()
+              lastMessageDate: doc.data().createdAt.toDate(),
+              type: 'chat'
             }); 
           })
         })

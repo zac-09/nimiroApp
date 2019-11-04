@@ -12,11 +12,11 @@ const ChatItem = props => (
             </View>
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
-                    <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 10, marginTop: 2.5}}>{props.name}</Text>
-                    <Text style={{color: props.unread > 0 ? '#53C41A' : '#ddd', marginBottom: 10, marginTop: 2.5, fontSize: 12}}>{formatDate(props.lastMessageDate)}</Text>
+                    <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 10}}>{props.name}</Text>
+                    <Text style={{color: props.unread > 0 ? '#53C41A' : '#ddd', marginBottom: 10, fontSize: 12}}>{formatDate(props.lastMessageDate)}</Text>
                 </View>
                 <View style={styles.detailContainer}>
-                    <Text numberOfLines={1} style={{ width: 200, color: '#ddd', fontSize: 13 }}>{props.lastMessage}</Text>
+                    <Text numberOfLines={1} style={{ width: 200, color: 'gray', fontSize: 13 }}>{props.lastMessage}</Text>
                     {props.unread > 0 && <Badge value={props.unread} status="success" />}
                 </View>
             </View>
@@ -55,7 +55,8 @@ const styles = {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 10
     },
     detailContainer: {
         flex: 1,

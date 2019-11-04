@@ -40,9 +40,9 @@ export default class App extends React.Component {
     if (!checkedSignIn) {
       return <Splash />;
     }
-    if(signedIn) {
+    /* if(signedIn) {
       firebaseSDK.loginFromCache()
-    }
+    } */
     const Layout = createRootNavigator(signedIn);
     return this.state.fontLoaded ? <Layout />: <Splash />
   }

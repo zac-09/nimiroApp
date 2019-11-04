@@ -61,7 +61,8 @@ export default class Register extends React.Component{
             const user = {
                 email,
                 password,
-                name: dName
+                name: dName,
+                phone: formatPhoneNumber(phoneNumber)
             }
             firebaseSDK.createAccount(user, this.uploadUserImage, this.failure)
         }

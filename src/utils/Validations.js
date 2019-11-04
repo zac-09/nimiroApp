@@ -1,4 +1,6 @@
 import moment from "moment";
+// Validate.js validates your values as an object
+import validate from 'validate.js'
 
 function validatePassword(pw) {
 
@@ -63,11 +65,59 @@ function formatDate(date = new Date()) {
     return moment(date).format('l');
 }
 
+const constraints = {
+    email: {
+      presence: {
+        message: "Cannot be empty."
+      },
+      email: {
+        message: 'Please enter a valid email address'
+      }
+    },
+    password: {
+      presence: {
+        message: "Cannot be empty."
+      },
+      length: {
+        minimum: 8,
+        message: 'Your password must be at least 8 characters'
+      }
+    },
+    required: {
+        presence: {
+            message: "Cannot be empty."
+        }
+    }
+}
+
+const validator = (field, value) => {
+    // Creates an object based on the field name and field value
+    // e.g. let object = {email: 'email@example.com'}
+    let object = {}
+    object[field] = value
+  
+    let constraint = constraints[field]
+    console.log(object, { [field]: constraint })
+  
+    // Validate against the constraint and hold the error messages
+    const result = validate(object, { [field]: constraint })
+    console.log(object, constraint, result)
+  
+    // If there is an error message, return it!
+    if (result) {
+      // Return only the field error message if there are multiple
+      return result[field][0]
+    }
+  
+    return null
+}
+
 
 export {
     formatPhoneNumber,
     validateEmail,
     validatePassword,
     validatePhone,
-    formatDate
+    formatDate,
+    validator
 }

@@ -6,7 +6,7 @@ import { Forms } from '../../components';
 import { TouchableOpacity, Text } from 'react-native';
 import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
-import { validateEmail, validatePassword } from '../../utils/Validations';
+import { validator } from '../../utils/Validations';
 import Storage from '../../utils/Storage';
 import * as firebase from 'firebase';
 
@@ -15,7 +15,9 @@ class Login extends React.Component {
     state = {
         checked: false,
         email: '',
+        emailError: null,
         password: '',
+        passwordError: null,
         loading: false
     }
 
@@ -25,20 +27,18 @@ class Login extends React.Component {
 
     handleLogin = () => {
         //write login logic here
-        const { email, password } = this.state
-        const isValidEmail = validateEmail(email);
-        const isValidPassword = validatePassword(password);
-        if(isValidEmail !== true){
-            this.showToast(isValidEmail);
-        }else if(isValidPassword !== true){
-            this.showToast(isValidPassword);
-        }else{
+        const { email, emailError, password, passwordError, checked } = this.state
+        const isValid = !(emailError || passwordError);
+        if(isValid !== true){
             this.setState({loading: true})
             const user = {
                 email,
                 password
             }
-            firebaseSDK.login(user, this.success, this.failure)
+            if(checked) firebaseSDK.persistLogin(user, this.success, this.failure)
+            else firebaseSDK.login(user, this.success, this.failure)
+        }else {
+            this.showToast("Some fields are invalid")
         }
     }
 
@@ -57,11 +57,11 @@ class Login extends React.Component {
         const { email, password, checked } = this.state
         const uid = await firebase.auth().currentUser.uid
         console.log(`Your user id is: ${uid}`)
-        if(checked) {
+        /* if(checked) {
             Storage.set('userid', uid)
             Storage.set('password', password);
             Storage.set('email', email)
-        }
+        } */
         
         this.setState({loading: false});
         this.navigate('SignedIn');
@@ -72,8 +72,9 @@ class Login extends React.Component {
         this.showToast(error.message.toString());
     }
 
+
     render(){
-        const { email, password, checked, loading } = this.state
+        const { email, emailError, password, passwordError, checked, loading } = this.state
         return (
             <Container source={bg2}>
                 <Content>
@@ -81,8 +82,10 @@ class Login extends React.Component {
                     <Forms.SignInForm 
                         email={email} 
                         password={password} 
-                        onEmailChange={ text => this.setState({ email: text})}
-                        onPasswordChange={ text => this.setState({ password: text})}
+                        onEmailChange={ text => this.setState({ email: text, emailError: validator('email', text)})}
+                        emailError={emailError}
+                        onPasswordChange={ text => this.setState({ password: text, passwordError: validator('password', text)})}
+                        passwordError={passwordError}
                         onRemeberChange={() => this.setState(prev => ({ checked: !prev.checked}))}
                         onPasswordRecovery={() => this.navigate('Forgot')}
                         onSubmitPress={this.handleLogin}

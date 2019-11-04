@@ -43,6 +43,7 @@ class ChatScreen extends React.Component {
     componentDidMount() {
         this.setState({loading: true})
         this.threadsUnscribe = this.threadsRef.onSnapshot(this.onThreadsCollectionUpdate);
+        this.clearUnread()
         this.keyboardDidShowListener = Keyboard.addListener(
           'keyboardDidShow',
           this._keyboardDidShow,
@@ -51,6 +52,34 @@ class ChatScreen extends React.Component {
           'keyboardDidHide',
           this._keyboardDidHide,
         );
+    }
+
+    componentDidUpdate(){
+        this.clearUnread()
+    }
+
+    clearUnread = async() => {
+        let phoneNumber;
+        const uid = firebase.auth().currentUser.uid
+
+        await firebase.firestore().collection('user_data').doc(uid).get().then(function(doc) {
+            if (doc.exists) {
+                phoneNumber = doc.data().phoneNumber
+                firebase
+                .firestore()
+                .collection('friends')
+                .doc(this.state.channel.friend._id)
+                .collection('list')
+                .doc(phoneNumber).update({
+                    unread: 0,
+                })
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
     }
 
     componentWillUnmount() {
@@ -167,13 +196,13 @@ class ChatScreen extends React.Component {
                             this.setState({ inputHeight: event.nativeEvent.contentSize.height })
                         }}
                         placeholder='Type a message' style={{...styles.input, height: Math.min(150, this.state.inputHeight)}}/>
-                    <Ionicons style={styles.icons} name='ios-images' size={32} color='#bbb' onPress={this._pickImage}/>
-                    {isTyping === false && <Ionicons style={styles.icons} name='ios-camera' size={32} color='#bbb'/>}
+                    <Ionicons style={styles.icons} name='ios-images' size={48} color='#bbb' onPress={this._pickImage}/>
+                    {isTyping === false && <Ionicons style={styles.icons} name='ios-camera' size={48} color='#bbb'/>}
                 </View>
                 <View style={styles.micContainer}>
                     {isTyping === true ? 
-                        <Ionicons name='ios-send' size={32} color='#fff' onPress={() => this.onSend()}/>:
-                        <Ionicons name='ios-mic' size={32} color='#fff'/>
+                        <Ionicons name='ios-send' size={48} color='#fff' onPress={() => this.onSend()}/>:
+                        <Ionicons name='ios-mic' size={48} color='#fff'/>
                     }
                 </View>
             </View>
@@ -195,12 +224,40 @@ class ChatScreen extends React.Component {
     }
 
     updateDB = async(message) => {
+
+        const { channel } = this.state
+
         firebase
         .firestore()
         .collection('channels')
         .doc(this.state.channel.id)
         .collection('messages')
         .add(message)
+
+        let phoneNumber;
+        const lastMessage = message.text ? message.text : ''
+        const uid = firebase.auth().currentUser.uid
+
+        await firebase.firestore().collection('user_data').doc(uid).get().then(function(doc) {
+            if (doc.exists) {
+                phoneNumber = doc.data().phoneNumber
+                firebase
+                .firestore()
+                .collection('friends')
+                .doc(channel.friend._id)
+                .collection('list')
+                .doc(phoneNumber).update({
+                    unread: firebase.firestore.FieldValue.increment(1),
+                    lastMessage: lastMessage,
+                    lastMessageDate: new Date()
+                })
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
     }
 
     render(){

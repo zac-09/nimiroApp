@@ -11,12 +11,15 @@ const SignInForm = props => {
                 label='Email'
                 keyboardType='email-address'
                 value={props.email}
+                inputError={props.emailError}
+                containerStyle={{marginBottom: 20}}
                 onChangeText={(text) => props.onEmailChange(text)}
             />
             <UnderlinedInput
                 label='Password'
                 isSecure={true}
                 value={props.password}
+                inputError={props.passwordError}
                 onChangeText={(text) => props.onPasswordChange(text)}
             />
             <View style={styles.checkContainer}>

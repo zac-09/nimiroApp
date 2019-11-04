@@ -31,7 +31,7 @@ function header (props) {
 
 const styles = {
   title: {
-    fontSize: 18,
+    fontSize: 20,
     color: "#fff",
     paddingLeft: 20,
   }
