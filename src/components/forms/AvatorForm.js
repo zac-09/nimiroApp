@@ -1,16 +1,17 @@
 import React from 'react'
 import { View, Image } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import ProgressiveImage from '../images/ProgressiveImage'
 
 const avator = ({avator, changeAvator}) => {
     return (
         <View style={styles.container}>
             <View style={styles.positionContainer}>
                 <View style={styles.avator}>
-                    <Image style={styles.image} source={{uri: avator}}/>
+                    <ProgressiveImage style={styles.image} source={{uri: avator}} thumbnail={require('../../../assets/images/placeholder.png')}/>
                 </View>
                 <View style={styles.iconContainer}>
-                    <Ionicons name='ios-camera' size={32} onPress={() => changeAvator()} color='white'/>
+                    <Ionicons name='ios-camera' size={48} onPress={() => changeAvator()} color='white'/>
                 </View>
             </View>
         </View>
@@ -20,7 +21,7 @@ const avator = ({avator, changeAvator}) => {
 export default avator;
 
 const IMAGE_DIMENSIONS = 200;
-const ICON_DIMENSIONS = 40;
+const ICON_DIMENSIONS = 60;
 
 const styles = {
     container: {
@@ -49,10 +50,10 @@ const styles = {
         borderRadius: ICON_DIMENSIONS / 2,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'blue',
+        backgroundColor: '#4169E1',
         overflow: 'hidden',
         position: 'absolute',
-        bottom: 10,
-        right: 15
+        bottom: 0,
+        right: 0
     }
 }

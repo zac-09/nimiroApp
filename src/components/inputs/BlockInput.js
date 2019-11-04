@@ -1,12 +1,16 @@
 import React from 'react';
 import { View } from 'native-base';
-import { TextInput } from 'react-native';
+import { Input } from 'react-native-elements';
 
 const BlockInput = props => {
     return (
         <View style={styles.textContainer}>
-            <TextInput
-                style={props.inputStyle || styles.textInput}
+            <Input
+                placeholder={props.label}
+                errorStyle={{ color: 'red' }}
+                errorMessage={props.inputError}
+                containerStyle={{borderBottomWidth: 0}}
+                inputStyle={props.inputStyle || styles.textInput}
                 keyboardType={props.keyboardType || "default"}
                 maxLength={props.maxLength}
                 secureTextEntry={props.isSecure}
@@ -16,6 +20,7 @@ const BlockInput = props => {
                 onChangeText={text => props.onChangeText(text)}
                 placeholder={props.placeholder}
                 placeholderTextColor='#fff'
+                underlineColorAndroid="transparent"
             />
         </View>
     )
@@ -25,17 +30,18 @@ export default BlockInput;
 
 const styles = {
     textContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)',
-        height: 40,
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        height: 60,
         width: '100%',
-        padding: 10,
-        marginTop: 5,
-        marginBottom: 5,
+        paddingTop: 10,
+        paddingBottom: 10,
         justifyContent: 'center',
         borderRadius: 5
     },
     textInput: {
         backgroundColor: 'transparent',
-        color: '#000'
+        color: '#000',
+        borderBottomWidth: 0,
+        fontSize: 14
     }
 }

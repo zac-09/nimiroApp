@@ -84,9 +84,7 @@ const constraints = {
       }
     },
     required: {
-        presence: {
-            message: "Cannot be empty."
-        }
+        presence: true
     }
 }
 
