@@ -11,6 +11,7 @@ import Roc from './roc/Roc';
 import Welcome from './welcome/Welcome';
 import Main from './main/Main';
 import ChatScreen from './chatscreen/ChatScreen';
+import User from './user/User';
 
 export {
     Splash,
@@ -25,5 +26,6 @@ export {
     Roc,
     Welcome,
     Main,
-    ChatScreen
+    ChatScreen,
+    User
 }

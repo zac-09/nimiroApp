@@ -9,21 +9,6 @@ const UserForm = props => {
     return (
         <Form style={styles.container}>
             <View style={{...styles.inputContainer, height: 60, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center'}}>
-                <Text style={{paddingVertical: 5, fontWeight: "700", color: '#fff'}}>Gender</Text>
-                <RadioGroup 
-                    style={{flexDirection: 'row',}}
-                    defaultChoice={props.genderIndex} 
-                    onChoose={(value,index)=>props.onChangeGender(value,index)}
-                    >
-                    <RadioButton style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} value={"male"}>
-                        <Radio/><Text style={{paddingHorizontal: 10, color: 'blue'}}>Male</Text> 
-                    </RadioButton>
-                    <RadioButton style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} value={"female"}>
-                        <Radio/><Text style={{paddingHorizontal: 10, color: '#E807BB'}}>Female</Text>
-                    </RadioButton>
-                </RadioGroup>
-            </View>
-            <View style={{...styles.inputContainer, height: 60, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center'}}>
                 <Text style={{paddingVertical: 5, fontWeight: "700", color: '#fff'}}>Rotary level</Text>
                 <RadioGroup 
                     style={{flexDirection: 'row'}}

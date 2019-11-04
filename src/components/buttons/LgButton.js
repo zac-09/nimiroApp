@@ -7,7 +7,8 @@ function LgButton(props) {
   return (
     <Button
       full
-      style={styles.container}
+      disabled={props.disabled}
+      style={props.disabled === true ? {backgroundColor: '#ccc', borderRadius: 20, elevation: 0} : styles.container}
       onPress={() => !props.busy && props.onPress()}
     >
       {props.busy === true ? (

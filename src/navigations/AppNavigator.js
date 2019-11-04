@@ -8,6 +8,7 @@ import Chat from '../screens/chat/Chat';
 import { ImageBackground } from 'react-native';
 import { bg2 } from '../assets';
 import Header from '../components/headers/Header'
+import User from '../screens/user/User'
 
 
 
@@ -17,7 +18,8 @@ const AuthStack = createStackNavigator(
         Login: Screens.Login,
         Register: Screens.Register,
         Forgot: Screens.Forgot,
-        Reset: Screens.Reset
+        Reset: Screens.Reset,
+        User: User,
     },
     {
         initialRouteName: "Welcome",

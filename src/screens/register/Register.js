@@ -34,11 +34,13 @@ export default class Register extends React.Component{
         email: '',
         emailError: null,
         password: '',
+        confirmPassword: '',
         passwordError: null,
         genderIndex: 0,
         rotaryLevelIndex: 0,
         image: PROFILE_IMAGE,
-        loading: false
+        loading: false,
+        checked: false
     }
 
     navigate = route => {
@@ -52,7 +54,7 @@ export default class Register extends React.Component{
     signUp = () => {
         //do signup here
         const { email, password, dName, phoneNumber, emailError, passwordError, fNameError, lNameError, dNameError } = this.state;
-        const isValid = !(emailError || passwordError || fNameError || lNameError || dNameError)
+        const isValid = !(emailError || passwordError)
         if(isValid !== true){
             this.setState({loading: true})
             const user = {
@@ -138,7 +140,7 @@ export default class Register extends React.Component{
 
     success = () => {
         this.setState({loading: false});
-        this.navigate('Login');
+        this.navigate('User');
     }
 
     failure = async (error) => {
@@ -159,23 +161,19 @@ export default class Register extends React.Component{
             dNameError,
             phoneNumber, 
             gender, 
-            rotaryLevel, 
-            club, 
-            fraternity, 
-            buddy, 
-            classification, 
+            confirmPassword,
             email, 
             emailError,
             password, 
             passwordError,
-            genderIndex, 
-            rotaryLevelIndex} = this.state;
+            checked,
+            genderIndex, } = this.state;
         return(
             <SafeAreaView
                 style={{ backgroundColor: "#FFF", flex: 1, height: '100%' }}
                 forceInset={{ top: "never" }}
             >
-                <KeyboardAvoidingView
+                <KeyboardAwareScrollView
                     style={{flex: 1, minHeight: '100%'}}
                 >
                 <ImageBackground style={{width: '100%', height: '100%'}} source={bg2}>
@@ -192,34 +190,27 @@ export default class Register extends React.Component{
                             dNameError={dNameError}
                             phoneNumber={phoneNumber}
                             gender={gender}
-                            rotaryLevel={rotaryLevel}
-                            club={club}
-                            fraternity={fraternity}
-                            buddy={buddy}
-                            classification={classification}
                             email={email} 
                             emailError={emailError}
                             password={password}
                             passwordError={passwordError}
+                            confirmPassword={confirmPassword}
+                            checked={checked}
                             genderIndex={genderIndex}
-                            rotaryLevelIndex={rotaryLevelIndex}
                             onEmailChange={ text => this.setState({ email: text, emailError: validator('email', text)})}
                             onPasswordChange={ text => this.setState({ password: text, passwordError: validator('password', text)})}
+                            onConfirmPasswordChange={ text => this.setState({ confirmPassword: text})}
                             onFNameChange={text => this.setState({fName: text, fNameError: validator('required', text)})}
                             onLNameChange={text => this.setState({lName: text, lNameError: validator('required', text)})}
                             onDNameChange={text => this.setState({dName: text, dNameError: validator('required', text)})}
                             onChangePhoneNumber={text => this.setState({phoneNumber: text})}
                             onChangeGender={(value, index) => this.setState({gender: value, genderIndex: index})}
-                            onChangeRotaryLevel={(value, index) => this.setState({rotaryLevel: value, rotaryLevelIndex: index})}
-                            onChangeClub={text => this.setState({club: text})}
-                            onChangeFraternity={text => this.setState({fraternity: text})}
-                            onChangeBuddy={text => this.setState({buddy: text})}
-                            onChangeClassification={text => this.setState({classification: text})}
+                            onAgreeChange={() => this.setState(prev => ({ checked: !prev.checked}))}
                             onSubmitPress={() => this.signUp()}
                         />
                     </View>
                 </ImageBackground>
-                </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
                 <AnimatedLoader
                     visible={loading}
                     overlayColor="rgba(0,0,0,0.25)"

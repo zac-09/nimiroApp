@@ -140,13 +140,17 @@ class FirebaseSDK {
       await firebase.firestore().collection("user_data").doc(uid).set({
           ...data,
           createdAt: firebase.firestore.Timestamp.fromDate(new Date())
-      })
+      }, { merge: true })
       .then(async () => {
           console.log("Document successfully written!");
-          const phone = formatPhoneNumber(data.phoneNumber)
-          await firebase.firestore().collection('contacts').doc(phone).set({
-            uid: firebase.auth().currentUser.uid
-          }).then(() => success_callback(), reason => failed_callback(reason.message)).catch(err => failed_callback(err.message))
+          if(data.phoneNumber){
+            const phone = formatPhoneNumber(data.phoneNumber)
+            await firebase.firestore().collection('contacts').doc(phone).set({
+              uid: firebase.auth().currentUser.uid
+            }).then(() => success_callback(), reason => failed_callback(reason.message)).catch(err => failed_callback(err.message))
+          }else {
+            success_callback();
+          }
       })
       .catch(function(error) {
           console.error("Error writing document: ", error);
