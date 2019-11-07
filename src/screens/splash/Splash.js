@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native'
 import { logo, bg2} from '../../assets'
+import { AppLoading } from 'expo';
 
 class Splash extends React.Component {
 
@@ -10,6 +11,13 @@ class Splash extends React.Component {
                 <Header>Welcome to RotaApp</Header>
                 <Logo source={logo}/>
                 <Slogan>Service above self</Slogan>
+                {this.props.loading === true ? 
+                    <AppLoading 
+                        startAsync={this.props.startAsync}
+                        onFinish={this.props.onFinish}
+                        onError={console.warn}
+                        autoHideSplash={false}/>   : null 
+                }
             </Container>
         )
     }

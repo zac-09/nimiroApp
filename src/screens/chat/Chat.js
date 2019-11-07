@@ -18,6 +18,7 @@ export default class Chat extends React.Component{
             chats: [],
             loading: false,
         }
+        
         this.threadsRef = firebase
             .firestore()
             .collection('friends')

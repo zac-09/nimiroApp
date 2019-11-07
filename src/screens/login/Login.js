@@ -29,14 +29,14 @@ class Login extends React.Component {
         //write login logic here
         const { email, emailError, password, passwordError, checked } = this.state
         const isValid = !(emailError || passwordError);
-        if(isValid !== true){
+        console.log(isValid);
+        if(isValid === true){
             this.setState({loading: true})
             const user = {
                 email,
                 password
             }
-            if(checked) firebaseSDK.persistLogin(user, this.success, this.failure)
-            else firebaseSDK.login(user, this.success, this.failure)
+            firebaseSDK.login(user, this.success, this.failure)
         }else {
             this.showToast("Some fields are invalid")
         }
@@ -55,13 +55,13 @@ class Login extends React.Component {
 
     success = async() => {
         const { email, password, checked } = this.state
-        const uid = await firebase.auth().currentUser.uid
+        const uid = firebase.auth().currentUser.uid
         console.log(`Your user id is: ${uid}`)
-        /* if(checked) {
-            Storage.set('userid', uid)
-            Storage.set('password', password);
-            Storage.set('email', email)
-        } */
+        if(checked) {
+            await Storage.set('userid', uid)
+            await Storage.set('password', password);
+            await Storage.set('email', email)
+        }
         
         this.setState({loading: false});
         this.navigate('SignedIn');

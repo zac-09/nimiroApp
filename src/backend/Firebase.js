@@ -26,6 +26,7 @@ class FirebaseSDK {
         .signInWithEmailAndPassword(user.email, user.password)
         .then(() => {
           const uid = firebase.auth().currentUser.uid
+          console.log('User logged in with id: '+ uid)
           return success_callback(uid)
         }, failed_callback);
     };
@@ -196,6 +197,15 @@ class FirebaseSDK {
           })
         })
       })
+    }
+
+    getUserInfo = async (userid) => {
+      let userInfo = {}
+      await firebase.firestore().collection('user_data').doc(userid).get()
+      .then(async doc => userInfo = doc.data())
+      .catch(err => console.log(err.message))
+
+      return userInfo
     }
 
 }

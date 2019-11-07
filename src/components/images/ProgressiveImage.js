@@ -28,9 +28,9 @@ class ProgressiveImage extends Component{
     render(){
         return (
             <View
-            width={this.props.style.width}
-            height={this.props.style.height}
-            backgroundColor={'#ffffff'}
+                width={this.props.style.width}
+                height={this.props.style.height}
+                backgroundColor={'#ffffff'}
             >    
                 <Animated.Image
                    key = {this.props.key}
@@ -45,15 +45,15 @@ class ProgressiveImage extends Component{
                    onLoad = {(event)=>this.onLoad(event)}
                 />
                 <Animated.Image 
-                 key={this.props.key}
-                 style={[
-                     {
-                         opacity: this.state.thumbnailOpacity
-                     },
-                     this.props.style
-                 ]}
-                 source={this.props.thumbnail}
-                 onLoad={(event) => this.onThumbnailLoad(event)}
+                    key={this.props.key}
+                    style={[
+                        {
+                            opacity: this.state.thumbnailOpacity
+                        },
+                        this.props.style
+                    ]}
+                    source={this.props.thumbnail}
+                    onLoad={(event) => this.onThumbnailLoad(event)}
                  />
             </View>
         )

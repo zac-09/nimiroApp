@@ -54,8 +54,8 @@ export default class Register extends React.Component{
     signUp = () => {
         //do signup here
         const { email, password, dName, phoneNumber, emailError, passwordError, fNameError, lNameError, dNameError } = this.state;
-        const isValid = !(emailError || passwordError)
-        if(isValid !== true){
+        const isValid = !(emailError || passwordError || fNameError || lNameError || dNameError)
+        if(isValid === true){
             this.setState({loading: true})
             const user = {
                 email,
@@ -82,7 +82,7 @@ export default class Register extends React.Component{
     }
 
     uploadUserData = avatar => {
-        const { fName, lName, dName, phoneNumber, gender, rotaryLevel, club, fraternity, buddy, classification} = this.state;
+        const { fName, lName, dName, phoneNumber, gender} = this.state;
         let _id = firebase.auth().currentUser.uid
 
         const data = {
@@ -91,11 +91,6 @@ export default class Register extends React.Component{
             name: dName,
             phoneNumber: formatPhoneNumber(phoneNumber),
             gender,
-            rotaryLevel,
-            club,
-            fraternity,
-            buddy,
-            classification,
             avatar,
             _id
         }

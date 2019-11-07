@@ -13,7 +13,8 @@ export default class App extends React.Component {
     this.state = {
       fontLoaded: false,
       signedIn: false,
-      checkedSignIn: false
+      checkedSignIn: false,
+      isSplashReady: false
     };
   }
 
@@ -30,21 +31,47 @@ export default class App extends React.Component {
   componentDidMount() {
     StatusBar.setHidden(true);
     Storage.isLoggedIn()
-      .then(res => this.setState({ signedIn: res, checkedSignIn: true }))
+      .then(res => this.setState({ signedIn: res, checkedSignIn: true }, () => this._localSignIn()))
       .catch(err => alert("An error occurred"));
   }
 
+  _localSignIn = async () => {
+    const {signedIn} = this.state
+
+    if(!signedIn) {
+      this.setState({
+        isSplashReady: true
+      })
+      return;
+    }
+    console.log('Checking async storage');
+    let email = '', password = ''
+    await Storage.get('email')
+    .then(res => email = res)
+
+    await Storage.get('password')
+    .then(res => password = res)
+
+    const user = {
+      email,
+      password
+    }
+
+    await firebaseSDK.login(user, id => console.log(id), console.warn)
+    this.setState({
+      isSplashReady: true
+    })
+  }
+
   render(){
-    const { checkedSignIn, signedIn } = this.state;
+    const { checkedSignIn, signedIn, isSplashReady, fontLoaded } = this.state;
     //@TODO 1: If we haven't checked AsyncStorage yet, don't render anything (better ways to do this)
-    if (!checkedSignIn) {
+    if (!isSplashReady) {
       return <Splash />;
     }
-    /* if(signedIn) {
-      firebaseSDK.loginFromCache()
-    } */
+
     const Layout = createRootNavigator(signedIn);
-    return this.state.fontLoaded ? <Layout />: <Splash />
+    return fontLoaded ? <Layout />: <Splash />
   }
 }
 
