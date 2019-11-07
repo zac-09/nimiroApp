@@ -5,6 +5,7 @@ import { Card, Image } from 'react-native-elements';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import VideoView from '../video/Video';
 import { Ionicons } from '@expo/vector-icons';
+import ProgressiveImage from '../images/ProgressiveImage'
 
 class FeedItem extends React.Component {
 
@@ -39,7 +40,7 @@ class FeedItem extends React.Component {
         const video = content.video
         const comm = comments.length
         return (
-            <Card>
+            <Card containerStyle={styles.containerStyle}>
                 <View style={styles.header}>
                     <View style={styles.avatorContainer}>
                         <ProgressiveImage 
@@ -55,15 +56,15 @@ class FeedItem extends React.Component {
                             style={styles.contentImage} 
                             source={{uri: image}} 
                             thumbnail={require('../../../assets/images/loading.jpg')}/> : null}
-                    { video ? <VideoView source={video} width={IMAGE_DIMENSIONS} height={IMAGE_DIMENSIONS} /> : null}
+                    { video ? <VideoView source={video} width='100%' height={IMAGE_DIMENSIONS} /> : null}
                 </View>
                 <View style={styles.actions}>
-                    <View style={likesContainer}>
-                        <Ionicons name={liked ? 'ios-heart-full' : 'ios-heart-empty'} size={48} onPress={() => this.like()} color='#2699FB'/>
+                    <View style={styles.likesContainer}>
+                        <Ionicons name={liked ? 'ios-heart' : 'ios-heart-empty'} size={32} onPress={() => this.like()} color='#2699FB'/>
                         <Text style={styles.actionsText}>{likes}</Text>
                     </View>
-                    <View style={commContainer}>
-                        <Ionicons name='ios-chatboxes' size={48} onPress={() => this.like()} color='#2699FB'/>
+                    <View style={styles.commContainer}>
+                        <Ionicons name='ios-chatboxes' size={32} onPress={() => this.like()} color='#2699FB'/>
                         <Text style={styles.actionsText}>{comm}</Text>
                     </View>
                     <TouchableOpacity style={{alignItems: 'center', marginLeft: 'auto'}}>
@@ -77,10 +78,15 @@ class FeedItem extends React.Component {
 
 export default FeedItem;
 
-const IMAGE_DIMENSIONS = 300;
-const AVATAR_DIMENSIONS = 60
+const IMAGE_DIMENSIONS = 200;
+const AVATAR_DIMENSIONS = 50
 
 const styles = StyleSheet.create({
+    containerStyle: {
+        borderRadius: 5,
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        borderWidth: 0
+    },
     header: {
         flexDirection: 'row',
         alignItems: 'center'
@@ -114,7 +120,7 @@ const styles = StyleSheet.create({
         color: '#000'
     },
     contentImage: {
-        width: IMAGE_DIMENSIONS,
+        width: "100%",
         height: IMAGE_DIMENSIONS,
     },
     actions: {
@@ -134,6 +140,7 @@ const styles = StyleSheet.create({
     actionsText: {
         fontSize: 15,
         fontFamily: 'Roboto',
-        color: '#2699FB'
+        color: '#2699FB',
+        marginLeft: 8
     }
 })

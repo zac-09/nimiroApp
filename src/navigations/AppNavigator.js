@@ -56,7 +56,8 @@ export const HomeStack = createMaterialTopTabNavigator(
     {
         tabBarOptions: {
             labelStyle: {
-              fontSize: 12,
+              fontSize: 14,
+              fontWeight: '900'
             },
             tabStyle: {
               width: 100,

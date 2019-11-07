@@ -202,7 +202,11 @@ class FirebaseSDK {
     getUserInfo = async (userid) => {
       let userInfo = {}
       await firebase.firestore().collection('user_data').doc(userid).get()
-      .then(async doc => userInfo = doc.data())
+      .then(async doc => {
+        if(doc.exists){
+          userInfo = doc.data()
+        }
+      })
       .catch(err => console.log(err.message))
 
       return userInfo

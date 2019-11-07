@@ -65,8 +65,8 @@ const styles = {
         paddingHorizontal: 30
     },
     inputContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)',
-        height: 60,
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        height: 75,
         width: '100%',
         padding: 10,
         marginTop: 5,
