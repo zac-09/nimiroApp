@@ -212,6 +212,19 @@ class FirebaseSDK {
       return userInfo
     }
 
+    getLevelInfo = async (levelid) => {
+      let userInfo = {}
+      await firebase.firestore().collection('levels').doc(levelid).get()
+      .then(async doc => {
+        if(doc.exists){
+          userInfo = doc.data()
+        }
+      })
+      .catch(err => console.log(err.message))
+
+      return userInfo
+    }
+
 }
 
 const firebaseSDK = new FirebaseSDK();

@@ -7,7 +7,7 @@ import VideoView from '../video/Video';
 import { Ionicons } from '@expo/vector-icons';
 import ProgressiveImage from '../images/ProgressiveImage'
 
-class FeedItem extends React.Component {
+class RocItem extends React.Component {
 
     constructor(props){
         super(props)
@@ -18,7 +18,7 @@ class FeedItem extends React.Component {
     }
 
     async componentDidMount (){    
-        const user = await firebaseSDK.getUserInfo(this.props.created_by);
+        const user = await firebaseSDK.getLevelInfo(this.props.level_id);
         this.setState({
             user
         })
@@ -43,20 +43,19 @@ class FeedItem extends React.Component {
             <Card containerStyle={styles.containerStyle}>
                 <View style={styles.header}>
                     <View style={styles.avatorContainer}>
-                        <ProgressiveImage 
+                        <Image 
                             style={styles.avator} 
-                            source={{uri: user.avatar}} 
-                            thumbnail={require('../../../assets/images/placeholder.png')}/>
+                            source={require('../../assets/roc.png')} />
                     </View>
                     <Text style={styles.username}>{user.name}</Text>
                 </View>
                 <View style={styles.content}>
                     { text ? <Text style={styles.contentText}>{text}</Text> : null}
-                    { image ? <ProgressiveImage 
+                    { image ? <View style={{width: '100%', marginTop: 10}}><ProgressiveImage 
                             style={styles.contentImage} 
                             source={{uri: image}} 
-                            thumbnail={require('../../../assets/images/loading.jpg')}/> : null}
-                    { video ? <VideoView source={video} width='100%' height={IMAGE_DIMENSIONS} /> : null}
+                            thumbnail={require('../../../assets/images/loading.jpg')}/></View> : null}
+                    { video ? <View style={{width: '100%', marginTop: 10}}><VideoView source={video} width='100%' height={IMAGE_DIMENSIONS} /></View> : null}
                 </View>
                 <View style={styles.actions}>
                     <View style={styles.likesContainer}>
@@ -76,7 +75,7 @@ class FeedItem extends React.Component {
     }
 }
 
-export default FeedItem;
+export default RocItem;
 
 const IMAGE_DIMENSIONS = 200;
 const AVATAR_DIMENSIONS = 50
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto',
         fontWeight: '300',
         color: '#000',
-        marginBottom: 10
     },
     contentImage: {
         width: "100%",
