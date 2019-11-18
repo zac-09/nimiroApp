@@ -28,7 +28,17 @@ class FeedItem extends React.Component {
     like = () => {
         this.setState(prevState => ({
             liked: !prevState.liked
-        }))
+        }), () => this.likePost())
+    }
+
+    likePost = () => {
+        const { liked } = this.state
+        const {onLike, onUnlike, id} = this.props
+        if(liked){
+            onLike(id)
+        }else {
+            onUnlike(id)
+        }
     }
 
 

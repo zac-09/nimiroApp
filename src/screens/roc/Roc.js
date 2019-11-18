@@ -56,11 +56,26 @@ export default class Roc extends React.Component{
         });
     }
 
+    openComments = id => {
+        this.props.navigation.navigate('Comments', { postId: id, type: 'events'})
+    }
+
+    like = (id, num = 1) => {
+        console.log(id)
+        firebase
+            .firestore()
+            .collection('events')
+            .doc(id)
+            .update({
+                likes: firebase.firestore.FieldValue.increment(num)
+            })
+    }
+
     render(){
         const {roc} = this.state;
         return(
             <View style={{flex: 1}}>
-                <Lists.RocList roc={roc}/>
+                <Lists.RocList roc={roc} onRocItemClicked={this.openComments} onLike={this.like} onUnlike={id => this.like(id, -1)}/>
             </View>
         )
     }

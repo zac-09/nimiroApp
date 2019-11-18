@@ -60,12 +60,25 @@ export default class Feed extends React.Component{
         this.props.navigation.navigate('Comments', { postId: id, type: 'feeds'})
     }
 
+    like = (id, num = 1) => {
+        console.log(id)
+        firebase
+            .firestore()
+            .collection('feeds')
+            .doc(id)
+            .update({
+                likes: firebase.firestore.FieldValue.increment(num)
+            })
+    }
+
     render(){
         const {feed} = this.state;
         return(
             <View style={{flex: 1}}>
                 <Lists.FeedList 
                     feed={feed}
+                    onLike={this.like} 
+                    onUnlike={id => this.like(id, -1)}
                     onFeedItemClicked={this.openComments}/>
             </View>
         )
