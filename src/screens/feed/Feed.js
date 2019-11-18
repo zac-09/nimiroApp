@@ -56,11 +56,17 @@ export default class Feed extends React.Component{
         });
     }
 
+    openComments = id => {
+        this.props.navigation.navigate('Comments', { postId: id, type: 'feeds'})
+    }
+
     render(){
         const {feed} = this.state;
         return(
             <View style={{flex: 1}}>
-                <Lists.FeedList feed={feed}/>
+                <Lists.FeedList 
+                    feed={feed}
+                    onFeedItemClicked={this.openComments}/>
             </View>
         )
     }

@@ -9,6 +9,7 @@ import { ImageBackground, Text, View } from 'react-native';
 import { bg2 } from '../assets';
 import Header from '../components/headers/Header'
 import User from '../screens/user/User'
+import Comments from '../screens/comments/Comments'
 import { Image } from 'react-native';
 
 
@@ -27,22 +28,6 @@ const AuthStack = createStackNavigator(
         headerMode: "none"
     }
 );
-
-const ChatStack = createStackNavigator(
-  {
-    Chat: {
-      screen: Chat,
-    },
-    ChatScreen: {
-      screen: ChatScreen,
-    }
-  },
-  {
-      initialRouteName: "Chat",
-      headerMode: "none",
-      cardStyle: {backgroundColor: 'transparent'}
-  }
-)
 
 
 export const HomeStack = createMaterialTopTabNavigator(
@@ -96,6 +81,12 @@ const InitialStack = createStackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    Comments: {
+      screen: Comments,
+      navigationOptions: {
+        header: null
+      }
     }
   },
   {
@@ -103,23 +94,15 @@ const InitialStack = createStackNavigator(
       cardStyle: {backgroundColor: 'rgba(0,0,0,0)', backfaceVisibility: 'hidden'}
   }
 )
-const MainStack = createAppContainer(InitialStack);
-
-const Main = ({navigation}) => {
-  return (
-    <ImageBackground source={bg2} style={{flex: 1}}>
-        <MainStack/>
-    </ImageBackground>
-  )
-}
 
 
 
-export default createRootNavigator = (signedIn = false) => {
+
+const createRootNavigator = (signedIn = false) => {
     return createAppContainer(createSwitchNavigator(
       {
         SignedIn: {
-          screen: Main
+          screen: InitialStack
         },
         SignedOut: {
           screen: AuthStack
@@ -130,3 +113,12 @@ export default createRootNavigator = (signedIn = false) => {
       }
     ));
 };
+
+export const Main = ({signedIn}) => {
+  const Layout = createRootNavigator(signedIn);
+  return (
+    <ImageBackground source={bg2} style={{flex: 1}}>
+        <Layout/>
+    </ImageBackground>
+  )
+}

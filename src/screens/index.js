@@ -12,6 +12,7 @@ import Welcome from './welcome/Welcome';
 import Main from './main/Main';
 import ChatScreen from './chatscreen/ChatScreen';
 import User from './user/User';
+import Comments from './comments/Comments';
 
 export {
     Splash,
@@ -27,5 +28,6 @@ export {
     Welcome,
     Main,
     ChatScreen,
-    User
+    User,
+    Comments
 }

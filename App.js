@@ -2,7 +2,7 @@ import React from 'react';
 import { Splash } from './src/screens';
 import * as Font from 'expo-font';
 import Storage from './src/utils/Storage';
-import createRootNavigator from './src/navigations/AppNavigator';
+import { Main } from './src/navigations/AppNavigator';
 import {StatusBar} from 'react-native';
 import firebaseSDK from './src/backend/Firebase';
 
@@ -70,8 +70,8 @@ export default class App extends React.Component {
       return <Splash />;
     }
 
-    const Layout = createRootNavigator(signedIn);
-    return fontLoaded ? <Layout />: <Splash />
+    //const Layout = createRootNavigator(signedIn);
+    return fontLoaded ? <Main signedIn={signedIn}/>: <Splash />
   }
 }
 
