@@ -13,10 +13,10 @@ const ChatItem = props => (
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
                     <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 10}}>{props.name}</Text>
-                    <Text style={{color: props.unread > 0 ? '#53C41A' : '#ddd', marginBottom: 10, fontSize: 12}}>{formatDate(props.lastMessageDate)}</Text>
+                    <Text style={{color: props.unread > 0 ? '#53C41A' : '#64676A', marginBottom: 10, fontSize: 12}}>{formatDate(props.lastMessageDate)}</Text>
                 </View>
                 <View style={styles.detailContainer}>
-                    <Text numberOfLines={1} style={{ width: 200, color: 'gray', fontSize: 13 }}>{props.lastMessage}</Text>
+                    <Text numberOfLines={1} style={{ width: 200, color: '#64676A', fontSize: 13 }}>{props.lastMessage}</Text>
                     {props.unread > 0 && <Badge value={props.unread} status="success" />}
                 </View>
             </View>
@@ -28,10 +28,12 @@ export default ChatItem;
 
 const styles = {
     container: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
         flexDirection: 'row',
-        padding: 10,
-        alignItems: 'center'
+        marginHorizontal: 10,
+        paddingVertical: 10,
+        alignItems: 'center',
+        borderBottomColor: 'gray',
+        borderBottomWidth: 1
     },
     imageContainer: {
         width: 60,

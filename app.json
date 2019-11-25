@@ -24,10 +24,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "ug.co.codebits.messenger",
+      "config": {
+          "googleMapsApiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
+      }
     },
     "android": {
-      "package": "ug.co.codebits.messenger"
+      "package": "ug.co.codebits.messenger",
+      "config": {
+        "googleMaps": {
+            "apiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
+        }
+    }
     }
   }
 }

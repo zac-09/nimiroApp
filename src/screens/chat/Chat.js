@@ -111,7 +111,7 @@ export default class Chat extends React.Component{
                     })
                 }
             })
-            firebaseSDK.syncContacts(filteredNumbers)
+           // firebaseSDK.syncContacts(filteredNumbers)
         }
     }
 
@@ -139,7 +139,7 @@ export default class Chat extends React.Component{
     render(){
         const { chats } = this.state
         return(
-            <View style={{flex: 1, position: 'relative'}}>
+            <View style={{flex: 1, position: 'relative', backgroundColor: 'rgba(246,246,246, 0.95)'}}>
                 <Lists.ChatList chat={chats} onChatItemClicked={this.openChat}/>
                 <View style={{zIndex: 2, position: 'absolute', bottom: 40, right: 20, backgroundColor: '#53C41A', width: 50, height: 50, borderRadius: 25, overflow: 'hidden', justifyContent: 'center', alignItems: 'center'}}>
                     <Ionicons name="ios-chatbubbles" size={32} color='#fff' />
