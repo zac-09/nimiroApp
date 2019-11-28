@@ -3,6 +3,10 @@ import { View, Text } from 'native-base'
 import * as Lists from '../../components/lists'
 import * as firebase from 'firebase'
 import Toast from 'react-native-root-toast';
+import FeedInput from '../../components/inputs/FeedInput';
+import { logo } from '../../assets'
+import { ScrollView } from 'react-native';
+import firebaseSDK from '../../backend/Firebase';
 
 export default class Feed extends React.Component{
 
@@ -11,6 +15,7 @@ export default class Feed extends React.Component{
         this.state = {
             feed: [],
             loading: false,
+            avator: undefined
         }
         
         this.threadsRef = firebase
@@ -24,6 +29,7 @@ export default class Feed extends React.Component{
     componentDidMount(){  
         this.setState({loading: true})
         this.threadsUnscribe = this.threadsRef.onSnapshot(this.loadFeedList);
+        this.getCurrentUser()
     }
 
     componentWillUnmount(){
@@ -43,6 +49,11 @@ export default class Feed extends React.Component{
         
     
         this.setState({ feed: data, loading: false });
+    }
+
+    getCurrentUser = async () => {
+        const user = await firebaseSDK.getUserInfo()
+        this.setState({avator: user.avatar})
     }
 
     showToast = message => {
@@ -75,11 +86,14 @@ export default class Feed extends React.Component{
         const {feed} = this.state;
         return(
             <View style={{flex: 1}}>
-                <Lists.FeedList 
-                    feed={feed}
-                    onLike={this.like} 
-                    onUnlike={id => this.like(id, -1)}
-                    onFeedItemClicked={this.openComments}/>
+                <ScrollView>
+                    <FeedInput avator={{uri: this.state.avator}} createPost={() => {}}/>
+                    <Lists.FeedList 
+                        feed={feed}
+                        onLike={this.like} 
+                        onUnlike={id => this.like(id, -1)}
+                        onFeedItemClicked={this.openComments}/>
+                </ScrollView>
             </View>
         )
     }

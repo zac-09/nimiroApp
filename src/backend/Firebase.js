@@ -199,7 +199,7 @@ class FirebaseSDK {
       })
     }
 
-    getUserInfo = async (userid) => {
+    getUserInfo = async (userid = firebase.auth().currentUser.uid) => {
       let userInfo = {}
       await firebase.firestore().collection('user_data').doc(userid).get()
       .then(async doc => {

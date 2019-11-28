@@ -29,11 +29,8 @@ export default ChatItem;
 const styles = {
     container: {
         flexDirection: 'row',
-        marginHorizontal: 10,
-        paddingVertical: 10,
+        margin: 10,
         alignItems: 'center',
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1
     },
     imageContainer: {
         width: 60,
@@ -51,7 +48,10 @@ const styles = {
         flexDirection: 'column',
         justifyContent: 'space-between',
         height: 60,
-        flex: 1
+        flex: 1,
+        paddingBottom: 15,
+        borderBottomColor: 'rgba(205, 210, 214, 0.5)',
+        borderBottomWidth: 1
     },
     textContainer: {
         flex: 1,

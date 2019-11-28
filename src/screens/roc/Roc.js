@@ -3,6 +3,9 @@ import { View, Text } from 'native-base'
 import * as Lists from '../../components/lists'
 import * as firebase from 'firebase'
 import Toast from 'react-native-root-toast';
+import firebaseSDK from '../../backend/Firebase';
+import { ScrollView } from 'react-native';
+import FeedInput from '../../components/inputs/FeedInput';
 
 export default class Roc extends React.Component{
 
@@ -11,6 +14,7 @@ export default class Roc extends React.Component{
         this.state = {
             roc: [],
             loading: false,
+            avatar: undefined
         }
         
         this.threadsRef = firebase
@@ -24,6 +28,7 @@ export default class Roc extends React.Component{
     componentDidMount(){  
         this.setState({loading: true})
         this.threadsUnscribe = this.threadsRef.onSnapshot(this.loadRocList);
+        this.getCurrentUser()
     }
 
     componentWillUnmount(){
@@ -43,6 +48,11 @@ export default class Roc extends React.Component{
         
     
         this.setState({ roc: data, loading: false });
+    }
+
+    getCurrentUser = async () => {
+        const user = await firebaseSDK.getUserInfo()
+        this.setState({avator: user.avatar})
     }
 
     showToast = message => {
@@ -75,7 +85,10 @@ export default class Roc extends React.Component{
         const {roc} = this.state;
         return(
             <View style={{flex: 1}}>
-                <Lists.RocList roc={roc} onRocItemClicked={this.openComments} onLike={this.like} onUnlike={id => this.like(id, -1)}/>
+                <ScrollView>
+                    <FeedInput avator={{uri: this.state.avator}} createPost={() => this.props.navigation.navigate('Post')}/>
+                    <Lists.RocList roc={roc} onRocItemClicked={this.openComments} onLike={this.like} onUnlike={id => this.like(id, -1)}/>
+                 </ScrollView>
             </View>
         )
     }

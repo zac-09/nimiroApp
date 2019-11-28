@@ -76,7 +76,7 @@ class Login extends React.Component {
     render(){
         const { email, emailError, password, passwordError, checked, loading } = this.state
         return (
-            <Container source={bg2}>
+            <Container>
                 <Content>
                     <Logo source={logo} resizeMode='contain' />
                     <Forms.SignInForm 
@@ -131,9 +131,8 @@ const styles = {
         height: 200
     }
 }
-const Container = styled.ImageBackground`
-    width: 100%;
-    height: 100%;
+const Container = styled.View`
+    flex: 1;
 `
 
 const Content = styled.View`

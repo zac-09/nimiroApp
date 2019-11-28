@@ -45,7 +45,7 @@ export default class Chat extends React.Component{
         if (status !== 'granted') {
           console.log("User has not allowed read contacts")
         }else {   
-            this.scanContacts()
+            //this.scanContacts()
         }
     }
 
@@ -111,7 +111,7 @@ export default class Chat extends React.Component{
                     })
                 }
             })
-           // firebaseSDK.syncContacts(filteredNumbers)
+            firebaseSDK.syncContacts(filteredNumbers)
         }
     }
 

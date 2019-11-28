@@ -8,7 +8,6 @@ import * as Permissions from 'expo-permissions';
 import * as firebase from 'firebase'
 import Pin from '../../components/markers/Pin';
 import { Feather, AntDesign } from '@expo/vector-icons';
-import moment from 'moment';
 import { formatDate } from '../../utils/Validations';
 
 export default class Maps extends React.Component{
@@ -59,7 +58,7 @@ export default class Maps extends React.Component{
         }
     
         let location = await Location.getCurrentPositionAsync({});
-        this.setState({ location });
+        this.setState({ location: location.coords });
     };
 
     _getMarkersAsync = async (querySnapshot) => {

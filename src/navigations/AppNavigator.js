@@ -11,6 +11,7 @@ import Header from '../components/headers/Header'
 import User from '../screens/user/User'
 import Comments from '../screens/comments/Comments'
 import { Image } from 'react-native';
+import Post from '../screens/post/Post';
 
 
 
@@ -25,7 +26,8 @@ const AuthStack = createStackNavigator(
     },
     {
         initialRouteName: "Welcome",
-        headerMode: "none"
+        headerMode: "none",
+        cardStyle: {backgroundColor: 'rgba(0,0,0,0)', backfaceVisibility: 'hidden'}
     }
 );
 
@@ -87,6 +89,12 @@ const InitialStack = createStackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    Post: {
+      screen: Post,
+      navigationOptions: {
+        header: null
+      }
     }
   },
   {
@@ -117,8 +125,10 @@ const createRootNavigator = (signedIn = false) => {
 export const Main = ({signedIn}) => {
   const Layout = createRootNavigator(signedIn);
   return (
-    <ImageBackground source={bg2} style={{flex: 1}}>
-        <Layout/>
-    </ImageBackground>
+      <ImageBackground source={bg2} style={{flex: 1}}>
+        <View style={{flex: 1,backgroundColor: "rgba(0, 8, 228, 0.7)",}}>
+          <Layout/>
+        </View>
+      </ImageBackground>
   )
 }

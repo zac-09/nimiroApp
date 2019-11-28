@@ -12,7 +12,7 @@ class Welcome extends React.Component {
 
     render(){
         return (
-            <Container source={bg2}>
+            <Container>
                 <LogoContainer>
                     <Logo source={smallLogo} resizeMode="contain" />
                     <Slogan>Service above self</Slogan>
@@ -26,10 +26,8 @@ class Welcome extends React.Component {
 }
 
 export default Welcome;
-const Container = styled.ImageBackground`
-    display: flex;
-    width: 100%;
-    height: 100%;
+const Container = styled.View`
+    flex: 1;
     align-items: center;
 `
 const LogoContainer = styled.View`
