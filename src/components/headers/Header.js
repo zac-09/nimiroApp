@@ -1,7 +1,7 @@
 import React from "react";
 import { Header, Left, Body, Title, Right } from "native-base";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
-import { connect } from '../../assets';
+import connect from '../../assets/connect.png';
 import { Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 
@@ -33,7 +33,6 @@ const styles = {
   title: {
     fontSize: 20,
     color: "#fff",
-    paddingLeft: 20,
   }
 };
 

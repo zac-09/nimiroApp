@@ -9,7 +9,7 @@ function postHeader (props) {
     <Header
       iosBarStyle="dark-content"
       androidStatusBarColor="#000"
-      style={{elevation: 3, backgroundColor: "rgba(0, 8, 228, 0.7)", margin: 0, borderBottomColor: 'rgb(0, 8, 228)'}}
+      style={{elevation: 3, backgroundColor: "#4291ee", margin: 0, borderBottomColor: '#4291ee'}}
     >
         <TouchableWithoutFeedback onPress={() => props.goBack()}>
             <Left style={{alignItems: 'center', justifyContent: 'center'}}>

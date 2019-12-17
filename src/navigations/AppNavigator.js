@@ -34,17 +34,7 @@ const AuthStack = createStackNavigator(
 
 export const HomeStack = createMaterialTopTabNavigator(
     {
-        ROC: {
-          screen: Screens.Roc,
-          navigationOptions: {
-            tabBarLabel: ({ tintColor }) => (
-              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                <Image source={require('../assets/roc.png')} style={{height: 20, width: 20}} />
-                <Text style={{fontSize: 14, fontWeight: "900", marginLeft: 10, color: tintColor}}>ROC</Text>
-              </View>
-            ),
-          }
-        },
+        ROC: Screens.Roc,
         Feed: Screens.Feed,
         Chat: Screens.Chat,
         Maps: Screens.Maps

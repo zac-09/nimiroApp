@@ -195,7 +195,6 @@ class ChatScreen extends React.Component {
         return (
             <View style={styles.inputBar}>
                 <View style={styles.inputContainer}>
-                    <Ionicons style={styles.icons} name='ios-happy' size={32} color='#bbb'/>
                     <TextInput 
                         multiline={true}
                         enablesReturnKeyAutomatically
