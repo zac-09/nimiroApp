@@ -5,20 +5,17 @@ import { Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 
 function ChatHeader (props) {
+  const avator = props.avatar ? {uri: props.avatar} : require('../../assets/placeholder.png')
   return (
-    <Header
-      iosBarStyle="dark-content"
-      androidStatusBarColor="#000"
-      style={styles.header}
+    <View
+      style={{...styles.header, marginTop: props.offset? 20 : 0}}
     >
-      <Left style={{alignItems: 'center', justifyContent: 'center'}}>
-        <View style={styles.imageContainer}>
-            <Image style={styles.avator} source={{uri: props.avator}}/>
-        </View>
-      </Left>
-      <Body>
+      <View style={styles.imageContainer}>
+          <Image style={styles.avator} source={avator}/>
+      </View>
+      <View>
         {!!props.name && <Title style={styles.title}>{props.name}</Title>}
-      </Body>
+      </View>
       <Right>
         <Ionicons 
           name='md-more' 
@@ -26,7 +23,7 @@ function ChatHeader (props) {
           color='#fff' 
           style={{paddingLeft: 10, paddingRight: 10}}/>
       </Right>
-    </Header>
+    </View>
   );
 }
 
@@ -36,17 +33,26 @@ const styles = {
     borderBottomColor: "#4291ee",
     boxShadow: "none",
     elevation: 3,
+    flexDirection: 'row',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 9999,
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5
   },
   title: {
     fontSize: 16,
     color: "#fff",
-    paddingLeft: 10,
   },
   imageContainer: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    marginRight: 10
  },
  avator: {
     width: '100%',

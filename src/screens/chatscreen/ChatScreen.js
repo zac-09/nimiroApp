@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, TextInput, Keyboard, Platform, KeyboardAvoidingView, } from 'react-native';
+import { View, TextInput, Keyboard, Platform, KeyboardAvoidingView, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Headers } from '../../components';
 import styled from 'styled-components';
-import { bg2} from '../../assets'
+import bg2 from '../../assets/chat_bg.png';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-root-toast';
@@ -11,6 +11,8 @@ import * as firebase from 'firebase';
 import 'firebase/firestore';
 import AnimatedLoader from 'react-native-animated-loader';
 import firebaseSDK from '../../backend/Firebase';
+
+const HEIGHT = Dimensions.get('window').height
 
 class ChatScreen extends React.Component {
     constructor(props){
@@ -21,13 +23,14 @@ class ChatScreen extends React.Component {
         this.state = {
             channel: channel,
             isTyping: false,
-            inputHeight: 50,
+            inputHeight: 55,
             currentMessage: '',
-            minInputToolbarHeight: 50,
+            minInputToolbarHeight: 55,
             user:  channel.currentUser,
             friend: channel.friend,
             messages: [],
-            loading: false
+            loading: false,
+            offset: false
         }
 
         this.threadsRef = firebase
@@ -54,8 +57,12 @@ class ChatScreen extends React.Component {
         );
     }
 
-    componentDidUpdate(){
-        this.clearUnread()
+    shouldComponentUpdate(nextProps, nextState){
+        const { messages } = this.state
+        if(messages.length !== nextState.messages.length){
+            this.clearUnread()
+        }
+        return true;
     }
 
     clearUnread = async() => {
@@ -136,17 +143,20 @@ class ChatScreen extends React.Component {
 
     _keyboardDidShow = (e) => {
        this.setState({isTyping: true});
+       const { inputHeight } = this.state
        let keyboardHeight = e.endCoordinates.height;
         this.setState({
-            minInputToolbarHeight: keyboardHeight + 50,
+            minInputToolbarHeight: keyboardHeight + inputHeight,
+            offset: true
         });
     }
 
     _keyboardDidHide = () => {
-        if(this.state.currentMessage === '')
-        this.setState({isTyping: false});
+        if(this.state.currentMessage === '') this.setState({isTyping: false});
+        const { inputHeight } = this.state
         this.setState({
-            minInputToolbarHeight: 50,
+            minInputToolbarHeight: inputHeight,
+            offset: false
         });
     }
 
@@ -196,13 +206,13 @@ class ChatScreen extends React.Component {
                             this.setState({ inputHeight: event.nativeEvent.contentSize.height })
                         }}
                         placeholder='Type a message' style={{...styles.input, height: Math.min(150, this.state.inputHeight)}}/>
-                    <Ionicons style={styles.icons} name='ios-images' size={48} color='#bbb' onPress={this._pickImage}/>
-                    {isTyping === false && <Ionicons style={styles.icons} name='ios-camera' size={48} color='#bbb'/>}
+                    <Ionicons style={styles.icons} name='ios-images' size={32} color='#bbb' onPress={this._pickImage}/>
+                    {isTyping === false && <Ionicons style={styles.icons} name='ios-camera' size={32} color='#bbb'/>}
                 </View>
                 <View style={styles.micContainer}>
                     {isTyping === true ? 
-                        <Ionicons name='ios-send' size={48} color='#fff' onPress={() => this.onSend()}/>:
-                        <Ionicons name='ios-mic' size={48} color='#fff'/>
+                        <Ionicons name='ios-send' size={32} color='#fff' onPress={() => this.onSend()}/>:
+                        <Ionicons name='ios-mic' size={32} color='#fff'/>
                     }
                 </View>
             </View>
@@ -263,18 +273,20 @@ class ChatScreen extends React.Component {
     render(){
         const {avatar, name} = this.state.friend
         return (
-            <View style={{flex: 1}}>
-                <Container source={bg2}>
-                    <Headers.ChatHeader nomargin avator={avatar} name={name}/>
+            <View style={{flex: 1, height: HEIGHT}}>
+                
+                    <Headers.ChatHeader nomargin avator={avatar} name={name} offset={this.state.offset}/>
+                    <Container source={bg2}>
                         <GiftedChat
                             messages={this.state.messages}
                             user={this.state.user}
-                            showUserAvatar
+                            showUserAvatar={false}
                             keyboardShouldPersistTaps='never'
                             renderInputToolbar={this.renderInputToolbar}
                             minInputToolbarHeight={this.state.minInputToolbarHeight}
                         />
-                </Container>
+                        <KeyboardAvoidingView behavior={'height'}/>
+                    </Container>
                 <AnimatedLoader
                     visible={this.state.loading}
                     overlayColor="rgba(0,0,0,0.25)"
@@ -290,15 +302,14 @@ class ChatScreen extends React.Component {
 export default ChatScreen;
 
 const Container = styled.ImageBackground`
-    width: 100%;
-    height: 100%;
+    flex: 1
 `
 
 const styles = {
     inputBar: {
         width: "100%",
         flexDirection: 'row',
-        marginBottom: 10,
+        marginBottom: 5,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -329,9 +340,9 @@ const styles = {
     },
     micContainer: {
         backgroundColor: '#4a6aa5',
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
         overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
