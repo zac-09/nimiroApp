@@ -13,7 +13,7 @@ class VideoView extends React.Component {
                 isMuted={false}
                 useNativeControls
                 isLooping
-                resizeMode={Video.RESIZE_MODE_STRETCH}
+                resizeMode={Video.RESIZE_MODE_CONTAIN}
                 style={{ width: props.width, height: props.height }}
             />
         )

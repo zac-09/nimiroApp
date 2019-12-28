@@ -86,7 +86,7 @@ export default class Roc extends React.Component{
         return(
             <View style={{flex: 1}}>
                 <ScrollView>
-                    <FeedInput avator={{uri: this.state.avator}} createPost={() => this.props.navigation.navigate('Post')}/>
+                    <FeedInput avator={{uri: this.state.avator}} createPost={() => this.props.navigation.navigate('Post', {post: 'events'})}/>
                     <Lists.RocList roc={roc} onRocItemClicked={this.openComments} onLike={this.like} onUnlike={id => this.like(id, -1)}/>
                  </ScrollView>
             </View>

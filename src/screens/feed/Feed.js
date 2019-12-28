@@ -87,7 +87,7 @@ export default class Feed extends React.Component{
         return(
             <View style={{flex: 1}}>
                 <ScrollView>
-                    <FeedInput avator={{uri: this.state.avator}} createPost={() => {}}/>
+                    <FeedInput avator={{uri: this.state.avator}} createPost={() => this.props.navigation.navigate('Post', {post: 'feeds'})}/>
                     <Lists.FeedList 
                         feed={feed}
                         onLike={this.like} 

@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     },
     content: {
         flexDirection: 'column',
-        alignItems: 'center',
         marginTop: 10
     },
     contentText: {

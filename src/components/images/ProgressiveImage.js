@@ -30,7 +30,7 @@ class ProgressiveImage extends Component{
             <View
                 width={this.props.style.width}
                 height={this.props.style.height}
-                backgroundColor={'#ffffff'}
+                backgroundColor={'transparent'}
             >    
                 <Animated.Image
                    key = {this.props.key}

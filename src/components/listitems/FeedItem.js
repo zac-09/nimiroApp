@@ -132,7 +132,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto',
         fontWeight: '300',
         color: '#000',
-        marginBottom: 10
+        marginBottom: 10,
+        alignSelf: 'flex-start'
     },
     contentImage: {
         width: "100%",
