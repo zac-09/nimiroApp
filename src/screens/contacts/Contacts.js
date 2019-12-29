@@ -9,6 +9,7 @@ import { Lists } from '../../components'
 import { Ionicons } from '@expo/vector-icons'
 import Storage from '../../utils/Storage'
 import Toast from 'react-native-root-toast';
+import * as Headers from '../../components/headers';
 
 export default class Contact extends React.Component{
     constructor(props){
@@ -79,10 +80,31 @@ export default class Contact extends React.Component{
         this.props.navigation.navigate(route, data)
     }
 
+    recordContactsLength = async length => {
+        await Storage.set('numOfContacts', length.toString())
+    }
+
+    retrieveContactsLength = async () => {
+        let num = null
+        await Storage.get('numOfContacts', 'empty').then(res => num = res)
+
+        return num;
+    }
+
     scanContacts = async() => {
         const { data } = await Contacts.getContactsAsync({
             fields: [Contacts.Fields.PhoneNumbers],
         });
+
+        const length = await this.retrieveContactsLength()
+
+        if( length === data.length.toString() ){
+            //no new contacts
+            return;
+        }else {
+            //record new length
+            this.recordContactsLength(data.length)
+        }
 
         const filteredNumbers = []
           
@@ -102,10 +124,8 @@ export default class Contact extends React.Component{
         const { friends } = this.state
         return(
             <View style={{flex: 1, position: 'relative', backgroundColor: 'rgba(246,246,246, 0.95)'}}>
-                <Lists.ChatList chat={friends} onChatItemClicked={() => {}}/>
-                <View style={{zIndex: 2, position: 'absolute', bottom: 40, right: 20, backgroundColor: '#53C41A', width: 50, height: 50, borderRadius: 25, overflow: 'hidden', justifyContent: 'center', alignItems: 'center'}}>
-                    <Ionicons name="ios-chatbubbles" size={32} color='#fff' />
-                </View>
+                <Headers.BackHeader goBack={this.props.navigation.goBack} title='Contacts'/>
+                <Lists.ContactsList contacts={friends} onContactItemClicked={() => {}}/>
             </View>
         )
     }

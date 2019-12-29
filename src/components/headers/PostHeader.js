@@ -1,6 +1,5 @@
 import React from "react";
 import { Header, Left, Body, Title, Right, Text } from "native-base";
-import getHeaderContainerStyle from "./getHeaderContainerStyle";
 import { Ionicons } from '@expo/vector-icons'
 import { TouchableWithoutFeedback } from "react-native";
 

@@ -160,13 +160,14 @@ class FirebaseSDK {
     }
 
     uploadBlob = async (uri, id, success_callback, failed_callback) => {
+      const filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       const that = this
 
       const response = await fetch(uploadUri);
       const blob = await response.blob();
 
-      const imageRef = firebase.storage().ref('media').child(id)
+      const imageRef = firebase.storage().ref('media').child(`${id}/${filename}`)
 
       return imageRef.put(blob)
                 .then( async() => {

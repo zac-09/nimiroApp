@@ -9,6 +9,7 @@ import * as Contacts from 'expo-contacts';
 import * as Permissions from 'expo-permissions';
 import firebaseSDK from '../../backend/Firebase'
 import { formatPhoneNumber } from '../../utils/Validations'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 export default class Chat extends React.Component{
 
@@ -30,23 +31,12 @@ export default class Chat extends React.Component{
     }
 
     componentDidMount(){  
-        this.checkMultiPermissions()
         this.setState({loading: true})
         this.threadsUnscribe = this.threadsRef.onSnapshot(this.loadChatList);
     }
 
     componentWillUnmount(){
         this.threadsUnscribe();
-    }
-
-    checkMultiPermissions = async() => {
-        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
- 
-        if (status !== 'granted') {
-          console.log("User has not allowed read contacts")
-        }else {   
-            //this.scanContacts()
-        }
     }
 
     existSameSentChat = (chats, newChat) => {
@@ -96,30 +86,11 @@ export default class Chat extends React.Component{
         this.props.navigation.navigate(route, data)
     }
 
-    scanContacts = async() => {
-        const { data } = await Contacts.getContactsAsync({
-            fields: [Contacts.Fields.PhoneNumbers],
-        });
-
-        const filteredNumbers = []
-          
-        if (data.length > 0) {
-            data.map(el => {
-                if(el.phoneNumbers !== undefined){
-                    el.phoneNumbers.map(num => {
-                        filteredNumbers.push(formatPhoneNumber(num.number))
-                    })
-                }
-            })
-            firebaseSDK.syncContacts(filteredNumbers)
-        }
-    }
-
     openChat = async (id) => {
         let id1 = firebase.auth().currentUser.uid;
         let id2 = id;
         const friend = this.state.chats.find(el => el._id === id)
-        //hardcoded user
+        
         const user = {
             _id: firebase.auth().currentUser.uid,
             avatar: firebase.auth().currentUser.photoURL,
@@ -142,7 +113,9 @@ export default class Chat extends React.Component{
             <View style={{flex: 1, position: 'relative', backgroundColor: 'rgba(246,246,246, 0.95)'}}>
                 <Lists.ChatList chat={chats} onChatItemClicked={this.openChat}/>
                 <View style={{zIndex: 2, position: 'absolute', bottom: 40, right: 20, backgroundColor: '#53C41A', width: 50, height: 50, borderRadius: 25, overflow: 'hidden', justifyContent: 'center', alignItems: 'center'}}>
-                    <Ionicons name="ios-chatbubbles" size={32} color='#fff' />
+                    <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Contacts')}>
+                        <Ionicons name="ios-chatbubbles" size={32} color='#fff' />
+                    </TouchableWithoutFeedback>
                 </View>
             </View>
         )

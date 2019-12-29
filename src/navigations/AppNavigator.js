@@ -12,6 +12,7 @@ import User from '../screens/user/User'
 import Comments from '../screens/comments/Comments'
 import { Image } from 'react-native';
 import Post from '../screens/post/Post';
+import Contact from '../screens/contacts/Contacts';
 
 
 
@@ -82,6 +83,12 @@ const InitialStack = createStackNavigator(
     },
     Post: {
       screen: Post,
+      navigationOptions: {
+        header: null
+      }
+    },
+    Contacts: {
+      screen: Contact,
       navigationOptions: {
         header: null
       }
