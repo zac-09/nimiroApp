@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, TouchableHighlight } from 'react-native';
 import { Text } from 'native-base';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const ContactItem = props => {
     const avator = props.avatar ? {uri: props.avatar} : require('../../assets/placeholder.png')
@@ -9,7 +10,10 @@ const ContactItem = props => {
         <TouchableHighlight onPress={() => props.onItemPressed(props._id)} activeOpacity={0.985} underlayColor='#06545A'>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image style={styles.avator} source={avator}/>
+                    { props.icon ?
+                        <MaterialIcons name={props.iconName} color='#fff' size={32}/> :
+                        <Image style={styles.avator} source={avator}/>
+                    }
                 </View>
                 <View style={styles.contentContainer}>
                     <Text style={{fontSize: 15, fontWeight: '700', color: '#000', marginBottom: 10}}>{props.name}</Text>
@@ -32,7 +36,10 @@ const styles = {
         width: 60,
         height: 60,
         borderRadius: 30,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        backgroundColor: '#4291ee',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     avator: {
         width: '100%',

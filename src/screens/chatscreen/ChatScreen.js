@@ -22,6 +22,7 @@ class ChatScreen extends React.Component {
 
         this.state = {
             channel: channel,
+            isNewChannel: false,
             isTyping: false,
             inputHeight: 55,
             currentMessage: '',
@@ -33,28 +34,13 @@ class ChatScreen extends React.Component {
             offset: false
         }
 
-        this.threadsRef = firebase
-            .firestore()
-            .collection('channels')
-            .doc(channel.id)
-            .collection('messages')
-            .orderBy('createdAt', 'desc');
-
-        this.threadsUnscribe = 'null';
+        this.threadsUnscribe = null;
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({loading: true})
-        this.threadsUnscribe = this.threadsRef.onSnapshot(this.onThreadsCollectionUpdate);
-        this.clearUnread()
-        this.keyboardDidShowListener = Keyboard.addListener(
-          'keyboardDidShow',
-          this._keyboardDidShow,
-        );
-        this.keyboardDidHideListener = Keyboard.addListener(
-          'keyboardDidHide',
-          this._keyboardDidHide,
-        );
+        await this._attachListeners()
+        this._clearUnread()
     }
 
     shouldComponentUpdate(nextProps, nextState){
@@ -65,34 +51,147 @@ class ChatScreen extends React.Component {
         return true;
     }
 
-    clearUnread = async() => {
-        let phoneNumber;
-        const uid = firebase.auth().currentUser.uid
-
-        await firebase.firestore().collection('user_data').doc(uid).get().then(function(doc) {
-            if (doc.exists) {
-                phoneNumber = doc.data().phoneNumber
-                firebase
-                .firestore()
-                .collection('friends')
-                .doc(this.state.channel.friend._id)
-                .collection('list')
-                .doc(phoneNumber).update({
-                    unread: 0,
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-    }
-
     componentWillUnmount() {
-        this.threadsUnscribe();
+        if(this.threadsUnscribe){
+            this.threadsUnscribe();
+        }
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+    }
+
+    _attachListeners = async () => {
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow,
+        );
+
+        this.keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        this._keyboardDidHide,
+        );
+
+        await this._isNewChannel()
+        if(this.state.isNewChannel){
+            //No channel in Db don't attach message listeners
+            //only create channel when user sends a message.
+        }else{
+            this.threadsUnscribe = firebase
+                .firestore()
+                .collection('channels')
+                .doc(this.state.channel.id)
+                .collection('messages')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(this.onThreadsCollectionUpdate);
+        }
+    }
+
+    _createChannel = async () => {
+        const { channel } = this.state
+        const channelData = {
+            creator_id: channel.currentUser._id,
+            name: channel.name,
+            lastMessage: this.state.currentMessage,
+            lastMessageDate: new Date(),
+            adminstrators: channel.adminstrators,
+            participants: channel.participants,
+            type: channel.type
+        };
+
+        const that = this
+
+        await firebase
+                .firestore()
+                .collection('channels')
+                .add(channelData)
+                .then(docRef => {
+                    channelData.id = docRef.id
+                    that.setState({ channel: channelData });
+
+                    channelData.participants.forEach(async friend => {
+                        const participationData = {
+                            channel: docRef.id,
+                            user: friend._id,
+                            lastMessage: channelData.lastMessage,
+                            lastMessageDate: channelData.lastMessageDate,
+                            unread: 0
+                        };
+            
+                        await firebase
+                                .firestore()
+                                .collection('channel_participation')
+                                .add(participationData);
+            
+                    });
+
+                    await that.setState({isNewChannel: false})
+                })
+                .catch(function(error) {
+                    alert(error);
+                });
+
+    }
+
+    _isNewChannel = async () => {
+        const { channel } = this.state
+        const isNew = true
+
+        const channelRef = firebase.firestore().collection('channel_participation').doc(channel.id)
+
+        await channelRef.get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        isNew = false
+                    } else {
+                        isNew = true
+                    }
+                });
+
+        await this.setState({isNewChannel: isNew})
+    }
+
+    _clearUnread = async() => {
+        const uid = await firebase.auth().currentUser.uid
+        await firebase
+                .firestore()
+                .collection('channel_participation')
+                .where('channel', '==', this.state.channel.id)
+                .where('user', '==', uid)
+                .get()
+                .then(querySnapshot => {
+                    querySnapshot.forEach(async doc => {
+                            await firebase
+                                    .firestore()
+                                    .collection('channel_participation')
+                                    .doc(doc.id)
+                                    .update({
+                                        unread: 0,
+                                    })
+                    })
+                })
+    }
+
+    _updateFriendsChannel = async (lastMessage) => {
+        const uid = await firebase.auth().currentUser.uid
+        await firebase
+                .firestore()
+                .collection('channel_participation')
+                .where('channel', '==', this.state.channel.id)
+                .get()
+                .then(querySnapshot => {
+                    querySnapshot.forEach(async doc => {
+                        if(doc.data().user !== uid){
+                            await firebase
+                                    .firestore()
+                                    .collection('channel_participation')
+                                    .doc(doc.id)
+                                    .update({
+                                        unread: firebase.firestore.FieldValue.increment(1),
+                                        lastMessage: lastMessage,
+                                        lastMessageDate: new Date()
+                                    })
+                        }
+                    })
+                })
     }
 
     existSameSentMessage = (messages, newMessage) => {
@@ -179,6 +278,25 @@ class ChatScreen extends React.Component {
         }
     };
 
+    _pickVideo = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+          allowsEditing: true,
+        });
+    
+        console.log(result);
+        const { channel } = this.state
+    
+        if (!result.cancelled) {
+            this.setState({loading: true})
+            await firebaseSDK.uploadBlob(result.uri, channel.id, this.sendVideo, this.showToast)
+            await this.setState(prevState => ({
+                currentMessage: ''
+            }))
+            await this.setState({loading: false})
+        }
+    };
+
     sendImage = url => {
         const message = {
             createdAt: new Date(),
@@ -188,6 +306,65 @@ class ChatScreen extends React.Component {
         }
         
         this.updateDB(message)
+    }
+
+    sendVideo = url => {
+        const message = {
+            createdAt: new Date(),
+            video: url,
+            text: this.state.currentMessage,
+            user: this.state.user
+        }
+        
+        this.updateDB(message)
+    }
+
+    onSend = async() => {
+        if(this.state.currentMessage.length > 0){
+            const message = {
+                createdAt: new Date(),
+                text: this.state.currentMessage,
+                user: this.state.user
+            }
+            await this.setState({
+                currentMessage: ''
+            })
+            this.updateDB(message)
+        }
+    }
+
+    updateDB = async(message) => {
+
+        const { channel, isNewChannel } = this.state
+
+        if(isNewChannel){
+            await this._createChannel()
+            if(!this.state.isNewChannel){
+                //don't send message if the channel has not been created
+                alert("An Error occured while creating channel")
+                return
+            }else{
+                //attach message listeners now....
+                this.threadsUnscribe = firebase
+                    .firestore()
+                    .collection('channels')
+                    .doc(this.state.channel.id)
+                    .collection('messages')
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot(this.onThreadsCollectionUpdate);
+            }
+        }
+
+        await firebase
+                .firestore()
+                .collection('channels')
+                .doc(channel.id)
+                .collection('messages')
+                .add(message)
+
+        const lastMessage = message.text ? message.text : message.image ? 'Photo' : 'Video'
+
+        await this._updateFriendsChannel(lastMessage)
     }
 
     renderInputToolbar = () => {
@@ -216,57 +393,6 @@ class ChatScreen extends React.Component {
                 </View>
             </View>
         )
-    }
-
-    onSend = async() => {
-        if(this.state.currentMessage.length > 0){
-            const message = {
-                createdAt: new Date(),
-                text: this.state.currentMessage,
-                user: this.state.user
-            }
-            await this.setState({
-                currentMessage: ''
-            })
-            this.updateDB(message)
-        }
-    }
-
-    updateDB = async(message) => {
-
-        const { channel } = this.state
-
-        firebase
-        .firestore()
-        .collection('channels')
-        .doc(this.state.channel.id)
-        .collection('messages')
-        .add(message)
-
-        let phoneNumber;
-        const lastMessage = message.text ? message.text : ''
-        const uid = firebase.auth().currentUser.uid
-
-        await firebase.firestore().collection('user_data').doc(uid).get().then(function(doc) {
-            if (doc.exists) {
-                phoneNumber = doc.data().phoneNumber
-                firebase
-                .firestore()
-                .collection('friends')
-                .doc(channel.friend._id)
-                .collection('list')
-                .doc(phoneNumber).update({
-                    unread: firebase.firestore.FieldValue.increment(1),
-                    lastMessage: lastMessage,
-                    lastMessageDate: new Date()
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
     }
 
     render(){

@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import Storage from '../../utils/Storage'
 import Toast from 'react-native-root-toast';
 import * as Headers from '../../components/headers';
+import { ContactItem } from '../../components/listitems';
 
 export default class Contact extends React.Component{
     constructor(props){
@@ -25,7 +26,7 @@ export default class Contact extends React.Component{
             .collection('friends')
             .doc(firebase.auth().currentUser.uid)
             .collection('list')
-            .orderBy('lastMessageDate', 'desc');
+            .orderBy('name');
 
         this.threadsUnscribe = 'null';
     }
@@ -120,12 +121,38 @@ export default class Contact extends React.Component{
         }
     }
 
+    openChat = async (id) => {
+        let id1 = firebase.auth().currentUser.uid;
+        let id2 = id;
+        const friend = this.state.friends.find(el => el._id === id)
+        
+        const user = {
+            _id: firebase.auth().currentUser.uid,
+            avatar: firebase.auth().currentUser.photoURL,
+            name: firebase.auth().currentUser.displayName,
+        }
+        let channel = {
+                name: friend.dName,
+                id: (id1 < id2 ? id1 + id2 : id2 + id1),
+                currentUser: user,
+                friend: friend,
+                participants: [user, friend],
+        };
+
+        this.navigate('ChatScreen', { channel: channel });
+    }
+
+    addNewGroup = () => {
+
+    }
+
     render(){
         const { friends } = this.state
         return(
             <View style={{flex: 1, position: 'relative', backgroundColor: 'rgba(246,246,246, 0.95)'}}>
                 <Headers.BackHeader goBack={this.props.navigation.goBack} title='Contacts'/>
-                <Lists.ContactsList contacts={friends} onContactItemClicked={() => {}}/>
+                <ContactItem name='New group' status=' ' icon iconName='group-add' onItemPressed={() => this.addNewGroup()}/>
+                <Lists.ContactsList contacts={friends} onContactItemClicked={this.openChat}/>
             </View>
         )
     }

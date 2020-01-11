@@ -19,10 +19,18 @@ export default class Chat extends React.Component{
             chats: [],
             loading: false,
         }
+
+        const uid = firebase.auth().currentUser.uid
+
+        this.myChannels = firebase
+            .firestore()
+            .collection('channel_participation')
+            .where('user', '==', uid)
+            .orderBy('lastMessageDate', 'desc');
         
         this.threadsRef = firebase
             .firestore()
-            .collection('friends')
+            .collection('channels')
             .doc(firebase.auth().currentUser.uid)
             .collection('list')
             .orderBy('lastMessageDate', 'desc');
@@ -32,7 +40,7 @@ export default class Chat extends React.Component{
 
     componentDidMount(){  
         this.setState({loading: true})
-        this.threadsUnscribe = this.threadsRef.onSnapshot(this.loadChatList);
+        this.threadsUnscribe = this.myChannels.onSnapshot(this.loadChannelList);
     }
 
     componentWillUnmount(){
@@ -52,7 +60,7 @@ export default class Chat extends React.Component{
         return false;
     };
 
-    loadChatList = querySnapshot => {
+    loadChannelList = querySnapshot => {
         const data = [];
         try{
             querySnapshot.forEach(doc => {
@@ -86,32 +94,30 @@ export default class Chat extends React.Component{
         this.props.navigation.navigate(route, data)
     }
 
-    openChat = async (id) => {
-        let id1 = firebase.auth().currentUser.uid;
-        let id2 = id;
-        const friend = this.state.chats.find(el => el._id === id)
-        
-        const user = {
-            _id: firebase.auth().currentUser.uid,
-            avatar: firebase.auth().currentUser.photoURL,
-            name: firebase.auth().currentUser.displayName,
-        }
-        let channel = {
-                name: friend.dName,
-                id: (id1 < id2 ? id1 + id2 : id2 + id1),
-                currentUser: user,
-                friend: friend,
-                participants: [user, friend],
-        };
+    openChannel = async (channelId) => {
+        const channeData = {}
 
-        this.navigate('ChatScreen', { channel: channel });
+        await firebase
+                .firestore()
+                .collection('channels')
+                .doc(channelId)
+                .get()
+                .then(doc => {
+                    if(doc.exists){
+                        channeData = doc.data()
+                    }else{
+                        console.log("Channel data isn't recorded in the database")
+                    }
+                })
+
+        this.navigate('ChatScreen', { channel: channeData });
     }
 
     render(){
         const { chats } = this.state
         return(
             <View style={{flex: 1, position: 'relative', backgroundColor: 'rgba(246,246,246, 0.95)'}}>
-                <Lists.ChatList chat={chats} onChatItemClicked={this.openChat}/>
+                <Lists.ChatList chat={chats} onChatItemClicked={this.openChannel}/>
                 <View style={{zIndex: 2, position: 'absolute', bottom: 40, right: 20, backgroundColor: '#53C41A', width: 50, height: 50, borderRadius: 25, overflow: 'hidden', justifyContent: 'center', alignItems: 'center'}}>
                     <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Contacts')}>
                         <Ionicons name="ios-chatbubbles" size={32} color='#fff' />
