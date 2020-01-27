@@ -63,13 +63,16 @@ export default class Forgot extends React.Component{
                 <Content>
                     <Logo source={logo} resizeMode='contain' />
                     <Text style={styles.instruction}>{instruction}</Text>
-                    <Forms.ForgotForm 
-                        email={email} 
-                        onEmailChange={ text => this.setState({ email: text})}
-                        onSubmitPress={this.handleForgot}/>
+                    {sent !== true && 
+                        <Forms.ForgotForm 
+                            email={email} 
+                            onEmailChange={ text => this.setState({ email: text})}
+                            onSubmitPress={this.handleForgot}/>
+                    }
                     <TouchableOpacity style={styles.accountContainer} onPress={() => this.navigate('Register')}>
                         <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
                     </TouchableOpacity>
+                    
                 </Content>
                 <AnimatedLoader
                     visible={loading}
@@ -108,7 +111,9 @@ const styles = {
         fontSize: 14,
         color: '#fff',
         fontFamily: 'Roboto',
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingLeft: 10,
+        paddingRight: 10
     },
     lottie: {
         width: 200,

@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components/native'
-import { smallLogo, bg2, cmp1, cmp2, cmp3} from '../../assets'
+import splash from '../../../assets/splash.png'
+import { StyleSheet, ImageBackground } from 'react-native';
 
 class Welcome extends React.Component {
 
@@ -12,48 +12,17 @@ class Welcome extends React.Component {
 
     render(){
         return (
-            <Container>
-                <LogoContainer>
-                    <Logo source={smallLogo} resizeMode="contain" />
-                    <Slogan>Service above self</Slogan>
-                </LogoContainer>
-                <CompanyLogo source={cmp1} resizeMode="contain" />
-                <CompanyLogo source={cmp2} resizeMode="contain" />
-                <CompanyLogo source={cmp3} resizeMode="contain" />
-            </Container>
+            <ImageBackground style={styles.container} source={splash}/>
         )
     }
 }
 
 export default Welcome;
-const Container = styled.View`
-    flex: 1;
-    align-items: center;
-`
-const LogoContainer = styled.View`
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding-top: 20;
-    padding-bottom: 20;
-`
 
-const Logo = styled.Image`
-    width: 60%;
-    margin-bottom: 10;
-`
-
-const Slogan = styled.Text`
-    text-align: center;
-    font-size: 16;
-    font-weight: bold;
-    color: #850127;
-    text-transform: capitalize;
-    font-style: italic;
-    margin-bottom: 30;
-`
-
-const CompanyLogo = styled.Image`
-    width: 100%;
-    margin-bottom: 10;
-`
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        margin: 0,
+        padding: 0
+    }
+})
