@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import AnimatedLoader from "react-native-animated-loader";
 import { logo, bg2} from '../../assets'
 import { Forms } from '../../components';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, View } from 'react-native';
 import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
 import { validateEmail } from '../../utils/Validations';
@@ -59,7 +59,7 @@ export default class Forgot extends React.Component{
         const instruction = sent === true ? 'We have sent a password reset link to your email, please follow the link to reset your password and then login into the app with your new password' :
                 'Please insert the email that you used to signup below:'
         return(
-            <Container source={bg2}>
+            <View style={{flex: 1}}>
                 <Content>
                     <Logo source={logo} resizeMode='contain' />
                     <Text style={styles.instruction}>{instruction}</Text>
@@ -78,7 +78,7 @@ export default class Forgot extends React.Component{
                     animationStyle={styles.lottie}
                     speed={1}
                 />
-            </Container>
+            </View>
         )
     }
 }
@@ -115,10 +115,6 @@ const styles = {
         height: 200
     }
 }
-const Container = styled.ImageBackground`
-    width: 100%;
-    height: 100%;
-`
 
 const Content = styled.View`
     width: 100%;

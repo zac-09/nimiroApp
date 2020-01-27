@@ -165,13 +165,13 @@ export default class Register extends React.Component{
             genderIndex, } = this.state;
         return(
             <SafeAreaView
-                style={{ backgroundColor: "#FFF", flex: 1, height: '100%' }}
+                style={{flex: 1, height: '100%' }}
                 forceInset={{ top: "never" }}
             >
                 <KeyboardAwareScrollView
                     style={{flex: 1, minHeight: '100%'}}
                 >
-                <ImageBackground style={{width: '100%', height: '100%'}} source={bg2}>
+                <View style={{width: '100%', height: '100%'}}>
                     <View style={styles.container}>
                         <Forms.AvatorForm 
                             changeAvator={() => this._pickImage()}
@@ -204,7 +204,7 @@ export default class Register extends React.Component{
                             onSubmitPress={() => this.signUp()}
                         />
                     </View>
-                </ImageBackground>
+                </View>
                 </KeyboardAwareScrollView>
                 <AnimatedLoader
                     visible={loading}

@@ -74,6 +74,8 @@ class ChatScreen extends React.Component {
         if(this.state.isNewChannel){
             //No channel in Db don't attach message listeners
             //only create channel when user sends a message.
+            
+            this.setState({loading: false})
         }else{
             this.threadsUnscribe = firebase
                 .firestore()
@@ -103,7 +105,7 @@ class ChatScreen extends React.Component {
                 .firestore()
                 .collection('channels')
                 .add(channelData)
-                .then(docRef => {
+                .then(async docRef => {
                     channelData.id = docRef.id
                     that.setState({ channel: channelData });
 
@@ -133,7 +135,7 @@ class ChatScreen extends React.Component {
 
     _isNewChannel = async () => {
         const { channel } = this.state
-        const isNew = true
+        let isNew = true
 
         const channelRef = firebase.firestore().collection('channel_participation').doc(channel.id)
 

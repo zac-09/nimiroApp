@@ -15,6 +15,7 @@ class FeedItem extends React.Component {
             user: {},
             liked: false,
         }
+        this.preventDefault = false
     }
 
     async componentDidMount (){    
@@ -41,6 +42,19 @@ class FeedItem extends React.Component {
         }
     }
 
+    itemPressed = id => {
+        if(!this.preventDefault){
+            this.props.onItemPressed(id)
+        }else {
+            this.preventDefault = false
+        }
+    }
+
+
+    videoPressed = () => {
+        this.preventDefault = true
+    }
+
 
     render(){
         const { user, liked } = this.state
@@ -51,7 +65,7 @@ class FeedItem extends React.Component {
         const comm = comments.length
         return (
             <Card containerStyle={styles.containerStyle}>
-                <TouchableWithoutFeedback onPress={() => onItemPressed(id)}>
+                <TouchableWithoutFeedback onPress={() => this.itemPressed(id)}>
                     <View>
                         <View style={styles.header}>
                             <View style={styles.avatorContainer}>
@@ -68,7 +82,10 @@ class FeedItem extends React.Component {
                                     style={styles.contentImage} 
                                     source={{uri: image}} 
                                     thumbnail={require('../../../assets/images/loading.jpg')}/> : null}
-                            { video ? <VideoView source={video} width='100%' height={IMAGE_DIMENSIONS} /> : null}
+                            { video ? (
+                                <TouchableWithoutFeedback onPress={this.videoPressed}>
+                                    <VideoView source={video} width='100%' height={IMAGE_DIMENSIONS} />
+                                </TouchableWithoutFeedback>) : null}
                         </View>
                         <View style={styles.actions}>
                             <View style={styles.likesContainer}>

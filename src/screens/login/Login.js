@@ -3,12 +3,15 @@ import styled from 'styled-components/native'
 import AnimatedLoader from "react-native-animated-loader";
 import { logo, bg2} from '../../assets'
 import { Forms } from '../../components';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, Dimensions, Image } from 'react-native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import firebaseSDK from '../../backend/Firebase';
 import Toast from 'react-native-root-toast';
 import { validator } from '../../utils/Validations';
 import Storage from '../../utils/Storage';
 import * as firebase from 'firebase';
+
+const { width, height } = Dimensions.get('screen');
 
 class Login extends React.Component {
 
@@ -77,23 +80,27 @@ class Login extends React.Component {
         const { email, emailError, password, passwordError, checked, loading } = this.state
         return (
             <Container>
-                <Content>
-                    <Logo source={logo} resizeMode='contain' />
-                    <Forms.SignInForm 
-                        email={email} 
-                        password={password} 
-                        onEmailChange={ text => this.setState({ email: text, emailError: validator('email', text)})}
-                        emailError={emailError}
-                        onPasswordChange={ text => this.setState({ password: text, passwordError: validator('password', text)})}
-                        passwordError={passwordError}
-                        onRemeberChange={() => this.setState(prev => ({ checked: !prev.checked}))}
-                        onPasswordRecovery={() => this.navigate('Forgot')}
-                        onSubmitPress={this.handleLogin}
-                        checked={checked}/>
-                    <TouchableOpacity style={styles.accountContainer} onPress={() => this.navigate('Register')}>
-                        <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
-                    </TouchableOpacity>
-                </Content>
+                <KeyboardAwareScrollView
+                    style={{flex: 1, minHeight: height}}
+                >
+                    <Content>
+                        <Image source={logo} resizeMode='contain' style={styles.logo} />
+                        <Forms.SignInForm 
+                            email={email} 
+                            password={password} 
+                            onEmailChange={ text => this.setState({ email: text, emailError: validator('email', text)})}
+                            emailError={emailError}
+                            onPasswordChange={ text => this.setState({ password: text, passwordError: validator('password', text)})}
+                            passwordError={passwordError}
+                            onRemeberChange={() => this.setState(prev => ({ checked: !prev.checked}))}
+                            onPasswordRecovery={() => this.navigate('Forgot')}
+                            onSubmitPress={this.handleLogin}
+                            checked={checked}/>
+                        <TouchableOpacity style={styles.accountContainer} onPress={() => this.navigate('Register')}>
+                            <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
+                        </TouchableOpacity>
+                    </Content>
+                </KeyboardAwareScrollView>
                 <AnimatedLoader
                     visible={loading}
                     overlayColor="rgba(0,0,0,0.25)"
@@ -110,11 +117,7 @@ export default Login;
 
 const styles = {
     accountContainer: {
-        backgroundColor: '#155DEC',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        left: 0,
+        marginTop: 20,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -129,6 +132,10 @@ const styles = {
     lottie: {
         width: 200,
         height: 200
+    },
+    logo: {
+        width: 0.7 * width,
+        marginBottom: 20
     }
 }
 const Container = styled.View`
@@ -136,14 +143,7 @@ const Container = styled.View`
 `
 
 const Content = styled.View`
-    width: 100%;
-    height: 100%;
+    flex: 1;
     align-items: center;
     position: relative;
-`
-
-
-const Logo = styled.Image`
-    width: 70%;
-    margin-bottom: 20;
 `

@@ -27,49 +27,39 @@ export default class Chat extends React.Component{
             .collection('channel_participation')
             .where('user', '==', uid)
             .orderBy('lastMessageDate', 'desc');
-        
-        this.threadsRef = firebase
-            .firestore()
-            .collection('channels')
-            .doc(firebase.auth().currentUser.uid)
-            .collection('list')
-            .orderBy('lastMessageDate', 'desc');
 
         this.threadsUnscribe = 'null';
     }
 
     componentDidMount(){  
-        this.setState({loading: true})
-        this.threadsUnscribe = this.myChannels.onSnapshot(this.loadChannelList);
+        //sthis.setState({loading: true})
+        //this.threadsUnscribe = this.myChannels.onSnapshot(this.loadChannelList);
     }
 
     componentWillUnmount(){
-        this.threadsUnscribe();
+        //this.threadsUnscribe();
     }
 
-    existSameSentChat = (chats, newChat) => {
-        for (let i = 0; i < chats.length; i++) {
-          const temp = chats[i];
-          if (
-            newChat._id == temp._id 
-          ) {
-            return true;
-          }
-        }
-    
-        return false;
-    };
-
-    loadChannelList = querySnapshot => {
+    loadChannelList = async querySnapshot => {
         const data = [];
         try{
-            querySnapshot.forEach(doc => {
+            querySnapshot.forEach(async doc => {
                 const chat = doc.data();
                 chat.lastMessageDate = doc.data().lastMessageDate.toDate()
           
-                if (!this.existSameSentChat(data, chat)) {
-                  data.push(chat);
-                }
+                /* await firebase
+                        .firestore()
+                        .collection('channels')
+                        .doc(chat.channel)
+                        .get()
+                        .then(doc => {
+                            if(doc.exists){
+                                const channelData = doc.data();
+                                channelData.lastMessageDate = channelData.lastMessageDate.toDate()
+                                data.push(channelData);
+                            }
+                        }) */
+                
             })
         } catch(error) {
             this.showToast(error)
