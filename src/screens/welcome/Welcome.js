@@ -14,7 +14,7 @@ class Welcome extends React.Component {
     render(){
         return (
             <ImageBackground style={styles.container} source={splash}>
-                <Image style={styles.wheel} source={wheels}/>
+                <Image style={styles.wheel} source={wheels} resizeMode='contain'/>
             </ImageBackground>
         )
     }
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     wheel: {
-        width: '80%'
+        width: 300,
+        height: 300
     }
 })

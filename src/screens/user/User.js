@@ -73,7 +73,7 @@ class User extends React.Component {
             classification, 
             rotaryLevelIndex} = this.state;
         return (
-            <Container source={bg2}>
+            <Container>
                 <Content>
                     <Logo source={logo} resizeMode='contain' />
                     <Forms.UserForm
@@ -128,7 +128,7 @@ const styles = {
         height: 200
     }
 }
-const Container = styled.ImageBackground`
+const Container = styled.View`
     width: 100%;
     height: 100%;
 `
