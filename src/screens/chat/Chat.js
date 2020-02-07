@@ -25,15 +25,16 @@ export default class Chat extends React.Component{
         this.myChannels = firebase
             .firestore()
             .collection('channel_participation')
-            .where('user', '==', uid)
+            .doc(uid)
+            .collection('my_channels')
             .orderBy('lastMessageDate', 'desc');
 
         this.threadsUnscribe = 'null';
     }
 
     componentDidMount(){  
-        //sthis.setState({loading: true})
-        //this.threadsUnscribe = this.myChannels.onSnapshot(this.loadChannelList);
+        //this.setState({loading: true})
+        this.threadsUnscribe = this.myChannels.onSnapshot(this.loadChannelList);
     }
 
     componentWillUnmount(){
@@ -47,7 +48,7 @@ export default class Chat extends React.Component{
                 const chat = doc.data();
                 chat.lastMessageDate = doc.data().lastMessageDate.toDate()
           
-                /* await firebase
+                await firebase
                         .firestore()
                         .collection('channels')
                         .doc(chat.channel)
@@ -58,7 +59,7 @@ export default class Chat extends React.Component{
                                 channelData.lastMessageDate = channelData.lastMessageDate.toDate()
                                 data.push(channelData);
                             }
-                        }) */
+                        })
                 
             })
         } catch(error) {
@@ -100,7 +101,7 @@ export default class Chat extends React.Component{
                     }
                 })
 
-        this.navigate('ChatScreen', { channel: channeData });
+        this.navigate('ChatScreen', { channel: channeData, isNewChannel: false  });
     }
 
     render(){
@@ -118,45 +119,3 @@ export default class Chat extends React.Component{
     }
 }
 
-const CHAT_DUMMY = [
-    {
-        id: 'chat_01',
-        avatar: 'https://images.pexels.com/photos/2128807/pexels-photo-2128807.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        name: 'Mungujakisa Nickson',
-        lastMessage: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        lastMessageDate: '18:10',
-        unread: 5
-    },
-    {
-        id: 'chat_02',
-        avatar: 'https://images.pexels.com/photos/1578996/pexels-photo-1578996.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        name: 'Misagga Zeus',
-        lastMessage: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        lastMessageDate: '17:10',
-        unread: 2
-    },
-    {
-        id: 'chat_03',
-        avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        name: 'Daniel Ssejjemba',
-        lastMessage: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        lastMessageDate: '14:10',
-        unread: 1
-    },
-    {
-        id: 'chat_04',
-        avatar: 'https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        name: 'Olwe Samuel',
-        lastMessage: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        lastMessageDate: '7:10',
-        unread: 0
-    },
-    {
-        id: 'chat_01',
-        avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-        name: 'Ampumuza Ritah',
-        lastMessage: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        lastMessageDate: '8:10',
-        unread: 0
-    }
-]

@@ -139,7 +139,7 @@ export default class Contact extends React.Component{
                 participants: [user, friend],
         };
 
-        this.navigate('ChatScreen', { channel: channel });
+        this.navigate('ChatScreen', { channel: channel, isNewChannel: true });
     }
 
     addNewGroup = () => {

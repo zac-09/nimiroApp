@@ -20,9 +20,11 @@ class ChatScreen extends React.Component {
 
         const channel = props.navigation.getParam('channel');
 
+        const isNewChannel = props.navigation.getParam('isNewChannel');
+
         this.state = {
             channel: channel,
-            isNewChannel: false,
+            isNewChannel: isNewChannel,
             isTyping: false,
             inputHeight: 55,
             currentMessage: '',
@@ -70,7 +72,6 @@ class ChatScreen extends React.Component {
         this._keyboardDidHide,
         );
 
-        await this._isNewChannel()
         if(this.state.isNewChannel){
             //No channel in Db don't attach message listeners
             //only create channel when user sends a message.
@@ -121,6 +122,8 @@ class ChatScreen extends React.Component {
                         await firebase
                                 .firestore()
                                 .collection('channel_participation')
+                                .doc(friend._id)
+                                .collection('my_channels')
                                 .add(participationData);
             
                     });
@@ -131,24 +134,6 @@ class ChatScreen extends React.Component {
                     alert(error);
                 });
 
-    }
-
-    _isNewChannel = async () => {
-        const { channel } = this.state
-        let isNew = true
-
-        const channelRef = firebase.firestore().collection('channel_participation').doc(channel.id)
-
-        await channelRef.get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        isNew = false
-                    } else {
-                        isNew = true
-                    }
-                });
-
-        await this.setState({isNewChannel: isNew})
     }
 
     _clearUnread = async() => {
@@ -171,6 +156,7 @@ class ChatScreen extends React.Component {
                     })
                 })
     }
+
 
     _updateFriendsChannel = async (lastMessage) => {
         const uid = await firebase.auth().currentUser.uid

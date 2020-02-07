@@ -1,6 +1,7 @@
 import React from 'react';
 import splash from '../../../assets/splash.png'
-import { StyleSheet, ImageBackground } from 'react-native';
+import wheels from '../../assets/wheels.png'
+import { StyleSheet, ImageBackground, Image } from 'react-native';
 
 class Welcome extends React.Component {
 
@@ -12,7 +13,9 @@ class Welcome extends React.Component {
 
     render(){
         return (
-            <ImageBackground style={styles.container} source={splash}/>
+            <ImageBackground style={styles.container} source={splash}>
+                <Image style={styles.wheel} source={wheels}/>
+            </ImageBackground>
         )
     }
 }
@@ -23,6 +26,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         margin: 0,
-        padding: 0
+        padding: 0,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    wheel: {
+        width: '80%'
     }
 })
