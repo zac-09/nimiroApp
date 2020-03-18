@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as ImagePicker from "expo-image-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Headers } from "../../components";
-import ModalCard from "../../components/ModalCard/ModalCard";
+import ModalCard from "../../components/modal/ModalCard";
 import styled from "styled-components";
 import bg2 from "../../assets/chat_bg.png";
 import { GiftedChat } from "react-native-gifted-chat";
