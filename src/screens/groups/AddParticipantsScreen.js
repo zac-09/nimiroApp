@@ -1,34 +1,89 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import React, { useState, useEffect } from "react";
+
+import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import GroupHeader from "./../../components/headers/GroupHeader";
 import { Ionicons } from "@expo/vector-icons";
-import { Lists } from "../../components";
-const AddParticipantsScreen = props => {
-  const [groupPartcipants, setGroupParticipants] = useState([]);
 
-  const addParticipantHandler = userId => {
-    setGroupParticipants(currentParticipants => [
-      ...groupPartcipants,
-      { id: Math.random().toString(), value: userId }
-    ]);
+import { Lists } from "../../components";
+const AddParticipantsScreen = (props) => {
+  const [groupPartcipants, setGroupParticipants] = useState([]);
+  const contacts = props.navigation.getParam("friends");
+  let newContacts = contacts.map((el) => ({ ...el, isAdded: false }));
+  const [addedContacts, setAddedContatcs] = useState(newContacts);
+
+  const addParticipantHandler = (userId, name, avatar) => {
+    let alreadyAdded;
+    groupPartcipants.forEach(function (participant) {
+      if (participant.id === userId) {
+        console.log(participant.id);
+        alreadyAdded = true;
+      }
+    });
+    if (!alreadyAdded) {
+      let added = newContacts.map((el) =>
+        el._id === userId ? { ...el, isAdded: true } : el
+      );
+
+      console.log("these are the updataed added", added);
+      setAddedContatcs((currentMembers) =>
+        currentMembers.map((el) =>
+          el._id === userId ? { ...el, isAdded: true } : el
+        )
+      );
+      console.log(newContacts);
+      return setGroupParticipants((currentParticipants) => [
+        ...currentParticipants,
+        { id: userId.toString(), name: name, avatar: avatar, isAdded: true },
+      ]);
+    }
+
+    return removeParticipantHandler(12, userId, "");
   };
-  const removeParticipantHandler = userId => {
-    setGroupParticipants(currentParticipants => {
-      return currentParticipants.filter(user => user.id !== userId);
+
+  const removeParticipantHandler = (iud, userId, avatar) => {
+    let added = newContacts.map((el) =>
+      el._id === userId ? { ...el, isAdded: false } : el
+    );
+
+    setAddedContatcs((currentMembers) =>
+      currentMembers.map((el) =>
+        el._id === userId ? { ...el, isAdded: false } : el
+      )
+    );
+    setGroupParticipants((currentParticipants) => {
+      console.log("removed sucessfully");
+
+      return currentParticipants.filter(
+        (participant) => participant.id !== userId
+      );
     });
   };
 
   return (
     <View style={styles.screen}>
-      <Lists.ContactsList item contacts={groupPartcipants} />
-      <GroupHeader title="New group" subTitle="Add participants" />
+      <View style={styles.participants}>
+        <Lists.ContactsList
+          item
+          contacts={groupPartcipants}
+          onContactItemClicked={removeParticipantHandler}
+        />
+      </View>
+
+      <GroupHeader title="New group" subTitle="Add participants" icon />
       <Lists.ContactsList
-        contacts={props.navigation.getParam("friends")}
+        contacts={addedContacts}
         onContactItemClicked={addParticipantHandler}
       />
       <View style={styles.button}>
         <TouchableWithoutFeedback
-          onPress={() => props.navigation.navigate("Contacts")}
+          onPress={() => {
+            props.navigation.navigate({
+              routeName: "ConfigureGroupScreen",
+              params: {
+                participants: groupPartcipants,
+              },
+            });
+          }}
         >
           <Ionicons name="ios-arrow-round-forward" size={32} color="#fff" />
         </TouchableWithoutFeedback>
@@ -41,7 +96,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     position: "relative",
-    backgroundColor: "rgba(246,246,246, 0.95)"
+    backgroundColor: "rgba(246,246,246, 0.95)",
   },
   button: {
     zIndex: 2,
@@ -54,8 +109,17 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
     justifyContent: "center",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
+  participants: {
+    marginBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: "#ccc",
+    alignItems: "flex-end",
+    height: 160,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
 });
 
 export default AddParticipantsScreen;

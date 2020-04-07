@@ -5,6 +5,8 @@ import { createStackNavigator } from "react-navigation-stack";
 import * as Screens from "../screens";
 import ChatScreen from "../screens/chatscreen/ChatScreen";
 import AddParticipantsScreen from "../screens/groups/AddParticipantsScreen";
+import ConfigureGroupScreen from "../screens/groups/ConfigureGroupScreen";
+
 
 import Chat from "../screens/chat/Chat";
 import { ImageBackground, Text, View } from "react-native";
@@ -97,6 +99,12 @@ const InitialStack = createStackNavigator(
       screen: AddParticipantsScreen,
       navigationOptions: {
         header: null
+      }
+    },
+    ConfigureGroupScreen:{
+      screen:ConfigureGroupScreen,
+      navigationOptions:{
+        header:null
       }
     }
   },

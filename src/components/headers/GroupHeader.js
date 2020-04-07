@@ -4,7 +4,7 @@ import { Text, StyleSheet } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
-const GroupHeader = props => {
+const GroupHeader = (props) => {
   return (
     <View style={styles.header}>
       <View style={styles.headerTitles}>
@@ -12,14 +12,16 @@ const GroupHeader = props => {
 
         <Text style={styles.subTitle}>{props.subTitle}</Text>
       </View>
-      <Right>
-        <Ionicons
-          name="ios-search"
-          size={32}
-          color="#fff"
-          style={{ paddingLeft: 10, paddingRight: 10 }}
-        />
-      </Right>
+      {props.icon && (
+        <Right>
+          <Ionicons
+            name="ios-search"
+            size={32}
+            color="#fff"
+            style={{ paddingLeft: 10, paddingRight: 10 }}
+          />
+        </Right>
+      )}
     </View>
   );
 };
@@ -38,19 +40,19 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     paddingHorizontal: 10,
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   title: {
     fontSize: 18,
-    color: "#fff"
+    color: "#fff",
   },
   subTitle: {
     fontSize: 16,
-    color: "#fff"
+    color: "#fff",
   },
   headerTitles: {
     flexDirection: "column",
-    padding: 10
-  }
+    padding: 10,
+  },
 });
 export default GroupHeader;
