@@ -15,7 +15,7 @@ function ContactList(props) {
             onItemPressed={(id) =>
               props.onContactItemClicked(id, contact.name, contact.avatar)
             }
-            isAdded = {contact.isAdded}
+            isAdded={contact.isAdded}
           />
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -23,18 +23,6 @@ function ContactList(props) {
     );
   } else {
     return (
-      // <List
-      //   dataArray={props.contacts}
-      //   renderRow={contact => (
-      //     // console.log(contact);
-      //     <GroupItem
-
-      //       {...contact}
-      //       onItemPressed={id => props.onContactItemClicked(id,contact.id,contact.name,contact.avatar)}
-      //     />
-      //   )}
-      //   keyExtractor={(item, index) => index.toString()}
-      // />
       <FlatList
         ref={(ref) => (this.flatList = ref)}
         onContentSizeChange={() =>
@@ -47,7 +35,6 @@ function ContactList(props) {
         renderItem={(itemData) => (
           <GroupItem
             {...itemData.item}
-            // onItemPressed = {removeParticipantHandler("",itemData.item.id)}
             onItemPressed={(id) =>
               props.onContactItemClicked(
                 id,
@@ -56,9 +43,7 @@ function ContactList(props) {
                 itemData.item.avatar
               )
             }
-            //  name = {itemData.item.name}
           />
-          // <Text>isaac is awesome {itemData.item.name}</Text>
         )}
       />
     );
