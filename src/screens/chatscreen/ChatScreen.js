@@ -629,9 +629,11 @@ const styles = {
     marginRight: 10,
     backgroundColor: "#fff",
     flex: 1,
+    padding:10, 
     marginLeft: 5,
     fontSize: 16,
     lineHeight: 16,
+    paddingLeft:10,
     paddingTop: 6,
     paddingBottom: 6,
     marginTop: Platform.select({
