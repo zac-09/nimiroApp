@@ -132,10 +132,11 @@ export default class Contact extends React.Component {
       name: firebase.auth().currentUser.displayName
     };
     let channel = {
-      name: friend.dName,
+      name: friend.lName,
       id: id1 < id2 ? id1 + id2 : id2 + id1,
       currentUser: user,
       friend: friend,
+      type:"chat",
       participants: [user, friend]
     };
 

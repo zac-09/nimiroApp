@@ -8,7 +8,7 @@ import {
   Dimensions,
   Modal,
   Text,
-  Alert
+  Alert,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
@@ -48,7 +48,7 @@ class ChatScreen extends React.Component {
       loading: false,
       offset: false,
       isBtnPressed: false,
-      ModalVisible: false
+      ModalVisible: false,
     };
 
     this.threadsUnscribe = null;
@@ -58,12 +58,13 @@ class ChatScreen extends React.Component {
     this.setState({ loading: true });
     await this._attachListeners();
     this._clearUnread();
+   
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const { messages } = this.state;
     if (messages.length !== nextState.messages.length) {
-      this.clearUnread();
+      this._clearUnread();
     }
     return true;
   }
@@ -116,35 +117,35 @@ class ChatScreen extends React.Component {
     }
   };
 
-  _createChannel = async () => {
-    const { channel } = this.state;
+  _createChannel = async (message) => {
+    const { channel, currentMessage } = this.state;
     const channelData = {
       creator_id: channel.currentUser._id,
       name: channel.name,
-      lastMessage: this.state.currentMessage,
+      lastMessage: message,
       lastMessageDate: new Date(),
-      adminstrators: channel.adminstrators,
+      // adminstrators: channel.adminstrators,
       participants: channel.participants,
-      type: channel.type
+      type: channel.type,
     };
 
     const that = this;
-
+    console.log("this is added when channel is created", channelData);
     await firebase
       .firestore()
       .collection("channels")
       .add(channelData)
-      .then(async docRef => {
+      .then(async (docRef) => {
         channelData.id = docRef.id;
         that.setState({ channel: channelData });
 
-        channelData.participants.forEach(async friend => {
+        channelData.participants.forEach(async (friend) => {
           const participationData = {
             channel: docRef.id,
             user: friend._id,
             lastMessage: channelData.lastMessage,
             lastMessageDate: channelData.lastMessageDate,
-            unread: 0
+            unread: 0,
           };
 
           await firebase
@@ -156,9 +157,14 @@ class ChatScreen extends React.Component {
         });
 
         await that.setState({ isNewChannel: false });
+        console.log(
+          "channel succefully created from then and this is the state of new channel",
+          this.state.isNewChannel
+        );
       })
-      .catch(function(error) {
+      .catch(function (error) {
         alert(error);
+        console.log("channel falied from then", error);
       });
   };
 
@@ -167,40 +173,48 @@ class ChatScreen extends React.Component {
     await firebase
       .firestore()
       .collection("channel_participation")
+      .doc(uid)
+      .collection("my_channels")
       .where("channel", "==", this.state.channel.id)
       .where("user", "==", uid)
       .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(async doc => {
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
           await firebase
             .firestore()
             .collection("channel_participation")
+            .doc(uid)
+            .collection("my_channels")
             .doc(doc.id)
             .update({
-              unread: 0
+              unread: 0,
             });
         });
       });
   };
 
-  _updateFriendsChannel = async lastMessage => {
+  _updateFriendsChannel = async (lastMessage) => {
     const uid = await firebase.auth().currentUser.uid;
     await firebase
       .firestore()
       .collection("channel_participation")
+      .doc(this.state.friend._id)
+      .collection("my_channels")
       .where("channel", "==", this.state.channel.id)
       .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(async doc => {
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
           if (doc.data().user !== uid) {
             await firebase
               .firestore()
               .collection("channel_participation")
+              .doc(this.state.friend._id)
+              .collection("my_channels")
               .doc(doc.id)
               .update({
                 unread: firebase.firestore.FieldValue.increment(1),
                 lastMessage: lastMessage,
-                lastMessageDate: new Date()
+                lastMessageDate: new Date(),
               });
           }
         });
@@ -222,10 +236,10 @@ class ChatScreen extends React.Component {
     return false;
   };
 
-  onThreadsCollectionUpdate = querySnapshot => {
+  onThreadsCollectionUpdate = (querySnapshot) => {
     const data = [];
     try {
-      querySnapshot.forEach(doc => {
+      querySnapshot.forEach((doc) => {
         const message = doc.data();
         message._id = doc.id;
         message.createdAt = doc.data().createdAt.toDate();
@@ -234,32 +248,37 @@ class ChatScreen extends React.Component {
           data.push(message);
         }
       });
+      console.log("message successfully pushed to db");
     } catch (error) {
       this.showToast(error);
+      console.log(
+        "an error occured while loading messages from firetore",
+        error
+      );
     }
-
+    console.log("mesages from firebase are the following", data);
     this.setState({ messages: data, loading: false });
   };
 
-  showToast = message => {
+  showToast = (message) => {
     Toast.show(message, {
       duration: Toast.durations.LONG,
       position: Toast.positions.BOTTOM,
       shadow: true,
       animation: true,
       hideOnPress: true,
-      delay: 0
+      delay: 0,
     });
   };
 
-  _keyboardDidShow = e => {
+  _keyboardDidShow = (e) => {
     this.setState({ isTyping: true });
     const { inputHeight } = this.state;
     let keyboardHeight = e.endCoordinates.height;
     console.log(keyboardHeight);
     this.setState({
       minInputToolbarHeight: keyboardHeight + inputHeight,
-      offset: true
+      offset: true,
     });
   };
 
@@ -273,17 +292,14 @@ class ChatScreen extends React.Component {
     const { inputHeight } = this.state;
     this.setState({
       minInputToolbarHeight: inputHeight,
-      offset: false
+      offset: false,
     });
   };
 
-  testFunction() {
-    console.log("test completed");
-  }
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true
+      allowsEditing: true,
     });
 
     console.log(result);
@@ -297,8 +313,8 @@ class ChatScreen extends React.Component {
         this.sendImage,
         this.showToast
       );
-      await this.setState(prevState => ({
-        currentMessage: ""
+      await this.setState((prevState) => ({
+        currentMessage: "",
       }));
       await this.setState({ loading: false });
     }
@@ -307,7 +323,7 @@ class ChatScreen extends React.Component {
   _pickVideo = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true
+      allowsEditing: true,
     });
 
     console.log(result);
@@ -321,30 +337,30 @@ class ChatScreen extends React.Component {
         this.sendVideo,
         this.showToast
       );
-      await this.setState(prevState => ({
-        currentMessage: ""
+      await this.setState((prevState) => ({
+        currentMessage: "",
       }));
       await this.setState({ loading: false });
     }
   };
 
-  sendImage = url => {
+  sendImage = (url) => {
     const message = {
       createdAt: new Date(),
       image: url,
       text: this.state.currentMessage,
-      user: this.state.user
+      user: this.state.user,
     };
 
     this.updateDB(message);
   };
 
-  sendVideo = url => {
+  sendVideo = (url) => {
     const message = {
       createdAt: new Date(),
       video: url,
       text: this.state.currentMessage,
-      user: this.state.user
+      user: this.state.user,
     };
 
     this.updateDB(message);
@@ -355,26 +371,40 @@ class ChatScreen extends React.Component {
       const message = {
         createdAt: new Date(),
         text: this.state.currentMessage,
-        user: this.state.user
+        user: this.state.user,
       };
       await this.setState({
-        currentMessage: ""
+        currentMessage: "",
       });
       this.updateDB(message);
     }
   };
-
-  updateDB = async message => {
+  sendMsg() {
+    const message = [
+      {
+        id: 1,
+        createdAt: new Date(),
+        text: this.state.currentMessage,
+        user: this.state.user,
+      },
+    ];
+    this.setState((previousState) => ({
+      messages: GiftedChat.append(previousState.messages, message),
+    }));
+  }
+  updateDB = async (message) => {
     const { channel, isNewChannel } = this.state;
 
     if (isNewChannel) {
-      await this._createChannel();
-      if (!this.state.isNewChannel) {
+      await this._createChannel(message);
+      if (this.state.isNewChannel) {
         //don't send message if the channel has not been created
         alert("An Error occured while creating channel");
+        console.log("channel has not been created");
         return;
       } else {
         //attach message listeners now....
+        console.log("tring to retrieve messages", this.state.channel.id);
         this.threadsUnscribe = firebase
           .firestore()
           .collection("channels")
@@ -388,7 +418,7 @@ class ChatScreen extends React.Component {
     await firebase
       .firestore()
       .collection("channels")
-      .doc(channel.id)
+      .doc(this.state.channel.id)
       .collection("messages")
       .add(message);
 
@@ -398,7 +428,7 @@ class ChatScreen extends React.Component {
       ? "Photo"
       : "Video";
 
-    await this._updateFriendsChannel(lastMessage);
+    // await this._updateFriendsChannel(lastMessage);
   };
 
   renderInputToolbar = () => {
@@ -460,16 +490,16 @@ class ChatScreen extends React.Component {
           multiline={true}
           enablesReturnKeyAutomatically
           underlineColorAndroid="transparent"
-          onChangeText={text => this.setState({ currentMessage: text })}
+          onChangeText={(text) => this.setState({ currentMessage: text })}
           value={this.state.currentMessage}
-          onContentSizeChange={event => {
+          onContentSizeChange={(event) => {
             this.setState({
-              inputHeight: event.nativeEvent.contentSize.height
+              inputHeight: event.nativeEvent.contentSize.height,
             });
           }}
           placeholder="Type a message"
           style={{
-            ...styles.input
+            ...styles.input,
             // height: Math.min(150, this.state.inputHeight)
           }}
         />
@@ -514,6 +544,7 @@ class ChatScreen extends React.Component {
               showUserAvatar={false}
               keyboardShouldPersistTaps={true}
               renderInputToolbar={this.renderInputToolbar}
+              // onSend={messages => this.sendMsg(messages)}
               minInputToolbarHeight={this.state.minInputToolbarHeight}
             />
 
@@ -612,7 +643,7 @@ const styles = {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    flexGrow: 1
+    flexGrow: 1,
   },
   inputContainer: {
     flexDirection: "row",
@@ -621,7 +652,7 @@ const styles = {
     borderRadius: 15,
     marginRight: 10,
     marginLeft: 10,
-    flexGrow: 1
+    flexGrow: 1,
   },
   input: {
     alignItems: "center",
@@ -629,24 +660,24 @@ const styles = {
     marginRight: 10,
     backgroundColor: "#fff",
     flex: 1,
-    padding:10, 
+    padding: 10,
     marginLeft: 5,
     fontSize: 16,
     lineHeight: 16,
-    paddingLeft:10,
+    paddingLeft: 10,
     paddingTop: 6,
     paddingBottom: 6,
     marginTop: Platform.select({
       ios: 6,
       android: 0,
       web: 6,
-      flexGrow: 1
+      flexGrow: 1,
     }),
     marginBottom: Platform.select({
       ios: 5,
       android: 3,
-      web: 4
-    })
+      web: 4,
+    }),
   },
   micContainer: {
     backgroundColor: "#4a6aa5",
@@ -657,32 +688,32 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     marginRight: 5,
-    marginLeft: 5
+    marginLeft: 5,
   },
   icons: {
     marginLeft: 5,
     marginRight: 5,
-    position: "relative"
+    position: "relative",
   },
   lottie: {
     width: 200,
-    height: 200
+    height: 200,
   },
 
   inputbtn: {
     flexDirection: "row",
     padding: 5,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   modal: {
     flexGrow: 1,
     justifyContent: "flex-end",
-    marginTop: -395
+    marginTop: -395,
   },
   modalIcons: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 12
-  }
+    padding: 12,
+  },
 };
