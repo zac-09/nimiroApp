@@ -15,7 +15,7 @@ const AddParticipantsScreen = (props) => {
     let alreadyAdded;
     groupPartcipants.forEach(function (participant) {
       if (participant.id === userId) {
-        console.log(participant.id);
+        // console.log(participant.id);
         alreadyAdded = true;
       }
     });
@@ -24,7 +24,7 @@ const AddParticipantsScreen = (props) => {
         el._id === userId ? { ...el, isAdded: true } : el
       );
 
-      console.log("these are the updataed added", added);
+      // console.log("these are the updataed added", added);
       setAddedContatcs((currentMembers) =>
         currentMembers.map((el) =>
           el._id === userId ? { ...el, isAdded: true } : el

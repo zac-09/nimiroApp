@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,56 +11,10 @@ import { Lists } from "../../components";
 import firebaseSDK from "../../backend/Firebase";
 import * as firebase from "firebase";
 import "firebase/firestore";
-import * as ImagePicker from "expo-image-picker";
-import Toast from "react-native-root-toast";
-import Constants from "expo-constants";
-
 import GroupHeader from "./../../components/headers/GroupHeader";
 import { Ionicons } from "@expo/vector-icons";
 import { GroupItem } from "../../components/listitems";
 const ConfigureGroupScreen = (props) => {
-  showToast = (message) => {
-    Toast.show(message, {
-      duration: Toast.durations.LONG,
-      position: Toast.positions.BOTTOM,
-      shadow: true,
-      animation: true,
-      hideOnPress: true,
-      delay: 0,
-    });
-  };
-  getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== "granted") {
-        showToast("Sorry, we need camera roll permissions to make this work!");
-      }
-    }
-  };
-  useEffect(() => {
-    getPermissionAsync();
-  });
-  _pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setAvatar(result.uri);
-    }
-  };
-
-  success = () => {
-    console.log("successfully uploaded");
-  };
-
-  failure = async (error) => {
-    console.log("failed to upload");
-  };
   _createChannel = async (channel) => {
     let channelData = channel;
 
@@ -97,12 +51,12 @@ const ConfigureGroupScreen = (props) => {
         alert(error);
         console.log("channel falied from then", error);
       });
-    props.navigation.navigate({
-      routeName: "GroupChatScreen",
-      params: {
-        groupData: channelData,
-      },
-    });
+      props.navigation.navigate({
+        routeName: "GroupChatScreen",
+        params: {
+          groupData: channelData,
+        },
+      });
   };
 
   const openChannel = async () => {
@@ -115,21 +69,22 @@ const ConfigureGroupScreen = (props) => {
       name: groupName,
       creator_id: user.id,
       currentUser: user,
-      avatar: avatar,
+      avatar: "",
       type: "group",
       participants: [user, ...participants],
       administrators: [user.id],
       lastMessage: {
-        text: "",
-        user: null,
-        createdAt: new Date(),
+        text:"hi from grooop",
+        user:user,
+        createdAt: new Date
       },
-      lastMessageDate: new Date(),
+      lastMessageDate: new Date,
     };
     await _createChannel(channel);
+    
+
   };
   const [groupName, setGroupName] = useState("");
-  const [avatar, setAvatar] = useState("");
   const participants = props.navigation.getParam("participants");
   const groupNameHandler = (enteredText) => {
     setGroupName(enteredText);
@@ -141,11 +96,7 @@ const ConfigureGroupScreen = (props) => {
       <View style={styles.inputContainer}>
         <View style={styles.inputTextAndCam}>
           <View style={styles.camera}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                _pickImage();
-              }}
-            >
+            <TouchableWithoutFeedback onPress={() => {}}>
               <Ionicons name="ios-camera" size={32} color="#fff" />
             </TouchableWithoutFeedback>
           </View>
@@ -161,11 +112,9 @@ const ConfigureGroupScreen = (props) => {
         <Text>Provide a group Name and an optional group Icon</Text>
       </View>
       <View style={styles.button}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            openChannel();
-          }}
-        >
+        <TouchableWithoutFeedback onPress={() => {
+          openChannel()
+          }}>
           <Ionicons name="ios-checkmark" size={32} color="#fff" />
         </TouchableWithoutFeedback>
       </View>

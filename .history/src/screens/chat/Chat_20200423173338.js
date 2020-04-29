@@ -31,11 +31,9 @@ export default class Chat extends React.Component {
     this.threadsUnscribe = "null";
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     //this.setState({loading: true})
-    this.threadsUnscribe = this.myChannels.onSnapshot(
-      await this.loadChannelList
-    );
+    this.threadsUnscribe = this.myChannels.onSnapshot(this.loadChannelList);
   }
 
   componentWillUnmount() {
@@ -54,35 +52,33 @@ export default class Chat extends React.Component {
           .collection("channels")
           .doc(chat.channel)
           .get()
-          .then(async (doc) => {
+          .then((doc) => {
             if (doc.exists) {
               const channelData = doc.data();
-              channelData.lastMessageDate = doc.data().lastMessageDate.toDate();
+              channelData.lastMessageDate = channelData.lastMessageDate.toDate();
               channelData.id = doc.id;
-              const uid = firebase.auth().currentUser.uid;
-              
+            const uid = firebase.auth().currentUser.uid;
 
               if (channelData.type === "chat") {
-                // channelData.avatar = channelData.participants[1].avatar;
+                channelData.avatar = channelData.participants[1].avatar;
                 channelData.participants.forEach(function (el) {
                   if (el._id !== uid) {
                     channelData.name = el.name;
-                    channelData.avatar = el.avatar;
                   }
                 });
               }
 
               console.log("this is doc id", channelData.id);
-              // console.log("the data is" ,channelData)
+
               data.push(channelData);
-            } 
+            }
           });
       });
     } catch (error) {
       this.showToast(error);
     }
     // console.log("this is the data loadded from channel",data)
-    await this.setState({ chats: data, loading: false });
+    this.setState({ chats: data, loading: false });
   };
 
   showToast = (message) => {
@@ -116,38 +112,29 @@ export default class Chat extends React.Component {
             avatar: firebase.auth().currentUser.photoURL,
             name: firebase.auth().currentUser.displayName,
           };
-          const uid = firebase.auth().currentUser.uid;
-
           channeData = doc.data();
+          channeData.participants.forEach(function (el) {
+            if (el._id !== user._id) {
+              channeData.friend = el;
           
-          
+
+            }
+          });
           channeData.id = doc.id;
           channeData.currentUser = user;
           console.log("data loaded from channel");
         } else {
           console.log("Channel data isn't recorded in the database");
         }
-      });
+      }); 
     // console.log("this is the data pushed to the chat screen!", channeData);
-    if (channeData.type === "chat") {
-      const uid = firebase.auth().currentUser.uid; 
+    if(channeData.type==="chat"){
+    return this.navigate("ChatScreen", { channel: channeData, isNewChannel: false });
 
-      channeData.participants.forEach(function (el) {
-        if (el._id !== uid) { 
-          channeData.friend = el;
-          channeData.avatar = el.avatar;
-          
-        }
-      });
-      return this.navigate("ChatScreen", {
-        channel: channeData,
-        isNewChannel: false,
-      });
     }
-    return this.navigate("GroupChatScreen", {
-      groupData: channeData,
-      isNewChannel: false,
-    });
+    return this.navigate("GroupChatScreen", { groupData: channeData, isNewChannel: false });
+
+
   };
 
   render() {

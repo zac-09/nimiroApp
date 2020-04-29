@@ -347,7 +347,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       image: url,
-      text: "Photo",
+      text: this.state.currentMessage,
       user: this.state.user,
     };
 
@@ -358,7 +358,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       video: url,
-      text: "video",
+      text: this.state.currentMessage,
       user: this.state.user,
     };
 
@@ -415,20 +415,16 @@ class ChatScreen extends React.Component {
       ? "Photo"
       : "Video";
     const uid = await firebase.auth().currentUser.uid;
-    await this.updateCurrentChannel(message);
+    await this.updateCurrentChannel(this.state.channel.id,lastMessage);
     await this._updateCurrentUser(uid, lastMessage);
     await this._updateFriendsChannel(lastMessage);
   };
-  updateCurrentChannel = async (lastMessage) => {
+  updateCurrentChannel = async (channelId, lastMessage) => {
     try {
-      await firebase
-        .firestore()
-        .collection("channels")
-        .doc(this.state.channel.id)
-        .update({
-          lastMessage: lastMessage,
-          lastMessageDate: new Date(),
-        });
+      await firestore().collection("channels").doc(channelId).update({
+        lastMessage: lastMessage,
+        lastMessageDate: new Date(),
+      });
     } catch (error) {
       console.log(error);
     }
@@ -565,7 +561,7 @@ class ChatScreen extends React.Component {
         <View style={{ flex: 1, height: HEIGHT }}>
           <Headers.ChatHeader
             nomargin
-            avatar={this.state.channel.avatar}
+            avator={this.state.channel.avatar}
             name={name}
             // offset={this.state.offset}
           />

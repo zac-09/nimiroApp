@@ -6,6 +6,7 @@ import * as Screens from "../screens";
 import ChatScreen from "../screens/chatscreen/ChatScreen";
 import AddParticipantsScreen from "../screens/groups/AddParticipantsScreen";
 import ConfigureGroupScreen from "../screens/groups/ConfigureGroupScreen";
+import GroupChatScreen from "../screens/groups/GroupChatScreen";
 
 
 import Chat from "../screens/chat/Chat";
@@ -89,6 +90,12 @@ const InitialStack = createStackNavigator(
         header: null
       }
     },
+    GroupChatScreen:{
+      screen:GroupChatScreen,
+      navigationOptions:{
+        header:null
+      }
+    },
     Contacts: {
       screen: Contact,
       navigationOptions: {
@@ -105,7 +112,8 @@ const InitialStack = createStackNavigator(
       screen:ConfigureGroupScreen,
       navigationOptions:{
         header:null
-      }
+      },
+     
     }
   },
   {

@@ -141,11 +141,9 @@ const ConfigureGroupScreen = (props) => {
       <View style={styles.inputContainer}>
         <View style={styles.inputTextAndCam}>
           <View style={styles.camera}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                _pickImage();
-              }}
-            >
+            <TouchableWithoutFeedback onPress={() => {
+              _pickImage()
+            }}>
               <Ionicons name="ios-camera" size={32} color="#fff" />
             </TouchableWithoutFeedback>
           </View>

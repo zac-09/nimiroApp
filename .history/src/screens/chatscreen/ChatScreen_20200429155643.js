@@ -347,7 +347,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       image: url,
-      text: "Photo",
+      text: this.state.currentMessage,
       user: this.state.user,
     };
 
@@ -358,7 +358,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       video: url,
-      text: "video",
+      text: this.state.currentMessage,
       user: this.state.user,
     };
 

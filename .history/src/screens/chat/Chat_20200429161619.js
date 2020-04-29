@@ -119,8 +119,17 @@ export default class Chat extends React.Component {
           const uid = firebase.auth().currentUser.uid;
 
           channeData = doc.data();
-          
-          
+          if (channelData.type === "chat") {
+            // channelData.avatar = channelData.participants[1].avatar;
+            channeData.participants.forEach(function (el) {
+              if (el._id !== uid) { 
+                channeData.friend = el;
+                channeData.avatar = el.avatar;
+                
+              }
+            });
+          }
+        
           channeData.id = doc.id;
           channeData.currentUser = user;
           console.log("data loaded from channel");
@@ -130,15 +139,6 @@ export default class Chat extends React.Component {
       });
     // console.log("this is the data pushed to the chat screen!", channeData);
     if (channeData.type === "chat") {
-      const uid = firebase.auth().currentUser.uid; 
-
-      channeData.participants.forEach(function (el) {
-        if (el._id !== uid) { 
-          channeData.friend = el;
-          channeData.avatar = el.avatar;
-          
-        }
-      });
       return this.navigate("ChatScreen", {
         channel: channeData,
         isNewChannel: false,

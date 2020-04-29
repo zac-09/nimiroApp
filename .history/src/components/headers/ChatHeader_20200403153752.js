@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons'
 
 function ChatHeader (props) {
   const avator = props.avatar ? {uri: props.avatar} : require('../../assets/placeholder.png')
-
   return (
     <View
       style={{...styles.header, marginTop: props.offset? 20 : 0}}

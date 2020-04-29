@@ -6,8 +6,7 @@ import { formatDate } from '../../utils/Validations';
 
 const ChatItem = props => { 
     const avator = props.avatar ? {uri: props.avatar} : require('../../assets/placeholder.png')
-    const lastMessage =  props.lastMessage.text 
-    // ? props.lastMessage.text : props.lastMessage
+    const lastMessage =  props.lastMessage.text ? props.lastMessage.text : props.lastMessage
     return (
         <TouchableHighlight onPress={() => props.onItemPressed(props.id)} activeOpacity={0.985} underlayColor='#06545A'>
             <View style={styles.container}>

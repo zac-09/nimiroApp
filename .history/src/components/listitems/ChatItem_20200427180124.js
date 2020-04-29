@@ -6,8 +6,6 @@ import { formatDate } from '../../utils/Validations';
 
 const ChatItem = props => { 
     const avator = props.avatar ? {uri: props.avatar} : require('../../assets/placeholder.png')
-    const lastMessage =  props.lastMessage.text 
-    // ? props.lastMessage.text : props.lastMessage
     return (
         <TouchableHighlight onPress={() => props.onItemPressed(props.id)} activeOpacity={0.985} underlayColor='#06545A'>
             <View style={styles.container}>
@@ -20,7 +18,7 @@ const ChatItem = props => {
                         <Text style={{color: props.unread > 0 ? '#53C41A' : '#64676A', marginBottom: 10, fontSize: 12}}>{formatDate(props.lastMessageDate)}</Text>
                     </View>
                     <View style={styles.detailContainer}>
-                        <Text numberOfLines={1} style={{ width: 200, color: '#64676A', fontSize: 13 }}>{lastMessage}</Text>
+                        <Text numberOfLines={1} style={{ width: 200, color: '#64676A', fontSize: 13 }}>{props.lastMessage.text}</Text>
                         {props.unread > 0 && <Badge value={props.unread} status="success" />}
                     </View>
                 </View>

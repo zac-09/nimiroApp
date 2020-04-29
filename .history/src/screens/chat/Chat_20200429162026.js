@@ -130,7 +130,7 @@ export default class Chat extends React.Component {
       });
     // console.log("this is the data pushed to the chat screen!", channeData);
     if (channeData.type === "chat") {
-      const uid = firebase.auth().currentUser.uid; 
+      const uid = firebase.auth().currentUser.uid;
 
       channeData.participants.forEach(function (el) {
         if (el._id !== uid) { 

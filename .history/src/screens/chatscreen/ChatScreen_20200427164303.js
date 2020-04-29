@@ -58,6 +58,7 @@ class ChatScreen extends React.Component {
     this.setState({ loading: true });
     await this._attachListeners();
     this._clearUnread();
+   
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -347,7 +348,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       image: url,
-      text: "Photo",
+      text: this.state.currentMessage,
       user: this.state.user,
     };
 
@@ -358,7 +359,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       video: url,
-      text: "video",
+      text: this.state.currentMessage,
       user: this.state.user,
     };
 
@@ -414,53 +415,8 @@ class ChatScreen extends React.Component {
       : message.image
       ? "Photo"
       : "Video";
-    const uid = await firebase.auth().currentUser.uid;
-    await this.updateCurrentChannel(message);
-    await this._updateCurrentUser(uid, lastMessage);
+
     await this._updateFriendsChannel(lastMessage);
-  };
-  updateCurrentChannel = async (lastMessage) => {
-    try {
-      await firebase
-        .firestore()
-        .collection("channels")
-        .doc(this.state.channel.id)
-        .update({
-          lastMessage: lastMessage,
-          lastMessageDate: new Date(),
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  _updateCurrentUser = async (uid, lastMessage) => {
-    try {
-      await firebase
-        .firestore()
-        .collection("channel_participation")
-        .doc(uid)
-        .collection("my_channels")
-        .where("channel", "==", this.state.channel.id)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach(async (doc) => {
-            if (doc.data().user === uid) {
-              await firebase
-                .firestore()
-                .collection("channel_participation")
-                .doc(uid)
-                .collection("my_channels")
-                .doc(doc.id)
-                .update({
-                  lastMessage: lastMessage,
-                  lastMessageDate: new Date(),
-                });
-            }
-          });
-        });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   renderInputToolbar = () => {
@@ -565,7 +521,7 @@ class ChatScreen extends React.Component {
         <View style={{ flex: 1, height: HEIGHT }}>
           <Headers.ChatHeader
             nomargin
-            avatar={this.state.channel.avatar}
+            avator={avatar}
             name={name}
             // offset={this.state.offset}
           />

@@ -57,17 +57,44 @@ export default class Chat extends React.Component {
           .then(async (doc) => {
             if (doc.exists) {
               const channelData = doc.data();
-              channelData.lastMessageDate = doc.data().lastMessageDate.toDate();
               channelData.id = doc.id;
               const uid = firebase.auth().currentUser.uid;
-              
+              // this.myChannels
+              //   .where("channel", "==", doc.id)
+              //   .get().then((document)=>{
+              //     console.log("this is data from de channel",document.data())
+              // channelData.lastMessageDate = document.data().lastMessageDate.toDate();
+              // channelData.unread = document.data().unread
+              //   })
+              ///
+              await firebase
+                .firestore()
+                .collection("channel_participation")
+                .doc(uid)
+                .collection("my_channels")
+                .where("channel", "==", doc.id)
+                .get()
+                .then((querySnapshot) => {
+                  console.log("final call is executed");
+                  querySnapshot.forEach((docu) => {
+                    if (docu.data().user === uid) {
+                      // console.log("uids matched",docu.data())
+                      channelData.lastMessageDate = docu
+                        .data()
+                        .lastMessageDate.toDate();
+                      channelData.unread = docu.data().unread;
+                      channelData.lastMessage = docu.data().lastMessage;
+                    }
+                  });
+                });
+
+              /////
 
               if (channelData.type === "chat") {
-                // channelData.avatar = channelData.participants[1].avatar;
+                channelData.avatar = channelData.participants[1].avatar;
                 channelData.participants.forEach(function (el) {
                   if (el._id !== uid) {
                     channelData.name = el.name;
-                    channelData.avatar = el.avatar;
                   }
                 });
               }
@@ -75,7 +102,7 @@ export default class Chat extends React.Component {
               console.log("this is doc id", channelData.id);
               // console.log("the data is" ,channelData)
               data.push(channelData);
-            } 
+            }
           });
       });
     } catch (error) {
@@ -116,11 +143,12 @@ export default class Chat extends React.Component {
             avatar: firebase.auth().currentUser.photoURL,
             name: firebase.auth().currentUser.displayName,
           };
-          const uid = firebase.auth().currentUser.uid;
-
           channeData = doc.data();
-          
-          
+          channeData.participants.forEach(function (el) {
+            if (el._id !== user._id) {
+              channeData.friend = el;
+            }
+          });
           channeData.id = doc.id;
           channeData.currentUser = user;
           console.log("data loaded from channel");
@@ -130,15 +158,6 @@ export default class Chat extends React.Component {
       });
     // console.log("this is the data pushed to the chat screen!", channeData);
     if (channeData.type === "chat") {
-      const uid = firebase.auth().currentUser.uid; 
-
-      channeData.participants.forEach(function (el) {
-        if (el._id !== uid) { 
-          channeData.friend = el;
-          channeData.avatar = el.avatar;
-          
-        }
-      });
       return this.navigate("ChatScreen", {
         channel: channeData,
         isNewChannel: false,

@@ -60,7 +60,52 @@ export default class Chat extends React.Component {
               channelData.lastMessageDate = doc.data().lastMessageDate.toDate();
               channelData.id = doc.id;
               const uid = firebase.auth().currentUser.uid;
-              
+              // this.myChannels
+              //   .where("channel", "==", doc.id)
+              //   .get().then((document)=>{
+              //     console.log("this is data from de channel",document.data())
+              // channelData.lastMessageDate = document.data().lastMessageDate.toDate();
+              // channelData.unread = document.data().unread
+              //   })
+              ///
+              // firebase
+              // .firestore()
+              // .collection("channel_participation")
+              // .doc(uid)
+              // .collection("my_channels")
+              // .where("channel", "==", doc.id)
+              // .get()
+              // .then((querySnapshot) => {
+              //   console.log("final call is executed");
+              //   querySnapshot.forEach((docu) => {
+              //     if (docu.data().user === uid) {
+              //       // console.log("uids matched",docu.data())
+              //       channelData.lastMessageDate = docu
+              //         .data()
+              //         .lastMessageDate.toDate();
+              //       channelData.unread = docu.data().unread;
+              //       channelData.lastMessage = docu.data().lastMessage;
+              //     }
+              //   });
+              // });
+
+              // this.myChannels
+              //   .where("channel", "==", doc.id)
+              //   .get()
+              //   .then((querySnapshot) => {
+              //     console.log("final call is executed");
+              //     querySnapshot.forEach((docu) => {
+              //       if (docu.data().user === uid) {
+              //        console.log("uids matched",docu.data())
+              //         channelData.lastMessageDate = docu
+              //           .data()
+              //           .lastMessageDate.toDate();
+              //         channelData.unread = docu.data().unread;
+              //         channelData.lastMessage = docu.data().lastMessage;
+              //       }
+              //     });
+              //   });
+              /////
 
               if (channelData.type === "chat") {
                 // channelData.avatar = channelData.participants[1].avatar;
@@ -119,8 +164,13 @@ export default class Chat extends React.Component {
           const uid = firebase.auth().currentUser.uid;
 
           channeData = doc.data();
-          
-          
+          channeData.participants.forEach(function (el) {
+            if (el._id !== uid) { 
+              channeData.friend = el;
+              channeData.avatar = el.avatar;
+              
+            }
+          });
           channeData.id = doc.id;
           channeData.currentUser = user;
           console.log("data loaded from channel");
@@ -130,15 +180,6 @@ export default class Chat extends React.Component {
       });
     // console.log("this is the data pushed to the chat screen!", channeData);
     if (channeData.type === "chat") {
-      const uid = firebase.auth().currentUser.uid; 
-
-      channeData.participants.forEach(function (el) {
-        if (el._id !== uid) { 
-          channeData.friend = el;
-          channeData.avatar = el.avatar;
-          
-        }
-      });
       return this.navigate("ChatScreen", {
         channel: channeData,
         isNewChannel: false,
