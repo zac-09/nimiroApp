@@ -57,9 +57,7 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 30,
-        
-
+        paddingTop: 30
     },
     rememberText: {
         fontSize: 16,
@@ -70,8 +68,7 @@ const styles = {
     forgotText: {
         fontSize: 16,
         color: '#0404F9',
-        fontFamily: 'Roboto',
-        marginLeft:40
+        fontFamily: 'Roboto'
     },
     buttonContainer: {
         paddingTop: 30,

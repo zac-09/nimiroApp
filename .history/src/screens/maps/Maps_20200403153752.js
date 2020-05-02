@@ -58,7 +58,6 @@ export default class Maps extends React.Component{
         }
     
         let location = await Location.getCurrentPositionAsync({});
-        console.log("location acquired from expo",location)
         this.setState({ location: location.coords });
     };
 
@@ -74,7 +73,7 @@ export default class Maps extends React.Component{
             this.setState({ errorMessage: error.message });
         }
         
-        console.log("these are the markers",data);
+    
         this.setState({ markers: data, errorMessage: null });
     }
 
@@ -227,6 +226,6 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)'
+        backgroundColor: 'rgba(0, 0, 0, 0.1)'
     }
   });
