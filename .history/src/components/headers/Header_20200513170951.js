@@ -33,11 +33,12 @@ function header(props) {
           <View style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {
-                
+                // NavigationActions.navigate({ routeName: 'SignedOut' })
+                // props.navigation.navigate("SignedOut")
                 props.onLogout()
               }}
             >
-              <Text style={{padding:7,color:"#ccc"}}>Logout</Text>
+              <Text>Logout</Text>
             </TouchableWithoutFeedback>
           </View>
         )}
@@ -61,21 +62,13 @@ const styles = {
     color: "#fff",
   },
   logout: {
-    // alignItems:"center",
     flexDirection: "row",
     position: "absolute",
-    right: 10,
-    top: 27,
-    width: "60%",
+    right: 3,
+    top: 13,
+    width: "50%",
     backgroundColor: "#fff",
     zIndex: 1000,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.26,
-    shadowRadius: 8,
-    borderRadius:6,
-    elevation:5,
-    // height:100
   },
 };
 

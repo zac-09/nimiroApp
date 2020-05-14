@@ -4,14 +4,66 @@ import getHeaderContainerStyle from "./getHeaderContainerStyle";
 import connect from "../../assets/connect.png";
 import { Image, TouchableWithoutFeedback, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import firebaseSDK from "../../backend/Firebase";
 import Toast from "react-native-root-toast";
 import * as firebase from "firebase";
 
-
 function header(props) {
   const [logout, setIsLogout] = useState(false);
-  
+  const uid = firebase.auth().currentUser.uid;
+
+  const unscribeFeed = firebase
+    .firestore()
+    .collection("feeds")
+    .onSnapshot(() => {});
+  const unscribedRoc = firebase
+    .firestore()
+    .collection("events")
+    .onSnapshot(() => {});
+  const unscribedChat = firebase
+    .firestore()
+    .collection("channel_participation")
+    .doc(uid)
+    .collection("my_channels")
+    .onSnapshot(() => {});
+  const unscribedMaps = firebase
+    .firestore()
+    .collection("maps")
+    .onSnapshot(() => {});
+  logoutHandler = async () => {
+    // await firebaseSDK.logout(logoutSucceful, logoutFailed);
+    //detach all listners
+
+    // await unscribeFeed();
+    // await unscribedChat();
+    // await unscribedRoc();
+    // await unscribedMaps();
+    // await firebase
+    //   .auth()
+    //   .signOut()
+    //   .then(() => {
+    //     console.log("user successfully signed out");
+
+        return logoutSucceful();
+      // }, logoutFailed);
+  };
+  logoutSucceful = () => {
+    showToast("logging out");
+    props.onLogout();
+  };
+  logoutFailed = () => {
+    showToast("unfortunately we could not sign you out");
+  };
+  showToast = (message) => {
+    Toast.show(message, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
+  };
   return (
     <Header
       iosBarStyle="dark-content"
@@ -33,11 +85,10 @@ function header(props) {
           <View style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {
-                
                 props.onLogout()
               }}
             >
-              <Text style={{padding:7,color:"#ccc"}}>Logout</Text>
+              <Text>Logout</Text>
             </TouchableWithoutFeedback>
           </View>
         )}
@@ -61,21 +112,13 @@ const styles = {
     color: "#fff",
   },
   logout: {
-    // alignItems:"center",
     flexDirection: "row",
     position: "absolute",
-    right: 10,
-    top: 27,
-    width: "60%",
+    right: 3,
+    top: 13,
+    width: "50%",
     backgroundColor: "#fff",
     zIndex: 1000,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.26,
-    shadowRadius: 8,
-    borderRadius:6,
-    elevation:5,
-    // height:100
   },
 };
 

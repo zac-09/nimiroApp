@@ -6,7 +6,6 @@ import {
   FlatList,
   TextInput,
   TouchableWithoutFeedback,
-  Dimensions
 } from "react-native";
 import { Lists } from "../../components";
 import firebaseSDK from "../../backend/Firebase";
@@ -125,7 +124,7 @@ const ConfigureGroupScreen = (props) => {
       participants: [user, ...participants],
       administrators: [user.id],
       lastMessage: {
-        text: null,
+        text: "",
         user: null,
         createdAt: new Date(),
       },
@@ -199,9 +198,9 @@ const styles = StyleSheet.create({
   },
   camera: {
     backgroundColor: "#ccc",
-    width: Dimensions.get('window').width*0.2,
-    height: Dimensions.get('window').width*0.2,
-    borderRadius: Dimensions.get('window').width*0.2/2,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",

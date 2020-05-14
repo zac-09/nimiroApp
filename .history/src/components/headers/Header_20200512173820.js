@@ -2,16 +2,33 @@ import React, { useState } from "react";
 import { Header, Left, Body, Title, Right } from "native-base";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
 import connect from "../../assets/connect.png";
-import { Image, TouchableWithoutFeedback, Text, View } from "react-native";
+import { Image, TouchableWithoutFeedback, Text,View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import firebaseSDK from "../../backend/Firebase";
 import Toast from "react-native-root-toast";
-import * as firebase from "firebase";
-
-
 function header(props) {
   const [logout, setIsLogout] = useState(false);
-  
+  logoutHandler = async () => {
+    firebaseSDK.logout(logoutSuccefull, logoutFailed);
+  };
+  logoutSuccefull = () => {
+    props.navigation.navigate({
+      routeName: "SignedOut",
+    });
+  };
+  logoutFailed = () => {
+    showToast("unfortunately we could not sign you out");
+  };
+  showToast = (message) => {
+    Toast.show(message, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
+  };
   return (
     <Header
       iosBarStyle="dark-content"
@@ -33,11 +50,10 @@ function header(props) {
           <View style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {
-                
-                props.onLogout()
+                logoutHandler();
               }}
             >
-              <Text style={{padding:7,color:"#ccc"}}>Logout</Text>
+              <Text>Logout</Text>
             </TouchableWithoutFeedback>
           </View>
         )}
@@ -61,21 +77,13 @@ const styles = {
     color: "#fff",
   },
   logout: {
-    // alignItems:"center",
-    flexDirection: "row",
+    flexDirection:"row",
     position: "absolute",
-    right: 10,
-    top: 27,
-    width: "60%",
+    right: 3,
+    top: 7,
+    width: "35%",
     backgroundColor: "#fff",
     zIndex: 1000,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.26,
-    shadowRadius: 8,
-    borderRadius:6,
-    elevation:5,
-    // height:100
   },
 };
 

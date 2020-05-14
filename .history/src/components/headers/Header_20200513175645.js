@@ -75,7 +75,7 @@ const styles = {
     shadowRadius: 8,
     borderRadius:6,
     elevation:5,
-    // height:100
+    height:100
   },
 };
 

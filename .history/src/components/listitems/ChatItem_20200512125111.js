@@ -14,8 +14,8 @@ const ChatItem = (props) => {
     ? { uri: props.avatar }
     : require("../../assets/placeholder.png");
   const lastMessage = props.lastMessage.text
-    // ? props.lastMessage.text
-    // : props.lastMessage;
+    ? props.lastMessage.text
+    : props.lastMessage;
 
   // ? props.lastMessage.text : props.lastMessage
   return (

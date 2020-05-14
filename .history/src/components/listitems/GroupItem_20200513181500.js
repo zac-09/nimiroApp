@@ -57,9 +57,9 @@ const styles = {
     alignItems: "center",
   },
   imageContainer: {
-    width: Dimensions.get('window').width*0.1,
-    height: Dimensions.get('window').width*0.1,
-    borderRadius: Dimensions.get('window').width*0.1/2,
+    width: Dimensions.get('window').width*0.2,
+    height: Dimensions.get('window').width*0.2,
+    borderRadius: Dimensions.get('window').width*0.2/2,
     overflow: "hidden",
     backgroundColor: "#4291ee",
     alignItems: "center",

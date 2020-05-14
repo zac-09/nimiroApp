@@ -7,7 +7,7 @@ import ChatScreen from "../screens/chatscreen/ChatScreen";
 import AddParticipantsScreen from "../screens/groups/AddParticipantsScreen";
 import ConfigureGroupScreen from "../screens/groups/ConfigureGroupScreen";
 import GroupChatScreen from "../screens/groups/GroupChatScreen";
-import firebaseSDK from "../backend/Firebase";
+
 import Chat from "../screens/chat/Chat";
 import { ImageBackground, Text, View } from "react-native";
 import { bg2 } from "../assets";
@@ -17,18 +17,7 @@ import Comments from "../screens/comments/Comments";
 import { Image } from "react-native";
 import Post from "../screens/post/Post";
 import Contact from "../screens/contacts/Contacts";
-import Toast from "react-native-root-toast";
 
-showToast = (message) => {
-  Toast.show(message, {
-    duration: Toast.durations.LONG,
-    position: Toast.positions.BOTTOM,
-    shadow: true,
-    animation: true,
-    hideOnPress: true,
-    delay: 0,
-  });
-};
 const AuthStack = createStackNavigator(
   {
     Welcome: Screens.Welcome,
@@ -68,15 +57,13 @@ export const HomeStack = createMaterialTopTabNavigator(
         backgroundColor: "transparent",
       },
     },
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: (navigation) => ({
       header: (
         <Header
           nomargin
           title="RotaApp"
           onLogout={() => {
-            showToast("logged out");
             navigation.navigation.navigate({ routeName: "SignedOut" });
-            firebaseSDK.logout();
           }}
         />
       ),
@@ -88,19 +75,9 @@ const InitialStack = createStackNavigator(
   {
     MainScreen: {
       screen: HomeStack,
-      navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header
-            nomargin
-            title="RotaApp"
-            onLogout={() => {
-              showToast("logged out");
-              navigation.navigate({ routeName: "SignedOut" });
-              firebaseSDK.logout();
-            }}
-          />
-        ),
-      }),
+      navigationOptions: {
+        header: <Header nomargin title="RotaApp" />,
+      },
     },
     ChatScreen: {
       screen: ChatScreen,

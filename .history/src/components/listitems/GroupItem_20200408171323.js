@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, TouchableHighlight,TouchableWithoutFeedback,Dimensions } from "react-native";
+import { View, Image, TouchableHighlight,TouchableWithoutFeedback } from "react-native";
 import { Text } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -57,9 +57,9 @@ const styles = {
     alignItems: "center",
   },
   imageContainer: {
-    width: Dimensions.get('window').width*0.1,
-    height: Dimensions.get('window').width*0.1,
-    borderRadius: Dimensions.get('window').width*0.1/2,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "#4291ee",
     alignItems: "center",

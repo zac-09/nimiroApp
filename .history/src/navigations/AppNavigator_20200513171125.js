@@ -17,8 +17,6 @@ import Comments from "../screens/comments/Comments";
 import { Image } from "react-native";
 import Post from "../screens/post/Post";
 import Contact from "../screens/contacts/Contacts";
-import Toast from "react-native-root-toast";
-
 showToast = (message) => {
   Toast.show(message, {
     duration: Toast.durations.LONG,

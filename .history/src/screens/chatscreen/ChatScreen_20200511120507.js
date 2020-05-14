@@ -145,8 +145,7 @@ class ChatScreen extends React.Component {
             lastMessage: channelData.lastMessage,
             lastMessageDate: channelData.lastMessageDate,
             unread: 0,
-            participants:channelData.participants,
-            type:channelData.type
+            participants:channelData.participants
           };
 
           await firebase
@@ -159,7 +158,7 @@ class ChatScreen extends React.Component {
 
         await that.setState({ isNewChannel: false });
         console.log(
-          "channel succefully created from then and this is the state of new channel yes",
+          "channel succefully created from then and this is the state of new channel",
           this.state.isNewChannel
         );
       })
@@ -418,8 +417,8 @@ class ChatScreen extends React.Component {
       : "Video";
     const uid = await firebase.auth().currentUser.uid;
     await this.updateCurrentChannel(message);
-    await this._updateCurrentUser(uid, message);
-    await this._updateFriendsChannel(message);
+    await this._updateCurrentUser(uid, lastMessage);
+    await this._updateFriendsChannel(lastMessage);
   };
   updateCurrentChannel = async (lastMessage) => {
     try {

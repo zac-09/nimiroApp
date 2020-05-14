@@ -17,7 +17,7 @@ import { Headers } from "../../components";
 import ModalCard from "../../components/modal/ModalCard";
 import styled from "styled-components";
 import bg2 from "../../assets/chat_bg.png";
-import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-root-toast";
 import * as firebase from "firebase";
@@ -31,13 +31,11 @@ class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    const channel = props.navigation.getParam("channel");
-
-    const isNewChannel = props.navigation.getParam("isNewChannel");
+    const channel = props.navigation.getParam("groupData");
 
     this.state = {
       channel: channel,
-      isNewChannel: isNewChannel,
+
       isTyping: false,
       inputHeight: 85,
       currentMessage: "",
@@ -116,59 +114,6 @@ class ChatScreen extends React.Component {
     }
   };
 
-  _createChannel = async (message) => {
-    const { channel, currentMessage } = this.state;
-    const channelData = {
-      creator_id: channel.currentUser._id,
-      name: channel.name,
-      lastMessage: message,
-      lastMessageDate: new Date(),
-      // adminstrators: channel.adminstrators,
-      participants: channel.participants,
-      type: channel.type,
-    };
-
-    const that = this;
-    console.log("this is added when channel is created", channelData);
-    await firebase
-      .firestore()
-      .collection("channels")
-      .add(channelData)
-      .then(async (docRef) => {
-        channelData.id = docRef.id;
-        that.setState({ channel: channelData });
-
-        channelData.participants.forEach(async (friend) => {
-          const participationData = {
-            channel: docRef.id,
-            user: friend._id,
-            lastMessage: channelData.lastMessage,
-            lastMessageDate: channelData.lastMessageDate,
-            unread: 0,
-            participants:channelData.participants,
-            type:channelData.type
-          };
-
-          await firebase
-            .firestore()
-            .collection("channel_participation")
-            .doc(friend._id)
-            .collection("my_channels")
-            .add(participationData);
-        });
-
-        await that.setState({ isNewChannel: false });
-        console.log(
-          "channel succefully created from then and this is the state of new channel yes",
-          this.state.isNewChannel
-        );
-      })
-      .catch(function (error) {
-        alert(error);
-        console.log("channel falied from then", error);
-      });
-  };
-
   _clearUnread = async () => {
     const uid = await firebase.auth().currentUser.uid;
     await firebase
@@ -196,10 +141,15 @@ class ChatScreen extends React.Component {
 
   _updateFriendsChannel = async (lastMessage) => {
     const uid = await firebase.auth().currentUser.uid;
-    await firebase
+    const channelData = this.state.channel;
+     channelData.participants.filter(
+      (participant) => participant.id !== uid
+    )
+    channelData.participants.forEach(async(member)=>{
+      await firebase
       .firestore()
       .collection("channel_participation")
-      .doc(this.state.friend._id)
+      .doc(member.id)
       .collection("my_channels")
       .where("channel", "==", this.state.channel.id)
       .get()
@@ -209,7 +159,7 @@ class ChatScreen extends React.Component {
             await firebase
               .firestore()
               .collection("channel_participation")
-              .doc(this.state.friend._id)
+              .doc(member.id)
               .collection("my_channels")
               .doc(doc.id)
               .update({
@@ -220,6 +170,8 @@ class ChatScreen extends React.Component {
           }
         });
       });
+    })
+    
   };
 
   existSameSentMessage = (messages, newMessage) => {
@@ -349,7 +301,7 @@ class ChatScreen extends React.Component {
     const message = {
       createdAt: new Date(),
       image: url,
-      text: "Photo",
+      text: "photo",
       user: this.state.user,
     };
 
@@ -380,29 +332,29 @@ class ChatScreen extends React.Component {
       this.updateDB(message);
     }
   };
-
+  sendMsg() {
+    const message = [
+      {
+        id: 1,
+        createdAt: new Date(),
+        text: this.state.currentMessage,
+        user: this.state.user,
+      },
+    ];
+    this.setState((previousState) => ({
+      messages: GiftedChat.append(previousState.messages, message),
+    }));
+  }
   updateDB = async (message) => {
-    const { channel, isNewChannel } = this.state;
-
-    if (isNewChannel) {
-      await this._createChannel(message);
-      if (this.state.isNewChannel) {
-        //don't send message if the channel has not been created
-        alert("An Error occured while creating channel");
-        console.log("channel has not been created");
-        return;
-      } else {
-        //attach message listeners now....
-        console.log("tring to retrieve messages", this.state.channel.id);
-        this.threadsUnscribe = firebase
-          .firestore()
-          .collection("channels")
-          .doc(this.state.channel.id)
-          .collection("messages")
-          .orderBy("createdAt", "desc")
-          .onSnapshot(this.onThreadsCollectionUpdate);
-      }
-    }
+    //attach message listeners now....
+    console.log("tring to retrieve messages", this.state.channel.id);
+    this.threadsUnscribe = firebase
+      .firestore()
+      .collection("channels")
+      .doc(this.state.channel.id)
+      .collection("messages")
+      .orderBy("createdAt", "desc")
+      .onSnapshot(this.onThreadsCollectionUpdate);
 
     await firebase
       .firestore()
@@ -416,10 +368,12 @@ class ChatScreen extends React.Component {
       : message.image
       ? "Photo"
       : "Video";
+
+    // await this._updateFriendsChannel(lastMessage);
     const uid = await firebase.auth().currentUser.uid;
+
     await this.updateCurrentChannel(message);
     await this._updateCurrentUser(uid, message);
-    await this._updateFriendsChannel(message);
   };
   updateCurrentChannel = async (lastMessage) => {
     try {
@@ -557,7 +511,6 @@ class ChatScreen extends React.Component {
   };
 
   render() {
-    const { avatar, name } = this.state.friend;
     return (
       <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
@@ -568,7 +521,7 @@ class ChatScreen extends React.Component {
           <Headers.ChatHeader
             nomargin
             avatar={this.state.channel.avatar}
-            name={name}
+            name={this.state.channel.name}
             // offset={this.state.offset}
           />
           <Container source={bg2}>
@@ -578,7 +531,7 @@ class ChatScreen extends React.Component {
               showUserAvatar={false}
               keyboardShouldPersistTaps={true}
               renderInputToolbar={this.renderInputToolbar}
-              // onSend={messages => this.sendMsg(messages)}
+              renderUsernameOnMessage={true}
               minInputToolbarHeight={this.state.minInputToolbarHeight}
             />
 

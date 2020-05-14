@@ -19,13 +19,13 @@ class FirebaseSDK {
       });
     }
   }
-  logout = async () => {
-    await firebase.auth().signOut().then(() => {
+  logout = async (success_callback, failed_callback) => {
+    await firebase.auth().signout().then(() => {
       console.log("user successfully signed out");
-      return ;
-    },)
-        
-    
+      return success_callback();
+    }).catch((err)=>{
+      return failed_callback()
+    });
   };
   login = async (user, success_callback, failed_callback) => {
     await firebase

@@ -7,7 +7,8 @@ import ChatScreen from "../screens/chatscreen/ChatScreen";
 import AddParticipantsScreen from "../screens/groups/AddParticipantsScreen";
 import ConfigureGroupScreen from "../screens/groups/ConfigureGroupScreen";
 import GroupChatScreen from "../screens/groups/GroupChatScreen";
-import firebaseSDK from "../backend/Firebase";
+
+
 import Chat from "../screens/chat/Chat";
 import { ImageBackground, Text, View } from "react-native";
 import { bg2 } from "../assets";
@@ -17,18 +18,7 @@ import Comments from "../screens/comments/Comments";
 import { Image } from "react-native";
 import Post from "../screens/post/Post";
 import Contact from "../screens/contacts/Contacts";
-import Toast from "react-native-root-toast";
 
-showToast = (message) => {
-  Toast.show(message, {
-    duration: Toast.durations.LONG,
-    position: Toast.positions.BOTTOM,
-    shadow: true,
-    animation: true,
-    hideOnPress: true,
-    delay: 0,
-  });
-};
 const AuthStack = createStackNavigator(
   {
     Welcome: Screens.Welcome,
@@ -36,15 +26,15 @@ const AuthStack = createStackNavigator(
     Register: Screens.Register,
     Forgot: Screens.Forgot,
     Reset: Screens.Reset,
-    User: User,
+    User: User
   },
   {
     initialRouteName: "Welcome",
     headerMode: "none",
     cardStyle: {
       backgroundColor: "rgba(0,0,0,0)",
-      backfaceVisibility: "hidden",
-    },
+      backfaceVisibility: "hidden"
+    }
   }
 );
 
@@ -53,34 +43,26 @@ export const HomeStack = createMaterialTopTabNavigator(
     ROC: Screens.Roc,
     Feed: Screens.Feed,
     Chat: Screens.Chat,
-    Maps: Screens.Maps,
+    Maps: Screens.Maps
   },
   {
     tabBarOptions: {
       labelStyle: {
         fontSize: 14,
-        fontWeight: "900",
+        fontWeight: "900"
       },
       tabStyle: {
-        width: 100,
+        width: 100
       },
       style: {
-        backgroundColor: "transparent",
-      },
+        backgroundColor: "transparent"
+      }
     },
-    navigationOptions: ({ navigation }) => ({
-      header: (
-        <Header
-          nomargin
-          title="RotaApp"
-          onLogout={() => {
-            showToast("logged out");
-            navigation.navigation.navigate({ routeName: "SignedOut" });
-            firebaseSDK.logout();
-          }}
-        />
-      ),
-    }),
+    navigationOptions: ( navigation ) => ({
+      header: <Header nomargin title="RotaApp" onLogout={()=>{
+        navigation.navigation.navigate({routeName:"SignedOut"})
+      }} />
+    })
   }
 );
 
@@ -88,69 +70,60 @@ const InitialStack = createStackNavigator(
   {
     MainScreen: {
       screen: HomeStack,
-      navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header
-            nomargin
-            title="RotaApp"
-            onLogout={() => {
-              showToast("logged out");
-              navigation.navigate({ routeName: "SignedOut" });
-              firebaseSDK.logout();
-            }}
-          />
-        ),
-      }),
+      navigationOptions: {
+        header: <Header nomargin title="RotaApp" />
+      }
     },
     ChatScreen: {
       screen: ChatScreen,
       navigationOptions: {
-        header: null,
-      },
+        header: null
+      }
     },
     Comments: {
       screen: Comments,
       navigationOptions: {
-        header: null,
-      },
+        header: null
+      }
     },
     Post: {
       screen: Post,
       navigationOptions: {
-        header: null,
-      },
+        header: null
+      }
     },
-    GroupChatScreen: {
-      screen: GroupChatScreen,
-      navigationOptions: {
-        header: null,
-      },
+    GroupChatScreen:{
+      screen:GroupChatScreen,
+      navigationOptions:{
+        header:null
+      }
     },
     Contacts: {
       screen: Contact,
       navigationOptions: {
-        header: null,
-      },
+        header: null
+      }
     },
     AddParticipantsScreen: {
       screen: AddParticipantsScreen,
       navigationOptions: {
-        header: null,
-      },
+        header: null
+      }
     },
-    ConfigureGroupScreen: {
-      screen: ConfigureGroupScreen,
-      navigationOptions: {
-        header: null,
+    ConfigureGroupScreen:{
+      screen:ConfigureGroupScreen,
+      navigationOptions:{
+        header:null
       },
-    },
+     
+    }
   },
   {
     initialRouteName: "MainScreen",
     cardStyle: {
       backgroundColor: "rgba(0,0,0,0)",
-      backfaceVisibility: "hidden",
-    },
+      backfaceVisibility: "hidden"
+    }
   }
 );
 
@@ -159,14 +132,14 @@ const createRootNavigator = (signedIn = false) => {
     createSwitchNavigator(
       {
         SignedIn: {
-          screen: InitialStack,
+          screen: InitialStack
         },
         SignedOut: {
-          screen: AuthStack,
-        },
+          screen: AuthStack
+        }
       },
       {
-        initialRouteName: signedIn ? "SignedIn" : "SignedOut",
+        initialRouteName: signedIn ? "SignedIn" : "SignedOut"
       }
     )
   );

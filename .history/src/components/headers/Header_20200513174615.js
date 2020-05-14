@@ -37,7 +37,7 @@ function header(props) {
                 props.onLogout()
               }}
             >
-              <Text style={{padding:7,color:"#ccc"}}>Logout</Text>
+              <Text style={{padding:7}}>Logout</Text>
             </TouchableWithoutFeedback>
           </View>
         )}
@@ -61,12 +61,12 @@ const styles = {
     color: "#fff",
   },
   logout: {
-    // alignItems:"center",
+    alignItems:"center",
     flexDirection: "row",
     position: "absolute",
-    right: 10,
+    right: 5,
     top: 27,
-    width: "60%",
+    width: "70%",
     backgroundColor: "#fff",
     zIndex: 1000,
     shadowColor: "black",
@@ -74,8 +74,7 @@ const styles = {
     shadowOpacity: 0.26,
     shadowRadius: 8,
     borderRadius:6,
-    elevation:5,
-    // height:100
+    elevation:5
   },
 };
 

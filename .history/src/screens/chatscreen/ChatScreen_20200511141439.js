@@ -419,7 +419,7 @@ class ChatScreen extends React.Component {
     const uid = await firebase.auth().currentUser.uid;
     await this.updateCurrentChannel(message);
     await this._updateCurrentUser(uid, message);
-    await this._updateFriendsChannel(message);
+    await this._updateFriendsChannel(lastMessage);
   };
   updateCurrentChannel = async (lastMessage) => {
     try {

@@ -39,7 +39,7 @@ export default class Chat extends React.Component {
   }
 
   componentWillUnmount() {
-    this.threadsUnscribe();
+    //this.threadsUnscribe();
   }
 
   loadChannelList = async (querySnapshot) => {
