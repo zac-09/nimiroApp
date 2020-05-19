@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "native-base";
+import { View, Text,  } from "native-base";
 import * as Lists from "../../components/lists";
 import * as firebase from "firebase";
 import Toast from "react-native-root-toast";
@@ -7,7 +7,7 @@ import FeedInput from "../../components/inputs/FeedInput";
 import { logo } from "../../assets";
 import { ScrollView } from "react-native";
 import firebaseSDK from "../../backend/Firebase";
-import { TouchableWithoutFeedback } from "react-native";
+import {TouchableWithoutFeedback} from 'react-native'
 export default class Feed extends React.Component {
   constructor(props) {
     super(props);
@@ -83,22 +83,29 @@ export default class Feed extends React.Component {
   render() {
     const { feed } = this.state;
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView>
-          <FeedInput
-            avator={{ uri: this.state.avator }}
-            createPost={() =>
-              this.props.navigation.navigate("Post", { post: "feeds" })
-            }
-          />
-          <Lists.FeedList
-            feed={feed}
-            onLike={this.like}
-            onUnlike={(id) => this.like(id, -1)}
-            onFeedItemClicked={this.openComments}
-          />
-        </ScrollView>
-      </View>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          const modal = this.props.navigation.getParam("modal");
+          modal();
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <ScrollView>
+            <FeedInput
+              avator={{ uri: this.state.avator }}
+              createPost={() =>
+                this.props.navigation.navigate("Post", { post: "feeds" })
+              }
+            />
+            <Lists.FeedList
+              feed={feed}
+              onLike={this.like}
+              onUnlike={(id) => this.like(id, -1)}
+              onFeedItemClicked={this.openComments}
+            />
+          </ScrollView>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

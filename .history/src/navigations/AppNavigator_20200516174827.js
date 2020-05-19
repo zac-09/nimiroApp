@@ -90,18 +90,18 @@ const InitialStack = createStackNavigator(
     MainScreen: {
       screen: HomeStack,
       navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header
-            navData={navigation}
-            nomargin
-            title="RotaApp"
-            onLogout={() => {
-              showToast("logged out");
-              navigation.navigate({ routeName: "SignedOut" });
-              firebaseSDK.logout();
-            }}
-          />
-        ),
+        // header: (
+        //   <Header
+        //     navData={navigation}
+        //     nomargin
+        //     title="RotaApp"
+        //     onLogout={() => {
+        //       showToast("logged out");
+        //       navigation.navigate({ routeName: "SignedOut" });
+        //       firebaseSDK.logout();
+        //     }}
+        //   />
+        // ),
       }),
     },
     ChatScreen: {

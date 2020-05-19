@@ -89,7 +89,12 @@ export default class Maps extends React.Component {
         : false
       : false;
     return (
-     
+      <TouchableWithoutFeedback
+        onPress={() => {
+          const modal = this.props.navigation.getParam("modal");
+          modal();
+        }}
+      >
         <View style={styles.container}>
           <MapView
             initialRegion={{
@@ -188,7 +193,7 @@ export default class Maps extends React.Component {
             </View>
           )}
         </View>
-     
+      </TouchableWithoutFeedback>
     );
   }
 }

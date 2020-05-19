@@ -1,29 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { Header, Left, Body, Title, Right } from "native-base";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
 import connect from "../../assets/connect.png";
-import {
-  Image,
-  TouchableWithoutFeedback,
-  Text,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { Image, TouchableWithoutFeedback, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Toast from "react-native-root-toast";
 import * as firebase from "firebase";
 
+
 function header(props) {
   const [logout, setIsLogout] = useState(false);
-  const visibilityHandler = () => {
-    setIsLogout(false);
-  };
-  const setLogoutHandler = useCallback(() => {
-    return setIsLogout((prevState) => false);
-  }, [logout]);
-
-
+  
   return (
     <Header
       iosBarStyle="dark-content"
@@ -42,20 +30,19 @@ function header(props) {
       </Body>
       <Right>
         {logout && (
-          <TouchableWithoutFeedback onBlur={visibilityHandler}>
-            <View style={styles.logout}>
-              <TouchableOpacity
-                onBlur={() => {
-                  setIsLogout(false);
-                }}
-                onPress={() => {
-                  props.onLogout();
-                }}
-              >
-                <Text style={{ padding: 7, color: "#ccc" }}>Logout</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={styles.logout}>
+            <TouchableWithoutFeedback
+            onBlur={()=>{
+              setIsLogout(false);
+            }}
+              onPress={() => {
+                
+                props.onLogout()
+              }}
+            >
+              <Text style={{padding:7,color:"#ccc"}}>Logout</Text>
+            </TouchableWithoutFeedback>
+          </View>
         )}
         <Ionicons
           onPress={() => {
@@ -89,8 +76,8 @@ const styles = {
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.26,
     shadowRadius: 8,
-    borderRadius: 6,
-    elevation: 5,
+    borderRadius:6,
+    elevation:5,
     // height:100
   },
 };

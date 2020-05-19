@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text } from "native-base";
-import { TouchableWithoutFeedback } from "react-native";
+import { View, Text,  } from "native-base";
+import {TouchableWithoutFeedback} from 'react-native'
 import * as Lists from "../../components/lists";
 
 import * as firebase from "firebase";
@@ -8,7 +8,7 @@ import Toast from "react-native-root-toast";
 import firebaseSDK from "../../backend/Firebase";
 import { ScrollView } from "react-native";
 import FeedInput from "../../components/inputs/FeedInput";
-import Header from "../../components/headers/Header";
+import Header from "../../components/headers/Header"
 export default class Roc extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -23,8 +23,8 @@ export default class Roc extends React.Component {
             firebaseSDK.logout();
           }}
         />
-      ),
-    };
+      )
+    }
   };
   constructor(props) {
     super(props);
@@ -100,22 +100,30 @@ export default class Roc extends React.Component {
   render() {
     const { roc } = this.state;
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView>
-          <FeedInput
-            avator={{ uri: this.state.avator }}
-            createPost={() =>
-              this.props.navigation.navigate("Post", { post: "events" })
-            }
-          />
-          <Lists.RocList
-            roc={roc}
-            onRocItemClicked={this.openComments}
-            onLike={this.like}
-            onUnlike={(id) => this.like(id, -1)}
-          />
-        </ScrollView>
-      </View>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          const modal = this.props.navigation.getParam("modal");
+          this.props.navigation.setParams({"logout":false})
+          // modal();
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <ScrollView>
+            <FeedInput
+              avator={{ uri: this.state.avator }}
+              createPost={() =>
+                this.props.navigation.navigate("Post", { post: "events" })
+              }
+            />
+            <Lists.RocList
+              roc={roc}
+              onRocItemClicked={this.openComments}
+              onLike={this.like}
+              onUnlike={(id) => this.like(id, -1)}
+            />
+          </ScrollView>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

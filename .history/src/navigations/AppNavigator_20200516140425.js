@@ -71,12 +71,11 @@ export const HomeStack = createMaterialTopTabNavigator(
     navigationOptions: ({ navigation }) => ({
       header: (
         <Header
-          navData={navigation}
           nomargin
           title="RotaApp"
           onLogout={() => {
             showToast("logged out");
-            navigation.navigate({ routeName: "SignedOut" });
+            navigation.navigation.navigate({ routeName: "SignedOut" });
             firebaseSDK.logout();
           }}
         />
@@ -92,7 +91,7 @@ const InitialStack = createStackNavigator(
       navigationOptions: ({ navigation }) => ({
         header: (
           <Header
-            navData={navigation}
+          navData={navigation}
             nomargin
             title="RotaApp"
             onLogout={() => {

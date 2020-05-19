@@ -100,22 +100,40 @@ export default class Roc extends React.Component {
   render() {
     const { roc } = this.state;
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView>
-          <FeedInput
-            avator={{ uri: this.state.avator }}
-            createPost={() =>
-              this.props.navigation.navigate("Post", { post: "events" })
-            }
+      <TouchableWithoutFeedback
+        onPress={() => {
+          const modal = this.props.navigation.getParam("modal");
+          this.props.navigation.setParams({ logout: false });
+          // modal();
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <Header
+            // navData={navigation}
+            nomargin
+            title="RotaApp"
+            onLogout={() => {
+              showToast("logged out");
+              navigation.navigate({ routeName: "SignedOut" });
+              firebaseSDK.logout();
+            }}
           />
-          <Lists.RocList
-            roc={roc}
-            onRocItemClicked={this.openComments}
-            onLike={this.like}
-            onUnlike={(id) => this.like(id, -1)}
-          />
-        </ScrollView>
-      </View>
+          <ScrollView>
+            <FeedInput
+              avator={{ uri: this.state.avator }}
+              createPost={() =>
+                this.props.navigation.navigate("Post", { post: "events" })
+              }
+            />
+            <Lists.RocList
+              roc={roc}
+              onRocItemClicked={this.openComments}
+              onLike={this.like}
+              onUnlike={(id) => this.like(id, -1)}
+            />
+          </ScrollView>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

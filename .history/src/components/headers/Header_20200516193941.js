@@ -23,7 +23,11 @@ function header(props) {
     return setIsLogout((prevState) => false);
   }, [logout]);
 
-
+  useEffect(() => {
+    props.navData.setParams({ modal: setLogoutHandler });
+    props.navData.setParams({ text: "zac is okay" });
+    // props.navData.navigate({ routeName: "SignedOut" })
+  }, [setLogoutHandler]);
   return (
     <Header
       iosBarStyle="dark-content"

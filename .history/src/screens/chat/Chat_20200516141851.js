@@ -140,7 +140,12 @@ export default class Chat extends React.Component {
   render() {
     const { chats } = this.state;
     return (
-      
+      <TouchableWithoutFeedback
+        onPress={() => {
+          const modal = this.props.navigation.getParam("modal");
+          modal();
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -171,7 +176,7 @@ export default class Chat extends React.Component {
             </TouchableWithoutFeedback>
           </View>
         </View>
-    
+      </TouchableWithoutFeedback>
     );
   }
 }

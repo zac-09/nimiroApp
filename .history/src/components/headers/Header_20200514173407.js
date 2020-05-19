@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { Header, Left, Body, Title, Right } from "native-base";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
 import connect from "../../assets/connect.png";
@@ -16,13 +16,6 @@ import * as firebase from "firebase";
 
 function header(props) {
   const [logout, setIsLogout] = useState(false);
-  const visibilityHandler = () => {
-    setIsLogout(false);
-  };
-  const setLogoutHandler = useCallback(() => {
-    return setIsLogout((prevState) => false);
-  }, [logout]);
-
 
   return (
     <Header
@@ -42,7 +35,11 @@ function header(props) {
       </Body>
       <Right>
         {logout && (
-          <TouchableWithoutFeedback onBlur={visibilityHandler}>
+          <TouchableWithoutFeedback
+            onBlur={() => {
+              setIsLogout(false);
+            }}
+          >
             <View style={styles.logout}>
               <TouchableOpacity
                 onBlur={() => {

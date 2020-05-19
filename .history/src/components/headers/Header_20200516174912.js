@@ -17,13 +17,16 @@ import * as firebase from "firebase";
 function header(props) {
   const [logout, setIsLogout] = useState(false);
   const visibilityHandler = () => {
-    setIsLogout(false);
+    setIsLogout((prevState) => false);
   };
   const setLogoutHandler = useCallback(() => {
     return setIsLogout((prevState) => false);
   }, [logout]);
 
-
+  useEffect(() => {
+    props.navData.setParams({ modal: setLogoutHandler });
+    props.navData.setParams({ text: "zac is okay" });
+  }, [setLogoutHandler]);
   return (
     <Header
       iosBarStyle="dark-content"
