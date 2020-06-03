@@ -18,7 +18,7 @@ import { Image } from "react-native";
 import Post from "../screens/post/Post";
 import Contact from "../screens/contacts/Contacts";
 import Toast from "react-native-root-toast";
-import PickLocationScreen from '../screens/maps/PickLocationscreen'
+import PickLocationScreen from './../screens/maps/PickLocationScreen'
 showToast = (message) => {
   Toast.show(message, {
     duration: Toast.durations.LONG,

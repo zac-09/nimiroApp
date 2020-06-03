@@ -18,7 +18,7 @@ import { Image } from "react-native";
 import Post from "../screens/post/Post";
 import Contact from "../screens/contacts/Contacts";
 import Toast from "react-native-root-toast";
-import PickLocationScreen from '../screens/maps/PickLocationscreen'
+
 showToast = (message) => {
   Toast.show(message, {
     duration: Toast.durations.LONG,
@@ -119,10 +119,6 @@ const InitialStack = createStackNavigator(
       navigationOptions: {
         header: null,
       },
-    },
-    PickLocation: {
-      screen: PickLocationScreen,
-      
     },
     GroupChatScreen: {
       screen: GroupChatScreen,

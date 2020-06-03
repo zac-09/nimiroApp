@@ -269,7 +269,7 @@ export default class Maps extends React.Component {
 										onPress={() => {
 											this.props.navigation.navigate('PickLocation');
 										}}
-										size={28}
+										size={8}
 										color="#fff"
 									/>
 								</View>

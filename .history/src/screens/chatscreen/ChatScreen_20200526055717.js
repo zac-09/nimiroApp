@@ -28,16 +28,15 @@ import firebaseSDK from '../../backend/Firebase';
 const HEIGHT = Dimensions.get('window').height;
 
 class ChatScreen extends React.Component {
-	static navigationOptions = ({ navigation }) => {
-		//return header with Custom View which will replace the original header 
-		return {
-		  header: <Headers.ChatHeader
-		  nomargin
-		  avatar={navigation.getParam("channel").avatar}
-		  name={navigation.getParam("channel").friend.name}
-		  // offset={this.state.offset}
-	  />
-		};
+	static navigationOptions = {
+		title: 'Home',
+		headerStyle: {
+		  backgroundColor: '#f4511e',
+		},
+		headerTintColor: '#fff',
+		headerTitleStyle: {
+		  fontWeight: 'bold',
+		},
 	  };
 	constructor(props) {
 		super(props);
@@ -556,9 +555,7 @@ class ChatScreen extends React.Component {
 							// onSend={messages => this.sendMsg(messages)}
 							minInputToolbarHeight={this.state.minInputToolbarHeight}
 						/>
-						{Platform.OS === 'android' && (
-							<KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-20} />
-						)}
+						{Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />}
 						{this.state.ModalVisible && (
 							<View style={styles.modal}>
 								<ModalCard>

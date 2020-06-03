@@ -33,11 +33,11 @@ export default class Maps extends React.Component {
 			errorMessage: null,
 			markers: [],
 			showDetais: false,
-			details: null,  
+			details: null,
 			type: 'fellowship',
 			title: '',
-			pickedLocation: this.props.navigation.getParam('pickedLocation')
-				? this.props.navigation.getParam('pickedLocation')
+			pickedLocation: props.navigation.getParam('pickedLocation')
+				? props.navigation.getParam('pickedLocation')
 				: '',
 			eventDetails: '',
 			typeIndex: 0,
@@ -200,9 +200,9 @@ export default class Maps extends React.Component {
 					</View>
 				)}
 				{isAddEvent && (
-					<View style={styles.card }>
+					<View style={{ ...styles.card, ...props.style }}>
 						<ScrollView>
-							<View style={styles.cover}>
+							<View style={styles.container}>
 								<Text style={styles.text}>Title:</Text>
 								<View style={styles.nameInput}>
 									<TextInput
@@ -213,10 +213,10 @@ export default class Maps extends React.Component {
 									/>
 								</View>
 							</View>
-							<View style={styles.cover}>
+							<View style={styles.container}>
 								<Text style={styles.text}>type:</Text>
 								<RadioGroup
-									style={{ flexDirection: 'row',marginTop:5,padding:5 }}
+									style={{ flexDirection: 'row' }}
 									defaultChoice={this.state.typeIndex}
 									onChoose={(value, index) => this.setState({ type: value, typeIndex: index })}
 								>
@@ -244,7 +244,7 @@ export default class Maps extends React.Component {
 									</RadioButton>
 								</RadioGroup>
 							</View>
-							<View style={styles.cover}>
+							<View style={styles.container}>
 								<Text style={styles.text}>Details:</Text>
 								<View style={styles.nameInput}>
 									<TextInput
@@ -255,7 +255,7 @@ export default class Maps extends React.Component {
 									/>
 								</View>
 							</View>
-							<View style={styles.cover}>
+							<View style={styles.container}>
 								<Text style={styles.text}>Location:</Text>
 								<View style={styles.nameInput}>
 									<TextInput
@@ -269,7 +269,7 @@ export default class Maps extends React.Component {
 										onPress={() => {
 											this.props.navigation.navigate('PickLocation');
 										}}
-										size={28}
+										size={32}
 										color="#fff"
 									/>
 								</View>
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		padding: 5,
 		fontSize: 16,
-		lineHeight: 16,
+		lineHeight: 10,
 		paddingLeft: 10,
 		paddingTop: 6,
 		paddingBottom: 6,
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		marginTop: 15,
 	},
-	cover: {
+	container: {
 		flexDirection: 'row',
 	},
 	btn: {
