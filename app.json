@@ -4,12 +4,8 @@
     "slug": "rotary",
     "privacy": "public",
     "sdkVersion": "34.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
+    "platforms": ["ios", "android", "web"],
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -20,23 +16,22 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "ug.co.codebits.messenger",
       "config": {
-          "googleMapsApiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
+        "googleMapsApiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
       }
     },
     "android": {
       "package": "ug.co.codebits.messenger",
+      "versionCode": 2,
       "config": {
         "googleMaps": {
-            "apiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
+          "apiKey": "AIzaSyC2Czo7EVSMA3OvrBG8jkPfzRxguzXFy2w"
         }
-    }
+      }
     }
   }
 }
