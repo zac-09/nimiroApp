@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     containerStyle: {
         borderRadius: 5,
         backgroundColor: 'rgba(255, 255, 255, 0.6)',
-        borderWidth: 0
+        borderWidth: 0,
+        flex:1
     },
     header: {
         flexDirection: 'row',
