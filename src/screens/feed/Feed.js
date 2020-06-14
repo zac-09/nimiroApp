@@ -83,7 +83,7 @@ export default class Feed extends React.Component {
   render() {
     const { feed } = this.state;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1,borderRadius:25,overflow:"hidden" }}>
         <ScrollView>
           <FeedInput
             avator={{ uri: this.state.avator }}

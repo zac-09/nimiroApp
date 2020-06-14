@@ -40,7 +40,7 @@ const styles = {
     },
     textInput: {
         backgroundColor: 'transparent',
-        color: '#000',
+        color: '#fff',
         borderBottomWidth: 0,
         fontSize: 14
     }

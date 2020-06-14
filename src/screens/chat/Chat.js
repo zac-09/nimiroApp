@@ -146,6 +146,8 @@ export default class Chat extends React.Component {
             flex: 1,
             position: "relative",
             backgroundColor: "rgba(246,246,246, 0.95)",
+            overflow: 'hidden',
+            borderRadius:25
           }}
         >
           <Lists.ChatList chat={chats} onChatItemClicked={this.openChannel} />

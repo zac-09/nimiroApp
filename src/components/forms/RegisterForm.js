@@ -37,7 +37,7 @@ const RegisterForm = props => {
                     onChoose={(value,index)=>props.onChangeGender(value,index)}
                     >
                     <RadioButton style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} value={"male"}>
-                        <Radio/><Text style={{paddingHorizontal: 10, color: 'blue'}}>Male</Text> 
+                        <Radio/><Text style={{paddingHorizontal: 10, color: '#E807BB'}}>Male</Text> 
                     </RadioButton>
                     <RadioButton style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}} value={"female"}>
                         <Radio/><Text style={{paddingHorizontal: 10, color: '#E807BB'}}>Female</Text>

@@ -557,7 +557,7 @@ class ChatScreen extends React.Component {
 							minInputToolbarHeight={this.state.minInputToolbarHeight}
 						/>
 						{Platform.OS === 'android' && (
-							<KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-20} />
+							<KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={20} />
 						)}
 						{this.state.ModalVisible && (
 							<View style={styles.modal}>

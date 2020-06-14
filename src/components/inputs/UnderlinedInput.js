@@ -64,7 +64,7 @@ const styles = {
   },
   input: {
     fontFamily: "Roboto",
-    color: "#000"
+    color: "#fff"
   },
   error: {
     fontFamily: "Roboto",

@@ -18,11 +18,13 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import * as firebase from "firebase";
 import Pin from "../../components/markers/Pin";
+import NewButton from "../../components/buttons/NewButton";
+
 import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { formatDate } from "../../utils/Validations";
 import { Radio, RadioGroup, RadioButton } from "radio-react-native";
 import Toast from "react-native-root-toast";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default class Maps extends React.Component {
   constructor(props) {
@@ -79,7 +81,11 @@ export default class Maps extends React.Component {
     console.log("btn pressed");
     const uid = firebase.auth().currentUser.uid;
     const { pickedLocation, title, eventDetails, type } = this.state;
-    if (pickedLocation === undefined || pickedLocation === null) {
+    if (
+      pickedLocation === undefined ||
+      pickedLocation === null ||
+      pickedLocation === ""
+    ) {
       return this.showToast("please try to pick location");
     }
     const uploadedData = {
@@ -223,7 +229,7 @@ export default class Maps extends React.Component {
             );
           })}
         </MapView>
-        {!showDetais && (
+        {!showDetais && !isAddEvent && (
           <View style={styles.addContainer}>
             <Feather
               name="plus"
@@ -298,7 +304,7 @@ export default class Maps extends React.Component {
                 <View style={styles.cover}>
                   <Text style={styles.text}>type:</Text>
                   <RadioGroup
-                    style={{ flexDirection: "row", marginTop: 5, padding: 5 }}
+                    style={{ flexDirection: "row", marginTop: 8, padding: 5 }}
                     defaultChoice={this.state.typeIndex}
                     onChoose={(value, index) =>
                       this.setState({ type: value, typeIndex: index })
@@ -364,15 +370,23 @@ export default class Maps extends React.Component {
                     />
                   </View>
                 </View>
-                <View style={styles.btn}>
-                  <Button
-                    color="#850127"
-                    onPress={() => {
-                      this.addEventsHandler();
-                    }}
-                    title="post"
-                  />
-                </View>
+
+                <NewButton
+                  style={{
+                    marginTop:5,
+                    marginLeft: Dimensions.get("window").width * 0.33,
+                    marginBottom:4,
+                    
+                  }}
+                  width={100}
+                  textSize={13}
+                  padding={10}
+                  text="post"
+                  onPress={() => {
+                    this.addEventsHandler();
+                  }}
+                />
+                {/* </View> */}
               </KeyboardAvoidingView>
             </KeyboardAwareScrollView>
           </View>
@@ -388,6 +402,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+
+    borderRadius: 25,
+    overflow: "hidden",
   },
   mapStyle: {
     width: "100%",
@@ -467,7 +484,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 8, 228, 0.9)",
     zIndex: 999,
     position: "absolute",
-    bottom: Dimensions.get('window').height * 0.28,
+    bottom: Dimensions.get("window").height * 0.28,
   },
   content: {
     flexDirection: "row",
@@ -505,21 +522,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 10,
     color: "#fff",
-    marginTop: 15,
+    marginTop: 8,
   },
   cover: {
     flexDirection: "row",
   },
   btn: {
-    width: Dimensions.get("window").width * 0.4,
+    // width: Dimensions.get("window").width * 0.4,
     borderRadius: 100,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.26,
-    shadowRadius: 8,
+    // shadowColor: "black",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.26,
+    // shadowRadius: 8,
     elevation: 5,
-    marginLeft: Dimensions.get("window").width * 0.3,
-    marginTop: 6,
+    marginLeft: Dimensions.get("window").width * 0.4,
+    marginTop: 5,
+    marginBottom:4
   },
   icon: {
     padding: 5,

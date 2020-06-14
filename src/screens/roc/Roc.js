@@ -100,7 +100,7 @@ export default class Roc extends React.Component {
   render() {
     const { roc } = this.state;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1,borderRadius:25,overflow: 'hidden', }}>
         <ScrollView>
           <FeedInput
             avator={{ uri: this.state.avator }}

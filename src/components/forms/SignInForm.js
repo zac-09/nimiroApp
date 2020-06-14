@@ -1,8 +1,10 @@
 import React from 'react';
 import { Form, View, ListItem, CheckBox, Body, Text } from 'native-base';
 import { UnderlinedInput } from '../inputs';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity,ScrollView } from 'react-native';
 import { LgButton } from '../buttons';
+import  NewButton  from '../buttons/NewButton';
+
 
 const SignInForm = props => {
     return (
@@ -40,7 +42,8 @@ const SignInForm = props => {
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <LgButton text='Login' onPress={() => props.onSubmitPress()} />
+                {/* <LgButton text='Login' onPress={() => props.onSubmitPress()} /> */}
+                <NewButton text="Login"  onPress={() => props.onSubmitPress()} width={170} />
             </View>
         </Form>
     )
@@ -65,13 +68,15 @@ const styles = {
         fontSize: 16,
         color: '#fff',
         fontFamily: 'Roboto',
-        marginLeft: 15
+        marginLeft: 15,
     },
     forgotText: {
         fontSize: 16,
         color: '#fff',
         fontFamily: 'Roboto',
-        marginLeft:40
+        marginLeft:40,
+        marginTop:15
+
     },
     buttonContainer: {
         paddingTop: 30,

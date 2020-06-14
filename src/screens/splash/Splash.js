@@ -19,10 +19,10 @@ class Splash extends React.Component {
                     <View style={{height: 100, width: 500, alignItems: 'center', justifyContent: 'center'}}>
                         <LottieView
                             ref={anim => this.animation = anim}
-                            source={require("../../assets/anim/progress_bar.json")}
+                            source={require("../../assets/anim/trail_loading.json")}
                             style={{height: 200, width: 400, backgroundColor: 'transparent',}}
                         />
-                    </View>
+                    </View> 
                 </View>
             </Container>
         )

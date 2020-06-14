@@ -9,7 +9,7 @@ import ConfigureGroupScreen from "../screens/groups/ConfigureGroupScreen";
 import GroupChatScreen from "../screens/groups/GroupChatScreen";
 import firebaseSDK from "../backend/Firebase";
 import Chat from "../screens/chat/Chat";
-import { ImageBackground, Text, View } from "react-native";
+import { ImageBackground, Dimensions, View } from "react-native";
 import { bg2 } from "../assets";
 import Header from "../components/headers/Header";
 import User from "../screens/user/User";
@@ -31,7 +31,7 @@ showToast = (message) => {
 };
 const AuthStack = createStackNavigator(
   {
-    Welcome: Screens.Welcome,
+    // Welcome: Screens.Welcome,
     Login: Screens.Login,
     Register: Screens.Register,
     Forgot: Screens.Forgot,
@@ -39,7 +39,7 @@ const AuthStack = createStackNavigator(
     User: User,
   },
   {
-    initialRouteName: "Welcome",
+    // initialRouteName: "Welcome",
     headerMode: "none",
     cardStyle: {
       backgroundColor: "rgba(0,0,0,0)",
@@ -62,7 +62,7 @@ export const HomeStack = createMaterialTopTabNavigator(
         fontWeight: "900",
       },
       tabStyle: {
-        width: 100,
+        width: Dimensions.get("window").width * .26,
       },
       style: {
         backgroundColor: "transparent",

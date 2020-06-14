@@ -1,149 +1,178 @@
-import React from 'react';
-import styled from 'styled-components/native'
+import React from "react";
+import styled from "styled-components/native";
 import AnimatedLoader from "react-native-animated-loader";
-import { logo, bg2} from '../../assets'
-import { Forms } from '../../components';
-import { TouchableOpacity, Text, Dimensions, Image } from 'react-native';
+import { logo, bg2 } from "../../assets";
+import { Forms } from "../../components";
+import {
+  TouchableOpacity,
+  Text,
+  Dimensions,
+  Image,
+  ScrollView,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import firebaseSDK from '../../backend/Firebase';
-import Toast from 'react-native-root-toast';
-import { validator } from '../../utils/Validations';
-import Storage from '../../utils/Storage';
-import * as firebase from 'firebase';
+import firebaseSDK from "../../backend/Firebase";
+import Toast from "react-native-root-toast";
+import { validator } from "../../utils/Validations";
+import Storage from "../../utils/Storage";
+import * as firebase from "firebase";
 
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get("screen");
 
 class Login extends React.Component {
+  state = {
+    checked: false,
+    email: "",
+    emailError: null,
+    password: "",
+    passwordError: null,
+    loading: false,
+  };
 
-    state = {
-        checked: false,
-        email: '',
-        emailError: null,
-        password: '',
-        passwordError: null,
-        loading: false
+  navigate = (route) => {
+    this.props.navigation.navigate(route);
+  };
+
+  handleLogin = () => {
+    //write login logic here
+    const { email, emailError, password, passwordError, checked } = this.state;
+    const isValid = !(emailError || passwordError);
+    console.log(isValid);
+    if (isValid === true) {
+      this.setState({ loading: true });
+      const user = {
+        email,
+        password,
+      };
+      firebaseSDK.login(user, this.success, this.failure);
+    } else {
+      this.showToast("Some fields are invalid");
+    }
+  };
+
+  showToast = (message) => {
+    Toast.show(message, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
+  };
+
+  success = async () => {
+    const { email, password, checked } = this.state;
+    const uid = firebase.auth().currentUser.uid;
+    console.log(`Your user id is: ${uid}`);
+    if (checked) {
+      await Storage.set("userid", uid);
+      await Storage.set("password", password);
+      await Storage.set("email", email);
     }
 
-    navigate = route => {
-        this.props.navigation.navigate(route)
-    }
+    this.setState({ loading: false });
+    this.navigate("SignedIn");
+  };
 
-    handleLogin = () => {
-        //write login logic here
-        const { email, emailError, password, passwordError, checked } = this.state
-        const isValid = !(emailError || passwordError);
-        console.log(isValid);
-        if(isValid === true){
-            this.setState({loading: true})
-            const user = {
-                email,
-                password
-            }
-            firebaseSDK.login(user, this.success, this.failure)
-        }else {
-            this.showToast("Some fields are invalid")
-        }
-    }
+  failure = (error) => {
+    this.setState({ loading: false });
+    this.showToast(error.message.toString());
+  };
 
-    showToast = message => {
-        Toast.show(message, {
-            duration: Toast.durations.LONG,
-            position: Toast.positions.BOTTOM,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-        });
-    }
-
-    success = async() => {
-        const { email, password, checked } = this.state
-        const uid = firebase.auth().currentUser.uid
-        console.log(`Your user id is: ${uid}`)
-        if(checked) {
-            await Storage.set('userid', uid)
-            await Storage.set('password', password);
-            await Storage.set('email', email)
-        }
-        
-        this.setState({loading: false});
-        this.navigate('SignedIn');
-    }
-
-    failure = error => {
-        this.setState({loading: false});
-        this.showToast(error.message.toString());
-    }
-
-
-    render(){
-        const { email, emailError, password, passwordError, checked, loading } = this.state
-        return (
-            <Container>
-                <KeyboardAwareScrollView
-                    style={{flex: 1, minHeight: height}}
-                >
-                    <Content>
-                        <Image source={logo} resizeMode='contain' style={styles.logo} />
-                        <Forms.SignInForm 
-                            email={email} 
-                            password={password} 
-                            onEmailChange={ text => this.setState({ email: text, emailError: validator('email', text)})}
-                            emailError={emailError}
-                            onPasswordChange={ text => this.setState({ password: text, passwordError: validator('password', text)})}
-                            passwordError={passwordError}
-                            onRemeberChange={() => this.setState(prev => ({ checked: !prev.checked}))}
-                            onPasswordRecovery={() => this.navigate('Forgot')}
-                            onSubmitPress={this.handleLogin}
-                            checked={checked}/>
-                        <TouchableOpacity style={styles.accountContainer} onPress={() => this.navigate('Register')}>
-                            <Text style={styles.accountText}>Don't have an account? Sign up here</Text>
-                        </TouchableOpacity>
-                    </Content>
-                </KeyboardAwareScrollView>
-                <AnimatedLoader
-                    visible={loading}
-                    overlayColor="rgba(0,0,0,0.25)"
-                    source={require("../../assets/anim/trail_loading.json")}
-                    animationStyle={styles.lottie}
-                    speed={1}
-                />
-            </Container>
-        )
-    }
+  render() {
+    const {
+      email,
+      emailError,
+      password,
+      passwordError,
+      checked,
+      loading,
+    } = this.state;
+    return (
+      <ScrollView>
+        <Container>
+          <KeyboardAwareScrollView style={{ flex: 1, minHeight: height }}>
+            <Content>
+              <Image source={logo} resizeMode="contain" style={styles.logo} />
+              <Forms.SignInForm
+                email={email}
+                password={password}
+                onEmailChange={(text) =>
+                  this.setState({
+                    email: text,
+                    emailError: validator("email", text),
+                  })
+                }
+                emailError={emailError}
+                onPasswordChange={(text) =>
+                  this.setState({
+                    password: text,
+                    passwordError: validator("password", text),
+                  })
+                }
+                passwordError={passwordError}
+                onRemeberChange={() =>
+                  this.setState((prev) => ({ checked: !prev.checked }))
+                }
+                onPasswordRecovery={() => this.navigate("Forgot")}
+                onSubmitPress={this.handleLogin}
+                checked={checked}
+              />
+              <TouchableOpacity
+                style={styles.accountContainer}
+                onPress={() => this.navigate("Register")}
+              >
+                <Text style={styles.accountText}>
+                  Don't have an account? Sign up here
+                </Text>
+              </TouchableOpacity>
+            </Content>
+          </KeyboardAwareScrollView>
+          <AnimatedLoader
+            visible={loading}
+            overlayColor="rgba(0,0,0,0.25)"
+            source={require("../../assets/anim/trail_loading.json")}
+            animationStyle={styles.lottie}
+            speed={1}
+          />
+        </Container>
+      </ScrollView>
+    );
+  }
 }
 
 export default Login;
 
 const styles = {
-    accountContainer: {
-        marginTop: 20,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 10
-    },
-    accountText: {
-        fontSize: 14,
-        color: '#fff',
-        fontFamily: 'Roboto',
-        textAlign: 'center'
-    },
-    lottie: {
-        width: 200,
-        height: 200
-    },
-    logo: {
-        width: 0.7 * width,
-        marginBottom: 20
-    }
-}
+  accountContainer: {
+    marginTop: 20,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  accountText: {
+    fontSize: 14,
+    color: "#fff",
+    fontFamily: "Roboto",
+    textAlign: "center",
+  },
+  lottie: {
+    width: 200,
+    height: 200,
+  },
+  logo: {
+    width: 0.7 * width,
+    marginBottom: 20,
+  },
+};
 const Container = styled.View`
-    flex: 1;
-`
+  flex: 1;
+`;
 
 const Content = styled.View`
-    flex: 1;
-    align-items: center;
-    position: relative;
-`
+  flex: 1;
+  align-items: center;
+  position: relative;
+`;
