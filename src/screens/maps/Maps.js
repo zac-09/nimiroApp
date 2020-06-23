@@ -8,8 +8,6 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   View,
-  ScrollView,
-  Button,
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
@@ -19,13 +17,14 @@ import * as Permissions from "expo-permissions";
 import * as firebase from "firebase";
 import Pin from "../../components/markers/Pin";
 import NewButton from "../../components/buttons/NewButton";
-
+import DatePicker from "react-native-datepicker";
 import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { formatDate } from "../../utils/Validations";
 import { Radio, RadioGroup, RadioButton } from "radio-react-native";
 import Toast from "react-native-root-toast";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
+import moment from "moment";
+import Feed from "../feed/Feed";
 export default class Maps extends React.Component {
   constructor(props) {
     super(props);
@@ -46,9 +45,14 @@ export default class Maps extends React.Component {
       eventDetails: "",
       typeIndex: 0,
       isAddEvent: false,
+      date: "",
+      expiryDate: "",
     };
 
-    this.threadsRef = firebase.firestore().collection("maps");
+    this.threadsRef = firebase
+      .firestore()
+      .collection("maps")
+      .where("end_date", ">=", new Date());
 
     this.threadsUnscribe = "null";
   }
@@ -79,14 +83,26 @@ export default class Maps extends React.Component {
   }
   addEventsHandler = async () => {
     console.log("btn pressed");
+    console.log("date is", this.state.date);
+
     const uid = firebase.auth().currentUser.uid;
-    const { pickedLocation, title, eventDetails, type } = this.state;
+    const {
+      pickedLocation,
+      title,
+      eventDetails,
+      type,
+      date,
+      expiryDate,
+    } = this.state;
     if (
       pickedLocation === undefined ||
       pickedLocation === null ||
       pickedLocation === ""
     ) {
       return this.showToast("please try to pick location");
+    }
+    if (date === undefined || date === null || date === "") {
+      return this.showToast("please chose a start date");
     }
     const uploadedData = {
       title,
@@ -95,16 +111,43 @@ export default class Maps extends React.Component {
         type === "fellowship" ? "CIwRusFj5lv1Zt7FCXrp" : "h8HvLOFL3XMOv6NNh98C",
       status_id: "f9My8BXWM85idUmUr6ch",
       description: eventDetails,
-      starting_date: new Date(),
-      end_date: new Date(),
+      starting_date: new Date(moment(date)),
+      end_date: new Date(moment(expiryDate)),
       created_by: uid,
     };
     await firebase
       .firestore()
       .collection("maps")
       .add(uploadedData)
-      .then(() => {
+      .then(async () => {
         this.setState({ isAddEvent: false });
+        const data = {
+          comments: [],
+          likes: 0,
+          created_by: firebase.auth().currentUser.uid,
+          date_created: new Date(),
+          content: {
+            text: title,
+            map: pickedLocation,
+          },
+        };
+        if (type === "fellowship") {
+          await firebase
+            .firestore()
+            .collection("feeds")
+            .add(data)
+            .then((doc) => {
+              console.log("the added feed is", doc);
+            });
+        } else {
+          await firebase
+            .firestore()
+            .collection("events")
+            .add(data)
+            .then((doc) => {
+              console.log("the added feed is", doc);
+            });
+        }
 
         this.showToast("event successfully added");
       });
@@ -370,13 +413,124 @@ export default class Maps extends React.Component {
                     />
                   </View>
                 </View>
+                <View style={styles.cover}>
+                  <Text style={styles.text}>date:</Text>
+
+                  <DatePicker
+                    style={{ padding: 5, width: "75%", marginTop: 5 }}
+                    date={this.state.date}
+                    mode="datetime"
+                    placeholder="select date"
+                    format="LLLL"
+                    minDate={new Date()}
+                    maxDate="2030-01-01"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    is24Hour={false}
+                    showIcon={false}
+                    customStyles={{
+                      dateIcon: {
+                        position: "absolute",
+                        left: 0,
+                        // top: 4,
+                        marginLeft: 0,
+                        // color: Colors.primary,
+                      },
+                      dateText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      placeholderText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      dateInput: {
+                        flexGrow: 1,
+                        alignItems: "center",
+                        borderRadius: 10,
+                        marginRight: 10,
+                        backgroundColor: "rgba(0, 8, 228, 0.9)",
+                        flex: 1,
+                        padding: 5,
+                        fontSize: 16,
+                        lineHeight: 16,
+                        paddingLeft: 10,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        paddingRight: 0,
+                        color: "white",
+                        borderWidth: 0.8,
+                        borderColor: "#fff",
+                      },
+                      // ... You can check the source to find the other keys.
+                    }}
+                    onDateChange={(date) => {
+                      this.setState({ date: date });
+                    }}
+                  />
+                </View>
+                <View style={styles.cover}>
+                  <Text style={styles.text}>expiry date:</Text>
+
+                  <DatePicker
+                    style={{ padding: 5, width: "75%", marginTop: 5 }}
+                    date={this.state.expiryDate}
+                    mode="datetime"
+                    placeholder="choose end date"
+                    format="LLLL"
+                    minDate={new Date()}
+                    maxDate="2030-01-01"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    is24Hour={false}
+                    showIcon={false}
+                    customStyles={{
+                      dateIcon: {
+                        position: "absolute",
+                        left: 0,
+                        // top: 4,
+                        marginLeft: 0,
+                        // color: Colors.primary,
+                      },
+                      dateText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      placeholderText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      dateInput: {
+                        flexGrow: 1,
+                        alignItems: "center",
+                        borderRadius: 10,
+                        marginRight: 10,
+                        backgroundColor: "rgba(0, 8, 228, 0.9)",
+                        flex: 1,
+                        padding: 5,
+                        fontSize: 16,
+                        lineHeight: 16,
+                        paddingLeft: 15,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        paddingRight: 0,
+                        color: "white",
+                        borderWidth: 0.8,
+                        borderColor: "#fff",
+                      },
+                      // ... You can check the source to find the other keys.
+                    }}
+                    onDateChange={(date) => {
+                      this.setState({ expiryDate: date });
+                    }}
+                  />
+                </View>
 
                 <NewButton
                   style={{
-                    marginTop:5,
+                    marginTop: 5,
                     marginLeft: Dimensions.get("window").width * 0.33,
-                    marginBottom:4,
-                    
+                    marginBottom: 4,
                   }}
                   width={100}
                   textSize={13}
@@ -477,14 +631,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.26,
     shadowRadius: 8,
     backgroundColor: "rgba(0, 8, 228, 0.8)",
-    height: Dimensions.get("window").height * 0.45,
+    height: Dimensions.get("window").height * 0.6,
     flexDirection: "column",
     elevation: 5,
     borderRadius: 18,
     backgroundColor: "rgba(0, 8, 228, 0.9)",
     zIndex: 999,
     position: "absolute",
-    bottom: Dimensions.get("window").height * 0.28,
+    bottom: Dimensions.get("window").height * 0.1,
   },
   content: {
     flexDirection: "row",
@@ -537,7 +691,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginLeft: Dimensions.get("window").width * 0.4,
     marginTop: 5,
-    marginBottom:4
+    marginBottom: 4,
   },
   icon: {
     padding: 5,
