@@ -57,6 +57,8 @@ class RocItem extends React.Component {
     const image = content.image;
     const video = content.video;
     const comm = comments.length;
+    const details = content.details;
+
     return (
       <Card containerStyle={styles.containerStyle}>
         <TouchableWithoutFeedback onPress={() => onItemPressed(id)}>
@@ -93,6 +95,9 @@ class RocItem extends React.Component {
               {map ? (
                 <MapPreview location={map} style={styles.mapPreview} />
               ) : null}
+                {details ? (
+                <Text style={styles.contentText}>{details}</Text>
+              ) : null}
             </View>
             <View style={styles.actions}>
               <View style={styles.likesContainer}>
@@ -108,7 +113,7 @@ class RocItem extends React.Component {
                 <Ionicons
                   name="ios-chatboxes"
                   size={32}
-                  onPress={() => this.like()}
+                  onPress={() => onItemPressed(id)}
                   color="#2699FB"
                 />
                 <Text style={styles.actionsText}>{comm}</Text>
@@ -196,8 +201,7 @@ const styles = StyleSheet.create({
   mapPreview: {
     width: "100%",
     maxWidth: 350,
-    height: 300,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    height: 230,
+   
   },
 });

@@ -68,6 +68,7 @@ class FeedItem extends React.Component {
     const video = content.video;
     const comm = comments.length;
     const map = content.map;
+    const details = content.details;
     return (
       <Card containerStyle={styles.containerStyle}>
         <TouchableWithoutFeedback onPress={() => this.itemPressed(id)}>
@@ -103,6 +104,9 @@ class FeedItem extends React.Component {
               {map ? (
                 <MapPreview location={map} style={styles.mapPreview} />
               ) : null}
+              {details ? (
+                <Text style={styles.contentText}>{details}</Text>
+              ) : null}
             </View>
             <View style={styles.actions}>
               <View style={styles.likesContainer}>
@@ -118,7 +122,7 @@ class FeedItem extends React.Component {
                 <Ionicons
                   name="ios-chatboxes"
                   size={32}
-                  onPress={() => this.like()}
+                  onPress={() => this.itemPressed(id)}
                   color="#2699FB"
                 />
                 <Text style={styles.actionsText}>{comm}</Text>
@@ -209,8 +213,6 @@ const styles = StyleSheet.create({
   mapPreview: {
     width: "100%",
     maxWidth: 350,
-    height: 300,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    height: 230,
   },
 });

@@ -5,7 +5,13 @@ const MapPreview = (props) => {
   let imagePreviewUrl;
 
   if (props.location) {
-    imagePreviewUrl = `https://maps.googleapis.com/maps/api/staticmap?center=0.32740206163444174,32.59780179709196&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:A%7C0.32740206163444174,32.59780179709196&key=AIzaSyC2Czo7EVSMA3OvrBG8jkPfzRxguzXFy2w`;
+    imagePreviewUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${
+      props.location.lat
+    },${
+      props.location.long
+    }&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:A%7C${
+      props.location.lat
+    },${props.location.long}&key=AIzaSyC2Czo7EVSMA3OvrBG8jkPfzRxguzXFy2w`;
   }
   //0.32740206163444174
   //32.59780179709196

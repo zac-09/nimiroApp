@@ -45,8 +45,11 @@ export default class Maps extends React.Component {
       eventDetails: "",
       typeIndex: 0,
       isAddEvent: false,
-      date: "",
-      expiryDate: "",
+      date: new Date(),
+      expiryDate: new Date(),
+      editMode: false,
+      editedEvent: null,
+      evenId: "",
     };
 
     this.threadsRef = firebase
@@ -93,6 +96,7 @@ export default class Maps extends React.Component {
       type,
       date,
       expiryDate,
+      eventId,
     } = this.state;
     if (
       pickedLocation === undefined ||
@@ -115,6 +119,26 @@ export default class Maps extends React.Component {
       end_date: new Date(moment(expiryDate)),
       created_by: uid,
     };
+    if (this.state.editMode) {
+      await firebase
+        .firestore()
+        .collection("maps")
+        .doc(eventId)
+        .update({
+          title,
+          location: pickedLocation,
+          classification_id:
+            type === "fellowship"
+              ? "CIwRusFj5lv1Zt7FCXrp"
+              : "h8HvLOFL3XMOv6NNh98C",
+          status_id: "f9My8BXWM85idUmUr6ch",
+          description: eventDetails,
+          starting_date: new Date(moment(date)),
+          end_date: new Date(moment(expiryDate)),
+        });
+      this.showToast("event successfully edited");
+      return;
+    }
     await firebase
       .firestore()
       .collection("maps")
@@ -129,6 +153,7 @@ export default class Maps extends React.Component {
           content: {
             text: title,
             map: pickedLocation,
+            details: eventDetails,
           },
         };
         if (type === "fellowship") {
@@ -136,16 +161,28 @@ export default class Maps extends React.Component {
             .firestore()
             .collection("feeds")
             .add(data)
-            .then((doc) => {
-              console.log("the added feed is", doc);
+            .then(async (docRef) => {
+              await firebase
+                .firestore()
+                .collection("feeds")
+                .doc(docRef.id)
+                .update({
+                  id: docRef.id,
+                });
             });
         } else {
           await firebase
             .firestore()
             .collection("events")
             .add(data)
-            .then((doc) => {
-              console.log("the added feed is", doc);
+            .then(async (docRef) => {
+              await firebase
+                .firestore()
+                .collection("events")
+                .doc(docRef.id)
+                .update({
+                  id: docRef.id,
+                });
             });
         }
 
@@ -201,6 +238,7 @@ export default class Maps extends React.Component {
     try {
       querySnapshot.forEach((doc) => {
         const marker = doc.data();
+        marker.id = doc.id;
         data.push(marker);
       });
     } catch (error) {
@@ -212,7 +250,14 @@ export default class Maps extends React.Component {
   };
 
   render() {
-    const { location, markers, showDetais, details, isAddEvent } = this.state;
+    const {
+      location,
+      markers,
+      showDetais,
+      details,
+      isAddEvent,
+      editMode,
+    } = this.state;
     const canceled = details
       ? details.status_id === "b0Q7JzsYXBBeBLbG9nb0"
         ? true
@@ -228,7 +273,7 @@ export default class Maps extends React.Component {
           }}
           style={styles.mapStyle}
           onPress={() => {
-            this.setState({ isAddEvent: false });
+            this.setState({ isAddEvent: false, editMode: false });
           }}
         >
           {markers.map((el, id) => {
@@ -252,9 +297,26 @@ export default class Maps extends React.Component {
                   pinColor={markerColor}
                   title={marker.title}
                   description={marker.description}
-                  onPress={() =>
-                    this.setState({ details: el, showDetais: true })
-                  }
+                  onPress={() => {
+                    if (el.created_by !== firebase.auth().currentUser.uid) {
+                      return this.setState({ details: el, showDetais: true });
+                    }
+                    this.setState({
+                      pickedLocation: el.location,
+                      title: el.title,
+                      date: formatDate(el.starting_date.toDate()),
+                      expiryDate: formatDate(el.end_date.toDate()),
+                      eventDetails: el.description,
+                      type:
+                        el.classification_id === "CIwRusFj5lv1Zt7FCXrp"
+                          ? "fellowship"
+                          : "function",
+                      editMode: true,
+                      eventId: el.id,
+                      showDetais: false,
+                      isAddEvent: false,
+                    });
+                  }}
                 >
                   <Pin color={markerColor} />
                 </Marker>
@@ -267,7 +329,26 @@ export default class Maps extends React.Component {
                 pinColor={markerColor}
                 title={marker.title}
                 description={marker.description}
-                onPress={() => this.setState({ details: el, showDetais: true })}
+                onPress={() => {
+                  if (el.created_by !== firebase.auth().currentUser.uid) {
+                    return this.setState({ details: el, showDetais: true });
+                  }
+                  this.setState({
+                    pickedLocation: el.location,
+                    title: el.title,
+                    date: formatDate(el.starting_date.toDate()),
+                    expiryDate: formatDate(el.end_date.toDate()),
+                    eventDetails: el.description,
+                    type:
+                      el.classification_id === "CIwRusFj5lv1Zt7FCXrp"
+                        ? "fellowship"
+                        : "function",
+                    editMode: true,
+                    eventId: el.id,
+                    showDetais: false,
+                    isAddEvent: false,
+                  });
+                }}
               />
             );
           })}
@@ -280,7 +361,7 @@ export default class Maps extends React.Component {
               color="#fff"
               onPress={() => {
                 this.setState((prevState) => {
-                  return { isAddEvent: !prevState.isAddEvent };
+                  return { isAddEvent: true, editMode: false };
                 });
               }}
             />
@@ -326,7 +407,7 @@ export default class Maps extends React.Component {
             </TouchableWithoutFeedback>
           </View>
         )}
-        {isAddEvent && (
+        {isAddEvent === true || editMode === true ? (
           <View style={styles.card}>
             <KeyboardAwareScrollView>
               <KeyboardAvoidingView
@@ -418,7 +499,7 @@ export default class Maps extends React.Component {
 
                   <DatePicker
                     style={{ padding: 5, width: "75%", marginTop: 5 }}
-                    date={this.state.date}
+                    date={moment(this.state.date)}
                     mode="datetime"
                     placeholder="select date"
                     format="LLLL"
@@ -474,7 +555,7 @@ export default class Maps extends React.Component {
 
                   <DatePicker
                     style={{ padding: 5, width: "75%", marginTop: 5 }}
-                    date={this.state.expiryDate}
+                    date={moment(this.state.expiryDate)}
                     mode="datetime"
                     placeholder="choose end date"
                     format="LLLL"
@@ -544,7 +625,7 @@ export default class Maps extends React.Component {
               </KeyboardAvoidingView>
             </KeyboardAwareScrollView>
           </View>
-        )}
+        ) : null}
       </View>
     );
   }
@@ -636,7 +717,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderRadius: 18,
     backgroundColor: "rgba(0, 8, 228, 0.9)",
-    zIndex: 999,
+    zIndex: 10000,
     position: "absolute",
     bottom: Dimensions.get("window").height * 0.1,
   },
