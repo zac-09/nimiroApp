@@ -148,7 +148,7 @@ const AVATAR_DIMENSIONS = 50;
 const styles = StyleSheet.create({
   containerStyle: {
     borderRadius: 5,
-    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     borderWidth: 0,
     flex: 1,
   },

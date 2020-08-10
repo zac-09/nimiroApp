@@ -18,7 +18,7 @@ import { Image } from "react-native";
 import Post from "../screens/post/Post";
 import Contact from "../screens/contacts/Contacts";
 import Toast from "react-native-root-toast";
-import PickLocationScreen from '../screens/maps/PickLocationscreen'
+import PickLocationScreen from "../screens/maps/PickLocationscreen";
 showToast = (message) => {
   Toast.show(message, {
     duration: Toast.durations.LONG,
@@ -41,10 +41,13 @@ const AuthStack = createStackNavigator(
   {
     // initialRouteName: "Welcome",
     headerMode: "none",
+
+    // header: null,
     cardStyle: {
       backgroundColor: "rgba(0,0,0,0)",
       backfaceVisibility: "hidden",
     },
+    // headerShown:false
   }
 );
 
@@ -62,7 +65,7 @@ export const HomeStack = createMaterialTopTabNavigator(
         fontWeight: "900",
       },
       tabStyle: {
-        width: Dimensions.get("window").width * .26,
+        width: Dimensions.get("window").width * 0.26,
       },
       style: {
         backgroundColor: "transparent",
@@ -106,7 +109,6 @@ const InitialStack = createStackNavigator(
     },
     ChatScreen: {
       screen: ChatScreen,
-      
     },
     Comments: {
       screen: Comments,
@@ -122,11 +124,9 @@ const InitialStack = createStackNavigator(
     },
     PickLocation: {
       screen: PickLocationScreen,
-      
     },
     GroupChatScreen: {
       screen: GroupChatScreen,
-      
     },
     Contacts: {
       screen: Contact,

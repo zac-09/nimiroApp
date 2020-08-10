@@ -138,10 +138,15 @@ const AVATAR_DIMENSIONS = 50;
 
 const styles = StyleSheet.create({
   containerStyle: {
-    borderRadius: 5,
-    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    // borderRadius: 5,
+    // backgroundColor: "rgba(255, 255, 255, 0.6)",
+    backgroundColor: "#fff",
+    
+
+
     borderWidth: 0,
     flex: 1,
+    // width:"100%"
   },
   header: {
     flexDirection: "row",

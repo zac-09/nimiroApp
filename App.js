@@ -79,7 +79,7 @@ export default class App extends React.Component {
     }
 
     //const Layout = createRootNavigator(signedIn);
-    return fontLoaded ? <SafeAreaView style={styles.container}><Main signedIn={signedIn}/></SafeAreaView>: <Splash />
+    return fontLoaded ? <Main signedIn={signedIn}/>: <Splash />
   }
 }
 
