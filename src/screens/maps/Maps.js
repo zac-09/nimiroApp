@@ -137,6 +137,7 @@ export default class Maps extends React.Component {
           end_date: new Date(moment(expiryDate)),
         });
       this.showToast("event successfully edited");
+      this.setState({editMode:false})
       return;
     }
     await firebase
@@ -187,6 +188,8 @@ export default class Maps extends React.Component {
         }
 
         this.showToast("event successfully added");
+      this.setState({isAddEvent:false})
+
       });
   };
   showToast = (message) => {
@@ -638,8 +641,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    borderRadius: 25,
-    overflow: "hidden",
+    // borderRadius: 25,
+    // overflow: "hidden",
   },
   mapStyle: {
     width: "100%",
