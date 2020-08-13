@@ -21,7 +21,7 @@ export default FeedInput;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        backgroundColor: 'rgba(255, 255, 255, 1)',
         flexDirection: 'column',
         marginHorizontal: 15,
         marginTop: 10,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: 'rgba(205, 210, 214, 0.5)',
+        borderColor: 'rgba(205, 210, 214, 1)',
     },
     text: {
         fontFamily: 'Roboto',

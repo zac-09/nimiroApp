@@ -3,7 +3,7 @@ import { Splash } from './src/screens';
 import * as Font from 'expo-font';
 import Storage from './src/utils/Storage';
 import { Main } from './src/navigations/AppNavigator';
-import {StatusBar, StyleSheet } from 'react-native';
+import {StatusBar, StyleSheet,View } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import firebaseSDK from './src/backend/Firebase';
 
@@ -79,7 +79,7 @@ export default class App extends React.Component {
     }
 
     //const Layout = createRootNavigator(signedIn);
-    return fontLoaded ? <SafeAreaView style={styles.container}><Main signedIn={signedIn}/></SafeAreaView>: <Splash />
+    return fontLoaded ? <View style={styles.container}><Main signedIn={signedIn}/></View>: <Splash />
   }
 }
 

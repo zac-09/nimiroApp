@@ -8,8 +8,6 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   View,
-  ScrollView,
-  Button,
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
@@ -19,13 +17,14 @@ import * as Permissions from "expo-permissions";
 import * as firebase from "firebase";
 import Pin from "../../components/markers/Pin";
 import NewButton from "../../components/buttons/NewButton";
-
+import DatePicker from "react-native-datepicker";
 import { Feather, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { formatDate } from "../../utils/Validations";
 import { Radio, RadioGroup, RadioButton } from "radio-react-native";
 import Toast from "react-native-root-toast";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
+import moment from "moment";
+import Feed from "../feed/Feed";
 export default class Maps extends React.Component {
   constructor(props) {
     super(props);
@@ -46,9 +45,17 @@ export default class Maps extends React.Component {
       eventDetails: "",
       typeIndex: 0,
       isAddEvent: false,
+      date: new Date(),
+      expiryDate: new Date(),
+      editMode: false,
+      editedEvent: null,
+      evenId: "",
     };
 
-    this.threadsRef = firebase.firestore().collection("maps");
+    this.threadsRef = firebase
+      .firestore()
+      .collection("maps")
+      .where("end_date", ">=", new Date());
 
     this.threadsUnscribe = "null";
   }
@@ -79,14 +86,27 @@ export default class Maps extends React.Component {
   }
   addEventsHandler = async () => {
     console.log("btn pressed");
+    console.log("date is", this.state.date);
+
     const uid = firebase.auth().currentUser.uid;
-    const { pickedLocation, title, eventDetails, type } = this.state;
+    const {
+      pickedLocation,
+      title,
+      eventDetails,
+      type,
+      date,
+      expiryDate,
+      eventId,
+    } = this.state;
     if (
       pickedLocation === undefined ||
       pickedLocation === null ||
       pickedLocation === ""
     ) {
       return this.showToast("please try to pick location");
+    }
+    if (date === undefined || date === null || date === "") {
+      return this.showToast("please chose a start date");
     }
     const uploadedData = {
       title,
@@ -95,18 +115,81 @@ export default class Maps extends React.Component {
         type === "fellowship" ? "CIwRusFj5lv1Zt7FCXrp" : "h8HvLOFL3XMOv6NNh98C",
       status_id: "f9My8BXWM85idUmUr6ch",
       description: eventDetails,
-      starting_date: new Date(),
-      end_date: new Date(),
+      starting_date: new Date(moment(date)),
+      end_date: new Date(moment(expiryDate)),
       created_by: uid,
     };
+    if (this.state.editMode) {
+      await firebase
+        .firestore()
+        .collection("maps")
+        .doc(eventId)
+        .update({
+          title,
+          location: pickedLocation,
+          classification_id:
+            type === "fellowship"
+              ? "CIwRusFj5lv1Zt7FCXrp"
+              : "h8HvLOFL3XMOv6NNh98C",
+          status_id: "f9My8BXWM85idUmUr6ch",
+          description: eventDetails,
+          starting_date: new Date(moment(date)),
+          end_date: new Date(moment(expiryDate)),
+        });
+      this.showToast("event successfully edited");
+      this.setState({editMode:false})
+      return;
+    }
     await firebase
       .firestore()
       .collection("maps")
       .add(uploadedData)
-      .then(() => {
+      .then(async () => {
         this.setState({ isAddEvent: false });
+        const data = {
+          comments: [],
+          likes: 0,
+          created_by: firebase.auth().currentUser.uid,
+          date_created: new Date(),
+          content: {
+            text: title,
+            map: pickedLocation,
+            details: eventDetails,
+          },
+        };
+        if (type === "fellowship") {
+          await firebase
+            .firestore()
+            .collection("feeds")
+            .add(data)
+            .then(async (docRef) => {
+              await firebase
+                .firestore()
+                .collection("feeds")
+                .doc(docRef.id)
+                .update({
+                  id: docRef.id,
+                });
+            });
+        } else {
+          await firebase
+            .firestore()
+            .collection("events")
+            .add(data)
+            .then(async (docRef) => {
+              await firebase
+                .firestore()
+                .collection("events")
+                .doc(docRef.id)
+                .update({
+                  id: docRef.id,
+                });
+            });
+        }
 
         this.showToast("event successfully added");
+      this.setState({isAddEvent:false})
+
       });
   };
   showToast = (message) => {
@@ -158,6 +241,7 @@ export default class Maps extends React.Component {
     try {
       querySnapshot.forEach((doc) => {
         const marker = doc.data();
+        marker.id = doc.id;
         data.push(marker);
       });
     } catch (error) {
@@ -169,7 +253,14 @@ export default class Maps extends React.Component {
   };
 
   render() {
-    const { location, markers, showDetais, details, isAddEvent } = this.state;
+    const {
+      location,
+      markers,
+      showDetais,
+      details,
+      isAddEvent,
+      editMode,
+    } = this.state;
     const canceled = details
       ? details.status_id === "b0Q7JzsYXBBeBLbG9nb0"
         ? true
@@ -185,7 +276,7 @@ export default class Maps extends React.Component {
           }}
           style={styles.mapStyle}
           onPress={() => {
-            this.setState({ isAddEvent: false });
+            this.setState({ isAddEvent: false, editMode: false });
           }}
         >
           {markers.map((el, id) => {
@@ -209,9 +300,26 @@ export default class Maps extends React.Component {
                   pinColor={markerColor}
                   title={marker.title}
                   description={marker.description}
-                  onPress={() =>
-                    this.setState({ details: el, showDetais: true })
-                  }
+                  onPress={() => {
+                    if (el.created_by !== firebase.auth().currentUser.uid) {
+                      return this.setState({ details: el, showDetais: true });
+                    }
+                    this.setState({
+                      pickedLocation: el.location,
+                      title: el.title,
+                      date: formatDate(el.starting_date.toDate()),
+                      expiryDate: formatDate(el.end_date.toDate()),
+                      eventDetails: el.description,
+                      type:
+                        el.classification_id === "CIwRusFj5lv1Zt7FCXrp"
+                          ? "fellowship"
+                          : "function",
+                      editMode: true,
+                      eventId: el.id,
+                      showDetais: false,
+                      isAddEvent: false,
+                    });
+                  }}
                 >
                   <Pin color={markerColor} />
                 </Marker>
@@ -224,7 +332,26 @@ export default class Maps extends React.Component {
                 pinColor={markerColor}
                 title={marker.title}
                 description={marker.description}
-                onPress={() => this.setState({ details: el, showDetais: true })}
+                onPress={() => {
+                  if (el.created_by !== firebase.auth().currentUser.uid) {
+                    return this.setState({ details: el, showDetais: true });
+                  }
+                  this.setState({
+                    pickedLocation: el.location,
+                    title: el.title,
+                    date: formatDate(el.starting_date.toDate()),
+                    expiryDate: formatDate(el.end_date.toDate()),
+                    eventDetails: el.description,
+                    type:
+                      el.classification_id === "CIwRusFj5lv1Zt7FCXrp"
+                        ? "fellowship"
+                        : "function",
+                    editMode: true,
+                    eventId: el.id,
+                    showDetais: false,
+                    isAddEvent: false,
+                  });
+                }}
               />
             );
           })}
@@ -237,7 +364,7 @@ export default class Maps extends React.Component {
               color="#fff"
               onPress={() => {
                 this.setState((prevState) => {
-                  return { isAddEvent: !prevState.isAddEvent };
+                  return { isAddEvent: true, editMode: false };
                 });
               }}
             />
@@ -283,7 +410,7 @@ export default class Maps extends React.Component {
             </TouchableWithoutFeedback>
           </View>
         )}
-        {isAddEvent && (
+        {isAddEvent === true || editMode === true ? (
           <View style={styles.card}>
             <KeyboardAwareScrollView>
               <KeyboardAvoidingView
@@ -370,13 +497,124 @@ export default class Maps extends React.Component {
                     />
                   </View>
                 </View>
+                <View style={styles.cover}>
+                  <Text style={styles.text}>date:</Text>
+
+                  <DatePicker
+                    style={{ padding: 5, width: "75%", marginTop: 5 }}
+                    date={moment(this.state.date)}
+                    mode="datetime"
+                    placeholder="select date"
+                    format="LLLL"
+                    minDate={new Date()}
+                    maxDate="2030-01-01"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    is24Hour={false}
+                    showIcon={false}
+                    customStyles={{
+                      dateIcon: {
+                        position: "absolute",
+                        left: 0,
+                        // top: 4,
+                        marginLeft: 0,
+                        // color: Colors.primary,
+                      },
+                      dateText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      placeholderText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      dateInput: {
+                        flexGrow: 1,
+                        alignItems: "center",
+                        borderRadius: 10,
+                        marginRight: 10,
+                        backgroundColor: "rgba(0, 8, 228, 0.9)",
+                        flex: 1,
+                        padding: 5,
+                        fontSize: 16,
+                        lineHeight: 16,
+                        paddingLeft: 10,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        paddingRight: 0,
+                        color: "white",
+                        borderWidth: 0.8,
+                        borderColor: "#fff",
+                      },
+                      // ... You can check the source to find the other keys.
+                    }}
+                    onDateChange={(date) => {
+                      this.setState({ date: date });
+                    }}
+                  />
+                </View>
+                <View style={styles.cover}>
+                  <Text style={styles.text}>expiry date:</Text>
+
+                  <DatePicker
+                    style={{ padding: 5, width: "75%", marginTop: 5 }}
+                    date={moment(this.state.expiryDate)}
+                    mode="datetime"
+                    placeholder="choose end date"
+                    format="LLLL"
+                    minDate={new Date()}
+                    maxDate="2030-01-01"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    is24Hour={false}
+                    showIcon={false}
+                    customStyles={{
+                      dateIcon: {
+                        position: "absolute",
+                        left: 0,
+                        // top: 4,
+                        marginLeft: 0,
+                        // color: Colors.primary,
+                      },
+                      dateText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      placeholderText: {
+                        color: "#fff",
+                        marginLeft: -15,
+                      },
+                      dateInput: {
+                        flexGrow: 1,
+                        alignItems: "center",
+                        borderRadius: 10,
+                        marginRight: 10,
+                        backgroundColor: "rgba(0, 8, 228, 0.9)",
+                        flex: 1,
+                        padding: 5,
+                        fontSize: 16,
+                        lineHeight: 16,
+                        paddingLeft: 15,
+                        paddingTop: 6,
+                        paddingBottom: 6,
+                        paddingRight: 0,
+                        color: "white",
+                        borderWidth: 0.8,
+                        borderColor: "#fff",
+                      },
+                      // ... You can check the source to find the other keys.
+                    }}
+                    onDateChange={(date) => {
+                      this.setState({ expiryDate: date });
+                    }}
+                  />
+                </View>
 
                 <NewButton
                   style={{
-                    marginTop:5,
+                    marginTop: 5,
                     marginLeft: Dimensions.get("window").width * 0.33,
-                    marginBottom:4,
-                    
+                    marginBottom: 4,
                   }}
                   width={100}
                   textSize={13}
@@ -390,7 +628,7 @@ export default class Maps extends React.Component {
               </KeyboardAvoidingView>
             </KeyboardAwareScrollView>
           </View>
-        )}
+        ) : null}
       </View>
     );
   }
@@ -403,8 +641,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    borderRadius: 25,
-    overflow: "hidden",
+    // borderRadius: 25,
+    // overflow: "hidden",
   },
   mapStyle: {
     width: "100%",
@@ -477,14 +715,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.26,
     shadowRadius: 8,
     backgroundColor: "rgba(0, 8, 228, 0.8)",
-    height: Dimensions.get("window").height * 0.45,
+    height: Dimensions.get("window").height * 0.6,
     flexDirection: "column",
     elevation: 5,
     borderRadius: 18,
     backgroundColor: "rgba(0, 8, 228, 0.9)",
-    zIndex: 999,
+    zIndex: 10000,
     position: "absolute",
-    bottom: Dimensions.get("window").height * 0.28,
+    bottom: Dimensions.get("window").height * 0.1,
   },
   content: {
     flexDirection: "row",
@@ -537,7 +775,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginLeft: Dimensions.get("window").width * 0.4,
     marginTop: 5,
-    marginBottom:4
+    marginBottom: 4,
   },
   icon: {
     padding: 5,

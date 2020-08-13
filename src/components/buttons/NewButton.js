@@ -13,7 +13,7 @@ const NewButton = (props) => {
         style={{
           padding: props.padding ? props.padding : 15,
           alignItems: "center",
-          borderRadius: 20,
+          borderRadius: 8,
         }}
         start={[0.0, 0.1]}
         //  end={[1,.9]}

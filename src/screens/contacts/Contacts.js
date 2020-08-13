@@ -96,6 +96,7 @@ export default class Contact extends React.Component {
     const { data } = await Contacts.getContactsAsync({
       fields: [Contacts.Fields.PhoneNumbers]
     });
+    console.log("the contacts ",data)
 
     const length = await this.retrieveContactsLength();
 
