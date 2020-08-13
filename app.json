@@ -1,42 +1,36 @@
 {
-  "expo": {
-    "name": "RotaApp",
-    "slug": "rotary",
-    "privacy": "public",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "2.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/WelcomeScreen5.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "ug.co.codebits.messenger",
-      "config": {
-        "googleMapsApiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
-      }
-    },
-    "android": {
-      "package": "ug.co.codebits.messenger",
-      "versionCode": 3,
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyC2Czo7EVSMA3OvrBG8jkPfzRxguzXFy2w"
+    "expo": {
+        "name": "RotaApp",
+        "slug": "rotary",
+        "privacy": "public",
+        "platforms": ["ios", "android", "web"],
+        "version": "2.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "splash": {
+            "image": "./assets/WelcomeScreen5.png",
+            "resizeMode": "cover",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "ug.co.codebits.messenger",
+            "config": {
+                "googleMapsApiKey": "AIzaSyAfO6Pi32GUCliRVfwUxc7mK4ZNaQ9a8Mk"
+            }
+        },
+        "android": {
+            "package": "ug.co.codebits.messenger",
+            "versionCode": 4,
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyC2Czo7EVSMA3OvrBG8jkPfzRxguzXFy2w"
+                }
+            }
         }
-      }
     }
-  }
 }
