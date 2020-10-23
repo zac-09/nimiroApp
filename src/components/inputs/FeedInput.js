@@ -9,10 +9,10 @@ const FeedInput = (props) => {
                 <Thumbnail small source={props.avator}/>
                 <TouchableWithoutFeedback onPress={props.createPost}>
                     <View style={styles.textContainer}>
-                        <Text style={styles.text}>Share your mind?</Text>
+                        <Text style={styles.text}>What is on  your mind?</Text>
                     </View>
                 </TouchableWithoutFeedback>
-            </View>
+            </View> 
         </View>
     )
 }
@@ -21,7 +21,7 @@ export default FeedInput;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgba(255, 255, 255, 1)',
+        // backgroundColor: 'rgba(255, 255, 255, 1)',
         flexDirection: 'column',
         marginHorizontal: 15,
         marginTop: 10,
@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
         marginStart: 10,
         justifyContent: 'center',
         padding: 10,
-        borderRadius: 20,
+        borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'rgba(205, 210, 214, 1)',
+        borderColor: '#fff',
     },
     text: {
         fontFamily: 'Roboto',
         fontSize: 15,
-        color: 'rgb(18, 18, 18)'
+        color: '#fff'
     }
 })

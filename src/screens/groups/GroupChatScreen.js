@@ -24,10 +24,24 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import AnimatedLoader from "react-native-animated-loader";
 import firebaseSDK from "../../backend/Firebase";
+// import { connect } from "react-redux";
 
 const HEIGHT = Dimensions.get("window").height;
 
 class ChatScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    //return header with Custom View which will replace the original header
+    return {
+      header: (
+        <Headers.ChatHeader
+          nomargin
+          avatar={navigation.getParam("groupData").avatar}
+          name={navigation.getParam("groupData").name}
+          // offset={this.state.offset}
+        />
+      ),
+    };
+  };
   constructor(props) {
     super(props);
 
@@ -75,6 +89,7 @@ class ChatScreen extends React.Component {
   }
 
   setModalVisible() {
+    Keyboard.dismiss();
     this.setState((prevState, props) => {
       return { ModalVisible: !prevState.ModalVisible };
     });
@@ -142,36 +157,33 @@ class ChatScreen extends React.Component {
   _updateFriendsChannel = async (lastMessage) => {
     const uid = await firebase.auth().currentUser.uid;
     const channelData = this.state.channel;
-     channelData.participants.filter(
-      (participant) => participant.id !== uid
-    )
-    channelData.participants.forEach(async(member)=>{
+    channelData.participants.filter((participant) => participant.id !== uid);
+    channelData.participants.forEach(async (member) => {
       await firebase
-      .firestore()
-      .collection("channel_participation")
-      .doc(member.id)
-      .collection("my_channels")
-      .where("channel", "==", this.state.channel.id)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach(async (doc) => {
-          if (doc.data().user !== uid) {
-            await firebase
-              .firestore()
-              .collection("channel_participation")
-              .doc(member.id)
-              .collection("my_channels")
-              .doc(doc.id)
-              .update({
-                unread: firebase.firestore.FieldValue.increment(1),
-                lastMessage: lastMessage,
-                lastMessageDate: new Date(),
-              });
-          }
+        .firestore()
+        .collection("channel_participation")
+        .doc(member.id)
+        .collection("my_channels")
+        .where("channel", "==", this.state.channel.id)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach(async (doc) => {
+            if (doc.data().user !== uid) {
+              await firebase
+                .firestore()
+                .collection("channel_participation")
+                .doc(member.id)
+                .collection("my_channels")
+                .doc(doc.id)
+                .update({
+                  unread: firebase.firestore.FieldValue.increment(1),
+                  lastMessage: lastMessage,
+                  lastMessageDate: new Date(),
+                });
+            }
+          });
         });
-      });
-    })
-    
+    });
   };
 
   existSameSentMessage = (messages, newMessage) => {
@@ -225,7 +237,8 @@ class ChatScreen extends React.Component {
   };
 
   _keyboardDidShow = (e) => {
-    this.setState({ isTyping: true });
+    console.log("keyboard up");
+    this.setState({ isTyping: true});
     const { inputHeight } = this.state;
     let keyboardHeight = e.endCoordinates.height;
     console.log(keyboardHeight);
@@ -236,6 +249,7 @@ class ChatScreen extends React.Component {
   };
 
   _keyboardDidHide = () => {
+    console.log("keyboard down");
     if (this.state.currentMessage === "") {
       this.setState({ isTyping: false });
       this.setState({ isBtnPressed: false });
@@ -373,7 +387,7 @@ class ChatScreen extends React.Component {
     const uid = await firebase.auth().currentUser.uid;
 
     await this.updateCurrentChannel(message);
-    await this._updateFriendsChannel(message)
+    await this._updateFriendsChannel(message);
     await this._updateCurrentUser(uid, message);
   };
   updateCurrentChannel = async (lastMessage) => {
@@ -431,7 +445,7 @@ class ChatScreen extends React.Component {
               style={styles.icons}
               name="ios-image"
               size={32}
-              color="#4a6aa5"
+              color="#18022C"
               onPress={() => {
                 this._pickImage();
               }}
@@ -440,7 +454,7 @@ class ChatScreen extends React.Component {
               style={styles.icons}
               name="ios-camera"
               size={32}
-              color="#4a6aa5"
+              color="#18022C"
               onPress={() => {
                 this._pickVideo();
               }}
@@ -449,7 +463,7 @@ class ChatScreen extends React.Component {
               style={styles.icons}
               name="ios-add"
               size={32}
-              color="#4a6aa5"
+              color="#18022C"
               onPress={() => {
                 this.setModalVisible();
               }}
@@ -468,7 +482,7 @@ class ChatScreen extends React.Component {
               style={styles.icons}
               name="ios-arrow-forward"
               size={32}
-              color="#4a6aa5"
+              color="#18022C"
               onPress={() => {}}
             />
           </TouchableOpacity>
@@ -495,7 +509,12 @@ class ChatScreen extends React.Component {
 
         {/* {isTyping === false && <Ionicons style={styles.icons} name='ios-camera' size={32} color='#bbb'/>} */}
         {/* </View> */}
-        <View style={styles.micContainer}>
+        <View
+          style={{
+            ...styles.micContainer,
+            backgroundColor: this.props.themes.data.chatScreenIconColor,
+          }}
+        >
           {isTyping === true ? (
             <Ionicons
               name="ios-send"
@@ -519,12 +538,12 @@ class ChatScreen extends React.Component {
         keyboardShouldPersistTaps={true}
       >
         <View style={{ flex: 1, height: HEIGHT }}>
-          <Headers.ChatHeader
+          {/* <Headers.ChatHeader
             nomargin
             avatar={this.state.channel.avatar}
             name={this.state.channel.name}
             // offset={this.state.offset}
-          />
+          /> */}
           <Container source={bg2}>
             <GiftedChat
               messages={this.state.messages}
@@ -533,14 +552,24 @@ class ChatScreen extends React.Component {
               keyboardShouldPersistTaps={true}
               renderInputToolbar={this.renderInputToolbar}
               renderUsernameOnMessage={true}
-              minInputToolbarHeight={this.state.minInputToolbarHeight}
+              minInputToolbarHeight={100}
             />
-
+            {Platform.OS === "android" && (
+              <KeyboardAvoidingView
+                behavior="padding"
+                keyboardVerticalOffset={30}
+              />
+            )}
             {this.state.ModalVisible && (
               <View style={styles.modal}>
                 <ModalCard>
                   <View style={styles.modalIcons}>
-                    <View style={styles.micContainer}>
+                    <View
+                      style={{
+                        ...styles.micContainer,
+                        
+                      }}
+                    >
                       <Ionicons
                         name="ios-add"
                         size={32}
@@ -552,7 +581,12 @@ class ChatScreen extends React.Component {
                   </View>
 
                   <View style={styles.modalIcons}>
-                    <View style={styles.micContainer}>
+                    <View
+                      style={{
+                        ...styles.micContainer,
+                    
+                      }}
+                    >
                       <Ionicons
                         name="ios-camera"
                         size={32}
@@ -563,7 +597,12 @@ class ChatScreen extends React.Component {
                     <Text>camera</Text>
                   </View>
                   <View style={styles.modalIcons}>
-                    <View style={styles.micContainer}>
+                    <View
+                      style={{
+                        ...styles.micContainer,
+                        
+                      }}
+                    >
                       <Ionicons
                         name="ios-image"
                         size={32}
@@ -574,7 +613,12 @@ class ChatScreen extends React.Component {
                     <Text>Gallery</Text>
                   </View>
                   <View style={styles.modalIcons}>
-                    <View style={styles.micContainer}>
+                    <View
+                      style={{
+                        ...styles.micContainer,
+                     
+                      }}
+                    >
                       <Ionicons
                         name="md-pin"
                         size={32}
@@ -585,7 +629,12 @@ class ChatScreen extends React.Component {
                     <Text>Location</Text>
                   </View>
                   <View style={styles.modalIcons}>
-                    <View style={styles.micContainer}>
+                    <View
+                      style={{
+                        ...styles.micContainer,
+                       
+                      }}
+                    >
                       <Ionicons
                         name="ios-settings"
                         size={32}
@@ -611,6 +660,7 @@ class ChatScreen extends React.Component {
     );
   }
 }
+
 
 export default ChatScreen;
 
@@ -697,7 +747,7 @@ const styles = {
   modal: {
     flexGrow: 1,
     justifyContent: "flex-end",
-    marginTop: -395,
+    marginTop: -Dimensions.get("window").height * 0.7,
   },
   modalIcons: {
     justifyContent: "center",

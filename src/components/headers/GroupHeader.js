@@ -28,7 +28,7 @@ const GroupHeader = (props) => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#4291ee",
+    backgroundColor: "transparent",
     borderBottomColor: "#4291ee",
 
     elevation: 3,

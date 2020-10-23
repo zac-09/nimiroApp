@@ -11,7 +11,7 @@ const avator = ({avator, changeAvator}) => {
                     <ProgressiveImage style={styles.image} source={{uri: avator}} thumbnail={require('../../../assets/images/placeholder.png')}/>
                 </View>
                 <View style={styles.iconContainer}>
-                    <Ionicons name='ios-camera' size={48} onPress={() => changeAvator()} color='white'/>
+                    <Ionicons name='ios-camera' size={35} onPress={() => changeAvator()} color='white'/>
                 </View>
             </View>
         </View>
@@ -20,8 +20,8 @@ const avator = ({avator, changeAvator}) => {
 
 export default avator;
 
-const IMAGE_DIMENSIONS = 200;
-const ICON_DIMENSIONS = 60;
+const IMAGE_DIMENSIONS = 150;
+const ICON_DIMENSIONS = 40;
 
 const styles = {
     container: {

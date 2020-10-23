@@ -168,14 +168,14 @@ class Post extends React.Component {
     render(){
         const { image, video, loading } = this.state
         return(
-            <View style={{flex: 1, backgroundColor: "rgba(0, 8, 228, 0.7)",}}>
+            <View style={{flex: 1, backgroundColor: "#681554",}}>
                 <PostHeader 
                     title='Create post' 
                     nomargin 
                     goBack={this.props.navigation.goBack}
                     createPost={() => this.makePost()}/>
 
-                <View style={{ backgroundColor: 'rgba(13, 229, 245, 0.46)', borderRadius: 5}}>
+                <View style={{ backgroundColor: 'transparent', borderRadius: 5}}>
                     <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
                         <View style={styles.imageContainer}>
                             <Image source={logo} resizeMode="contain" style={styles.avator}/>

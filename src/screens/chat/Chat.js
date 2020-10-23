@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text } from "native-base";
+import { Platform ,Dimensions} from 'react-native'
+import { View, Text,s} from "native-base";
 import { Lists } from "../../components";
 import { Ionicons } from "@expo/vector-icons";
 import Storage from "../../utils/Storage";
@@ -10,8 +11,11 @@ import * as Permissions from "expo-permissions";
 import firebaseSDK from "../../backend/Firebase";
 import { formatPhoneNumber } from "../../utils/Validations";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+// import { connect } from "react-redux";
+import { Headers } from "../../components";
 
-export default class Chat extends React.Component {
+class Chat extends React.Component {
+ 
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +61,8 @@ export default class Chat extends React.Component {
           // channelData.avatar = channelData.participants[1].avatar;
           channelData.participants.forEach(function (el) {
             if (el._id !== uid) {
-              channelData.name = el.name;
+              console.log("the element is", el);
+              channelData.name = el.lName;
               channelData.avatar = el.avatar;
             }
           });
@@ -139,41 +144,46 @@ export default class Chat extends React.Component {
 
   render() {
     const { chats } = this.state;
+
     return (
-      
+      <View
+        style={{
+          flex: 1,
+          position: "relative",
+          // backgroundColor: this.props.themes.data.backgroundColor,
+          // overflow: 'hidden',
+          // borderRadius:25
+        }}
+      >
+         <Headers.BackHeader
+          goBack={this.props.navigation.goBack}
+          title="Messages"
+        />
+        <Lists.ChatList chat={chats} onChatItemClicked={this.openChannel} />
         <View
           style={{
-            flex: 1,
-            position: "relative",
-            backgroundColor: "rgba(246,246,246, 0.95)",
-            // overflow: 'hidden',
-            // borderRadius:25
+            zIndex: 2,
+            position: "absolute",
+            bottom: 40,
+            right: 20,
+            backgroundColor: "green",
+            width: 50,
+            height: 50,
+            borderRadius: 25,
+            overflow: "hidden",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Lists.ChatList chat={chats} onChatItemClicked={this.openChannel} />
-          <View
-            style={{
-              zIndex: 2,
-              position: "absolute",
-              bottom: 40,
-              right: 20,
-              backgroundColor: "#53C41A",
-              width: 50,
-              height: 50,
-              borderRadius: 25,
-              overflow: "hidden",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+          <TouchableWithoutFeedback
+            onPress={() => this.props.navigation.navigate("Contacts")}
           >
-            <TouchableWithoutFeedback
-              onPress={() => this.props.navigation.navigate("Contacts")}
-            >
-              <Ionicons name="ios-chatbubbles" size={32} color="#fff" />
-            </TouchableWithoutFeedback>
-          </View>
+            <Ionicons name="ios-chatbubbles" size={32} color="#fff" />
+          </TouchableWithoutFeedback>
         </View>
-    
+      </View>
     );
   }
 }
+
+export default Chat;

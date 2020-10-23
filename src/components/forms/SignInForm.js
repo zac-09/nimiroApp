@@ -75,7 +75,7 @@ const styles = {
         color: '#fff',
         fontFamily: 'Roboto',
         marginLeft:40,
-        marginTop:15
+        marginTop:7
 
     },
     buttonContainer: {

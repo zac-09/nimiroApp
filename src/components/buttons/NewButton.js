@@ -9,7 +9,7 @@ const NewButton = (props) => {
       onPress={props.onPress}
     >
       <LinearGradient
-        colors={["#F9038E", "#850127"]}
+        colors={["#fff", "#fff"]}
         style={{
           padding: props.padding ? props.padding : 15,
           alignItems: "center",
@@ -22,7 +22,7 @@ const NewButton = (props) => {
           style={{
             backgroundColor: "transparent",
             fontSize: props.textSize ? props.textSize : 15,
-            color: "#fff",
+            color: "#F9038E",
           }}
         >
           {props.text}

@@ -6,7 +6,7 @@ import {
   FlatList,
   TextInput,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { Lists } from "../../components";
 import firebaseSDK from "../../backend/Firebase";
@@ -77,13 +77,13 @@ const ConfigureGroupScreen = (props) => {
           const participationData = {
             channel: docRef.id,
             user: friend.id,
-            name:channelData.name ,
-            avatar:channelData.avatar,  
+            name: channelData.name,
+            avatar: channelData.avatar,
             lastMessage: channelData.lastMessage,
             lastMessageDate: channelData.lastMessageDate,
             unread: 0,
-            participants:channelData.participants,
-            type:channelData.type
+            participants: channelData.participants,
+            type: channelData.type,
           };
           console.log("hi from then open channel");
           await firebase
@@ -142,7 +142,7 @@ const ConfigureGroupScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <GroupHeader title="New group" subTitle="Add subject" />
+      <GroupHeader title="New Cooperative" subTitle="Add subject" />
       <View style={styles.inputContainer}>
         <View style={styles.inputTextAndCam}>
           <View style={styles.camera}>
@@ -199,9 +199,9 @@ const styles = StyleSheet.create({
   },
   camera: {
     backgroundColor: "#ccc",
-    width: Dimensions.get('window').width*0.2,
-    height: Dimensions.get('window').width*0.2,
-    borderRadius: Dimensions.get('window').width*0.2/2,
+    width: Dimensions.get("window").width * 0.2,
+    height: Dimensions.get("window").width * 0.2,
+    borderRadius: (Dimensions.get("window").width * 0.2) / 2,
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   participants: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(246,246,246, 0.24)",
     flex: 1,
   },
   button: {
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     position: "relative",
-    backgroundColor: "rgba(246,246,246, 0.95)",
+    backgroundColor: "transparent",
   },
   text: {
     fontSize: 18,

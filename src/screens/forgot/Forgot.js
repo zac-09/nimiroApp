@@ -60,7 +60,7 @@ export default class Forgot extends React.Component{
                 'Please insert the email that you used to signup below:'
         return(
             <View style={{flex: 1}}>
-                <Content>
+                <Content source={bg2}>
                     <Logo source={logo} resizeMode='contain' />
                     <Text style={styles.instruction}>{instruction}</Text>
                     {sent !== true && 
@@ -97,7 +97,7 @@ const styles = {
         marginBottom: 10
     },
     accountContainer: {
-        backgroundColor: '#155DEC',
+        backgroundColor: 'transparent',
         position: 'absolute',
         bottom: 0,
         right: 0,
@@ -121,7 +121,7 @@ const styles = {
     }
 }
 
-const Content = styled.View`
+const Content = styled.ImageBackground`
     width: 100%;
     height: 100%;
     align-items: center;

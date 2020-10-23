@@ -18,7 +18,7 @@ export default class Contact extends React.Component {
 
     this.state = {
       friends: [],
-      loading: false
+      loading: false,
     };
 
     this.threadsRef = firebase
@@ -26,7 +26,7 @@ export default class Contact extends React.Component {
       .collection("friends")
       .doc(firebase.auth().currentUser.uid)
       .collection("list")
-      .orderBy("name");
+      .orderBy("lName");
 
     this.threadsUnscribe = "null";
   }
@@ -35,6 +35,7 @@ export default class Contact extends React.Component {
     this.checkMultiPermissions();
     this.setState({ loading: true });
     this.threadsUnscribe = this.threadsRef.onSnapshot(this.loadContactList);
+    console.log("from firebase", firebase.auth().currentUser);
   }
 
   componentWillUnmount() {
@@ -51,10 +52,10 @@ export default class Contact extends React.Component {
     }
   };
 
-  loadContactList = querySnapshot => {
+  loadContactList = (querySnapshot) => {
     const data = [];
     try {
-      querySnapshot.forEach(doc => {
+      querySnapshot.forEach((doc) => {
         const chat = doc.data();
         chat.lastMessageDate = doc.data().lastMessageDate.toDate();
         data.push(chat);
@@ -62,18 +63,18 @@ export default class Contact extends React.Component {
     } catch (error) {
       this.showToast(error);
     }
-
+    console.log("from load channel list", data);
     this.setState({ friends: data, loading: false });
   };
 
-  showToast = message => {
+  showToast = (message) => {
     Toast.show(message, {
       duration: Toast.durations.LONG,
       position: Toast.positions.BOTTOM,
       shadow: true,
       animation: true,
       hideOnPress: true,
-      delay: 0
+      delay: 0,
     });
   };
 
@@ -81,22 +82,22 @@ export default class Contact extends React.Component {
     this.props.navigation.navigate(route, data);
   };
 
-  recordContactsLength = async length => {
+  recordContactsLength = async (length) => {
     await Storage.set("numOfContacts", length.toString());
   };
 
   retrieveContactsLength = async () => {
     let num = null;
-    await Storage.get("numOfContacts", "empty").then(res => (num = res));
+    await Storage.get("numOfContacts", "empty").then((res) => (num = res));
 
     return num;
   };
 
   scanContacts = async () => {
     const { data } = await Contacts.getContactsAsync({
-      fields: [Contacts.Fields.PhoneNumbers]
+      fields: [Contacts.Fields.PhoneNumbers],
     });
-    console.log("the contacts ",data)
+    // console.log("the contacts ",data)
 
     const length = await this.retrieveContactsLength();
 
@@ -111,9 +112,9 @@ export default class Contact extends React.Component {
     const filteredNumbers = [];
 
     if (data.length > 0) {
-      data.map(el => {
+      data.map((el) => {
         if (el.phoneNumbers !== undefined) {
-          el.phoneNumbers.map(num => {
+          el.phoneNumbers.map((num) => {
             filteredNumbers.push(formatPhoneNumber(num.number));
           });
         }
@@ -122,41 +123,43 @@ export default class Contact extends React.Component {
     }
   };
 
-  openChat = async id => {
+  openChat = async (id) => {
     let id1 = firebase.auth().currentUser.uid;
     let id2 = id;
-    const friend = this.state.friends.find(el => el._id === id);
-
+    const friend = this.state.friends.find((el) => el._id === id);
+    const name = await firebase.auth().currentUser.displayName;
     const user = {
       _id: firebase.auth().currentUser.uid,
       avatar: firebase.auth().currentUser.photoURL,
-      name: firebase.auth().currentUser.displayName
+      name: name,
+      lName: name,
     };
     let channel = {
       name: friend.lName,
       id: id1 < id2 ? id1 + id2 : id2 + id1,
       currentUser: user,
       friend: friend,
-      type:"chat",
-      participants: [user, friend]
+      type: "chat",
+      participants: [user, friend],
     };
 
     this.navigate("ChatScreen", { channel: channel, isNewChannel: true });
   };
 
   addNewGroup = () => {
-     const { friends } = this.state;
+    const { friends } = this.state;
     this.navigate("AddParticipantsScreen", { friends: friends });
   };
 
   render() {
     const { friends } = this.state;
+    console.log("the friends are", friends);
     return (
       <View
         style={{
           flex: 1,
           position: "relative",
-          backgroundColor: "rgba(246,246,246, 0.95)"
+          // backgroundColor: "rgba(246,246,246, 0.95)"
         }}
       >
         <Headers.BackHeader
@@ -164,7 +167,7 @@ export default class Contact extends React.Component {
           title="Contacts"
         />
         <ContactItem
-          name="New group"
+          lName="New Coperative Society"
           status=" "
           icon
           iconName="group-add"

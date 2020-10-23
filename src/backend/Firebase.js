@@ -9,13 +9,14 @@ class FirebaseSDK {
     if (!firebase.apps.length) {
       //avoid re-initializing
       firebase.initializeApp({
-        apiKey: "AIzaSyC82i6QjDXfyEs0XO_lt44bV8mt2J1iTsg",
-        authDomain: "cbt-messenger.firebaseapp.com",
-        databaseURL: "https://cbt-messenger.firebaseio.com",
-        projectId: "cbt-messenger",
-        storageBucket: "cbt-messenger.appspot.com",
-        messagingSenderId: "940970629950",
-        appId: "1:940970629950:web:e119a54333a6c4cf626a6f",
+        apiKey: "AIzaSyBo5NbD0SjQXcFzohG3i4gCa_4LQi8s1yM",
+    authDomain: "nimiro-81c88.firebaseapp.com",
+    databaseURL: "https://nimiro-81c88.firebaseio.com",
+    projectId: "nimiro-81c88",
+    storageBucket: "nimiro-81c88.appspot.com",
+    messagingSenderId: "325478873500",
+    appId: "1:325478873500:web:2149cb3886bfac3073f059",
+    measurementId: "G-XSPLC9P1BW"
       });
     }
   }

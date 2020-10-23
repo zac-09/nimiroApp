@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 import AnimatedLoader from "react-native-animated-loader";
-import { logo, bg2 } from "../../assets";
+import {  bg2 } from "../../assets";
+import logo from './../../assets/logo.png'
 import { Forms } from "../../components";
 import {
   TouchableOpacity,
@@ -91,10 +92,11 @@ class Login extends React.Component {
     } = this.state;
     return (
       <ScrollView>
-        <Container>
+        <Container  source={bg2}>
           <KeyboardAwareScrollView style={{ flex: 1, minHeight: height }}>
             <Content>
               <Image source={logo} resizeMode="contain" style={styles.logo} />
+              <Text style={{color:"#fff",fontSize:20,marginBottom:20}}>Welcome To Nimiro</Text>
               <Forms.SignInForm
                 email={email}
                 password={password}
@@ -163,11 +165,13 @@ const styles = {
     height: 200,
   },
   logo: {
+    marginTop:20,
     width: 0.7 * width,
-    marginBottom: 20,
+    // marginBottom: 10,
+   
   },
 };
-const Container = styled.View`
+const Container = styled.ImageBackground`
   flex: 1;
 `;
 

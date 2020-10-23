@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "native-base";
-import { TouchableWithoutFeedback } from "react-native";
+import { StyleSheet } from "react-native";
 import * as Lists from "../../components/lists";
 
 import * as firebase from "firebase";
@@ -9,6 +9,7 @@ import firebaseSDK from "../../backend/Firebase";
 import { ScrollView } from "react-native";
 import FeedInput from "../../components/inputs/FeedInput";
 import Header from "../../components/headers/Header";
+import UserItem from "./../../components/listitems/UserMenuItem";
 export default class Roc extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -16,7 +17,7 @@ export default class Roc extends React.Component {
         <Header
           navData={navigation}
           nomargin
-          title="RotaApp"
+          title="Nimiro App"
           onLogout={() => {
             showToast("logged out");
             navigation.navigate({ routeName: "SignedOut" });
@@ -31,7 +32,7 @@ export default class Roc extends React.Component {
     this.state = {
       roc: [],
       loading: false,
-      avatar: undefined,
+      user: "",
     };
 
     this.threadsRef = firebase
@@ -68,7 +69,8 @@ export default class Roc extends React.Component {
 
   getCurrentUser = async () => {
     const user = await firebaseSDK.getUserInfo();
-    this.setState({ avator: user.avatar });
+    console.log("The user is", this.props);
+    this.setState({ user: user });
   };
 
   showToast = (message) => {
@@ -98,24 +100,87 @@ export default class Roc extends React.Component {
   };
 
   render() {
-    const { roc } = this.state;
+    const { roc, user } = this.state;
     return (
-      <View style={{ flex: 1,borderRadius:25,overflow: 'hidden', }}>
+      <View style={{ flex: 1, backgroundColor: "#150128" }}>
         <ScrollView>
-          <FeedInput
-            avator={{ uri: this.state.avator }}
-            createPost={() =>
-              this.props.navigation.navigate("Post", { post: "events" })
-            }
-          />
-          <Lists.RocList
-            roc={roc}
-            onRocItemClicked={this.openComments}
-            onLike={this.like}
-            onUnlike={(id) => this.like(id, -1)}
-          />
+          <View style={styles.userContainer}>
+            <ScrollView>
+              <UserItem icon="ios-chatboxes" title="discussions" />
+              <UserItem icon="md-pricetag" title="promos" />
+              <UserItem
+                icon="ios-people"
+                title="Virtual coperatives"
+                onPress={() => {
+                  // this.props.navigation.navigate("Chat");
+                }}
+              />
+              <UserItem icon="ios-cloud-circle" title="update" />
+
+              <UserItem
+                icon="md-create"
+                title="edit profile"
+                onPress={() => {
+                  this.props.navigation.navigate("editProfile", {
+                    user: this.state.user,
+                  });
+                }}
+              />
+
+              <UserItem icon="ios-cart" title="Purchases" />
+              <UserItem
+                icon="md-log-out"
+                title="logout"
+                onPress={() => {
+                  this.showToast("logged out");
+                  this.props.navigation.navigate({ routeName: "SignedOut" });
+                  firebaseSDK.logout();
+                }}
+              />
+            </ScrollView>
+          </View>
+          <View style={styles.aboutContainer}>
+            <Text style={styles.text}>
+              <Text style={{ color: "#fff", padding: 2, fontSize: 22 }}>
+                About Me
+              </Text>
+            </Text>
+            <Text style={styles.text}>
+              {" "}
+              {this.props.navigation.getParam("aboutYou")}
+            </Text>
+
+            <Text
+              style={{ color: "#fff", padding: 2, fontSize: 18, marginTop: 10 }}
+            >
+              Interests
+            </Text>
+            <Text style={{ color: "#fff", padding: 2, fontSize: 14 }}>
+              {this.props.navigation.getParam("Interests")}
+            </Text>
+          </View>
         </ScrollView>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  userContainer: {
+    height: 500,
+    backgroundColor: "#7623A8",
+    borderBottomStartRadius: 60,
+    borderBottomWidth: 2,
+  },
+  aboutContainer: {
+    backgroundColor: "#150128",
+    height: "100%",
+    overflow: "hidden",
+    // borderBottomStartRadius:60
+  },
+  text: {
+    color: "#fff",
+    padding: 4,
+    marginTop: 10,
+  },
+});

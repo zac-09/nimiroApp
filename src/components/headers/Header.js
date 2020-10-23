@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Header, Left, Body, Title, Right } from "native-base";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
-import connect from "../../assets/connect.png";
+import logo from "../../assets/logo_dark.png";
 import {
   Image,
   TouchableWithoutFeedback,
@@ -32,7 +32,7 @@ function header(props) {
     >
       <Left style={{ alignItems: "center", justifyContent: "center" }}>
         <Image
-          source={connect}
+          source={logo}
           style={{ width: 150, height: "80%" }}
           resizeMode="contain"
         />
@@ -63,7 +63,7 @@ function header(props) {
           }}
           name="md-more"
           size={32}
-          color="#fff"
+          color="#150128"
           style={{ paddingLeft: 10, paddingRight: 10 }}
         />
       </Right>
@@ -74,7 +74,7 @@ function header(props) {
 const styles = {
   title: {
     fontSize: 20,
-    color: "#fff",
+    color: "#150128",
   },
   logout: {
     // alignItems:"center",

@@ -8,7 +8,7 @@ function LgButton(props) {
     <Button
       full
       disabled={props.disabled}
-      style={props.disabled === true ? {backgroundColor: '#ccc', borderRadius: 20, elevation: 0} : styles.container}
+      style={props.disabled === true ? {backgroundColor: '#2B2D2F', borderRadius: 20, elevation: 0} : styles.container}
       onPress={() => !props.busy && props.onPress()}
     >
       {props.busy === true ? (
@@ -22,13 +22,13 @@ function LgButton(props) {
 
 const styles = {
   container: {
-    backgroundColor: '#850127',
+    backgroundColor: '#fff',
     borderRadius: 20
   },
   text: {
     fontFamily: "Roboto",
     fontSize: 16,
-    color: "#FFF"
+    color: "#F9038E"
   },
   icon: {
     color: "#FFF",

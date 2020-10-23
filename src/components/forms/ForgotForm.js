@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, View } from 'native-base';
 import { UnderlinedInput } from '../inputs';
 import { LgButton } from '../buttons';
+import  NewButton  from '../buttons/NewButton';
 
 const ForgotForm = props => {
     return (
@@ -13,7 +14,7 @@ const ForgotForm = props => {
                 onChangeText={(text) => props.onEmailChange(text)}
             />
             <View style={styles.buttonContainer}>
-                <LgButton text='Send Recovery Email' onPress={() => props.onSubmitPress()} />
+                <NewButton width={190} text='Send Recovery Email' onPress={() => props.onSubmitPress()} />
             </View>
         </Form>
     )

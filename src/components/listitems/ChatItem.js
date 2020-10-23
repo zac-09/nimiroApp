@@ -10,6 +10,7 @@ import { Badge } from "react-native-elements";
 import { formatDate } from "../../utils/Validations";
 
 const ChatItem = (props) => {
+  console.log("the props are")
   const avator = props.avatar
     ? { uri: props.avatar }
     : require("../../assets/placeholder.png");
@@ -34,7 +35,7 @@ const ChatItem = (props) => {
               style={{
                 fontSize: 15,
                 fontWeight: "700",
-                color: "#000",
+                color: "#fff",
                 marginBottom: 10,
               }}
             >
@@ -42,7 +43,7 @@ const ChatItem = (props) => {
             </Text>
             <Text
               style={{
-                color: props.unread > 0 ? "#53C41A" : "#64676A",
+                color: props.unread > 0 ? "#ccc" : "#fff",
                 marginBottom: 10,
                 fontSize: 12,
               }}

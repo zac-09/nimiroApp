@@ -2,7 +2,7 @@ import { Platform } from "react-native";
 
 function getHeaderContainerStyle(nomargin) {
   return {
-    backgroundColor: "transparent",
+    backgroundColor: "#E4E4E4",
     borderBottomColor: "transparent",
     boxShadow: "none",
     elevation: 0,

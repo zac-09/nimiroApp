@@ -44,7 +44,7 @@ export default class Feed extends React.Component {
       });
     } catch (error) {
       this.showToast(error);
-    }
+    }  
 
     this.setState({ feed: data, loading: false });
   };

@@ -9,7 +9,7 @@ function backHeader (props) {
         <Header
         iosBarStyle="dark-content"
         androidStatusBarColor="#000"
-        style={{elevation: 3, backgroundColor: "#4291ee", margin: 0, borderBottomColor: '#4291ee'}}
+        style={{elevation: 2, backgroundColor: "transparent", margin: 0, borderBottomColor: '#fff',borderBottomWidth:0}}
         >
             <TouchableWithoutFeedback onPress={() => props.goBack()}>
                 <Left style={{alignItems: 'center', justifyContent: 'center'}}>

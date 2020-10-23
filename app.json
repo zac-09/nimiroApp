@@ -1,14 +1,14 @@
 {
     "expo": {
-        "name": "RotaApp",
-        "slug": "rotary",
+        "name": "NimiroApp",
+        "slug": "nimiro",
         "privacy": "public",
         "platforms": ["ios", "android", "web"],
         "version": "2.0.0",
         "orientation": "portrait",
-        "icon": "./assets/icon.png",
+        "icon": "./assets/logo.png",
         "splash": {
-            "image": "./assets/WelcomeScreen5.png",
+            "image": "./assets/NimiroWelcome.png",
             "resizeMode": "cover",
             "backgroundColor": "#ffffff"
         },
@@ -24,11 +24,11 @@
             }
         },
         "android": {
-            "package": "ug.co.codebits.messenger",
+            "package": "ug.co.codebits.nimiro",
             "versionCode": 4,
             "config": {
                 "googleMaps": {
-                    "apiKey": "AIzaSyC2Czo7EVSMA3OvrBG8jkPfzRxguzXFy2w"
+                    "apiKey": "AIzaSyBo5NbD0SjQXcFzohG3i4gCa_4LQi8s1yM"
                 }
             }
         }

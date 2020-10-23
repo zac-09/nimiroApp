@@ -10,44 +10,47 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 class User extends React.Component {
   state = {
-    rotaryLevel: "",
-    club: "",
-    fraternity: "",
-    buddy: "",
-    classification: "",
-    rotaryLevelIndex: 0,
-    loading: false
+    role: "farmer",
+    farmingInterest: "Animal Farming",
+    Interests: "",
+    aboutYou: "",
+    farmingIndex: 0,
+    rolelevelIndex: 0,
+    loading: false,
   };
 
-  navigate = route => {
+  navigate = (route) => {
     this.props.navigation.navigate(route);
   };
 
   handleUser = () => {
     this.setState({ loading: true });
 
-    const { rotaryLevel, club, fraternity, buddy, classification } = this.state;
+    const { role, farmingInterest, Interests, aboutYou } = this.state;
     let _id = firebase.auth().currentUser.uid;
+    // console.log("the role is farming",role,farmingInterest,Interests,aboutYou)
+    // this.setState({ loading: false });
 
+    // return
     const data = {
-      rotaryLevel,
-      club,
-      fraternity,
-      buddy,
-      classification
+      role,
+      farmingInterest,
+      Interests,
+    
+      aboutYou,
     };
 
     firebaseSDK.uploadUserData(data, this.success, this.failure);
   };
 
-  showToast = message => {
+  showToast = (message) => {
     Toast.show(message, {
       duration: Toast.durations.LONG,
       position: Toast.positions.BOTTOM,
       shadow: true,
       animation: true,
       hideOnPress: true,
-      delay: 0
+      delay: 0,
     });
   };
 
@@ -56,7 +59,7 @@ class User extends React.Component {
     this.navigate("Login");
   };
 
-  failure = error => {
+  failure = (error) => {
     this.setState({ loading: false });
     this.showToast(error.message.toString());
   };
@@ -64,34 +67,36 @@ class User extends React.Component {
   render() {
     const {
       loading,
-      rotaryLevel,
-      club,
-      fraternity,
-      buddy,
-      classification,
-      rotaryLevelIndex
+      role,
+      Interests,
+      farmingInterest,
+      farmingIndex,
+      rolelevelIndex,
+      aboutYou,
     } = this.state;
     return (
       <Container>
-        <Content>
-          <Logo source={logo} resizeMode="contain" />
+        <Content source={bg2}>
+          <Logo
+            source={logo}
+            resizeMode="contain"
+            style={{ alignSelf: "flex-start", marginTop: -75 }}
+          />
           <KeyboardAwareScrollView>
             <Forms.UserForm
-              rotaryLevel={rotaryLevel}
-              club={club}
-              fraternity={fraternity}
-              buddy={buddy}
-              classification={classification}
-              rotaryLevelIndex={rotaryLevelIndex}
-              onChangeRotaryLevel={(value, index) =>
-                this.setState({ rotaryLevel: value, rotaryLevelIndex: index })
+              // style={{marginTop:-50}}
+              roleIndex={rolelevelIndex}
+              farmingIndex={farmingIndex}
+              interest={Interests}
+              aboutYou={aboutYou}
+              onChangeFarmingInterest={(value, index) =>
+                this.setState({ farmingInterest: value, farmingIndex: index })
               }
-              onChangeClub={text => this.setState({ club: text })}
-              onChangeFraternity={text => this.setState({ fraternity: text })}
-              onChangeBuddy={text => this.setState({ buddy: text })}
-              onChangeClassification={text =>
-                this.setState({ classification: text })
+              onChangeRole={(value, index) =>
+                this.setState({ role: value, rolelevelIndex: index })
               }
+              onChangeInterests={(text) => this.setState({ Interests: text })}
+              onChangeAboutYou={(text) => this.setState({ aboutYou: text })}
               onSubmitPress={() => this.handleUser()}
             />
           </KeyboardAwareScrollView>
@@ -120,25 +125,25 @@ const styles = {
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   accountText: {
     fontSize: 14,
     color: "#fff",
     fontFamily: "Roboto",
-    textAlign: "center"
+    textAlign: "center",
   },
   lottie: {
     width: 200,
-    height: 200
-  }
+    height: 200,
+  },
 };
 const Container = styled.View`
   width: 100%;
   height: 100%;
 `;
 
-const Content = styled.View`
+const Content = styled.ImageBackground`
   width: 100%;
   height: 100%;
   align-items: center;
@@ -146,6 +151,5 @@ const Content = styled.View`
 `;
 
 const Logo = styled.Image`
-  width: 70%;
-  margin-bottom: 20;
+  width: 30%;
 `;

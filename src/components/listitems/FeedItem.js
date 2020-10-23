@@ -81,7 +81,7 @@ class FeedItem extends React.Component {
                   thumbnail={require("../../../assets/images/placeholder.png")}
                 />
               </View>
-              <Text style={styles.username}>{user.name}</Text>
+              <Text style={styles.username}>{user.lName + "  " + user.fName}</Text>
             </View>
             <View style={styles.content}>
               {text ? <Text style={styles.contentText}>{text}</Text> : null}
@@ -114,7 +114,7 @@ class FeedItem extends React.Component {
                   name={liked ? "ios-heart" : "ios-heart-empty"}
                   size={32}
                   onPress={() => this.like()}
-                  color="#2699FB"
+                  color="#ccc"
                 />
                 <Text style={styles.actionsText}>{likes}</Text>
               </View>
@@ -123,7 +123,7 @@ class FeedItem extends React.Component {
                   name="ios-chatboxes"
                   size={32}
                   onPress={() => this.itemPressed(id)}
-                  color="#2699FB"
+                  color="#ccc"
                 />
                 <Text style={styles.actionsText}>{comm}</Text>
               </View>
@@ -148,9 +148,10 @@ const AVATAR_DIMENSIONS = 50;
 const styles = StyleSheet.create({
   containerStyle: {
     borderRadius: 5,
-    backgroundColor: "rgba(255, 255, 255, 1)",
+    backgroundColor: "transparent",
     borderWidth: 0,
     flex: 1,
+    elevation:0
   },
   header: {
     flexDirection: "row",
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Roboto",
     fontWeight: "900",
-    color: "#2699FB",
+    color: "#ccc",
     marginLeft: 20,
   },
   content: {
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Roboto",
     fontWeight: "300",
-    color: "#000",
+    color: "#ccc",
     marginBottom: 10,
     alignSelf: "flex-start",
   },
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
   actionsText: {
     fontSize: 15,
     fontFamily: "Roboto",
-    color: "#2699FB",
+    color: "#fff",
     marginLeft: 8,
   },
   mapPreview: {

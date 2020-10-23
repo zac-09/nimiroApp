@@ -32,11 +32,11 @@ const ContactItem = (props) => {
               marginBottom: 10,
             }}
           >
-            {props.name}
+            {props.lName}
           </Text>
           <Text
             numberOfLines={1}
-            style={{ width: 200, color: "#64676A", fontSize: 13 }}
+            style={{ width: 200, color: "#fff", fontSize: 13 }}
           >
             {status}
           </Text>

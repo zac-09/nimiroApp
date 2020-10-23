@@ -69,7 +69,7 @@ const AddParticipantsScreen = (props) => {
         />
       </View>
 
-      <GroupHeader title="New group" subTitle="Add participants" icon />
+      <GroupHeader title="New Cooperative" subTitle="Add participants" icon />
       <Lists.ContactsList
         contacts={addedContacts}
         onContactItemClicked={addParticipantHandler}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     position: "relative",
-    backgroundColor: "rgba(246,246,246, 0.95)",
+    backgroundColor: "transparent",
   },
   button: {
     zIndex: 2,

@@ -6,6 +6,7 @@ import { LgButton } from '../buttons';
 import { View, Text, TouchableOpacity } from 'react-native';
 import {Radio, RadioGroup,RadioButton} from "radio-react-native";
 import { CheckBox } from 'react-native-elements';
+import  NewButton  from '../buttons/NewButton';
 
 const RegisterForm = props => {
     return (
@@ -23,8 +24,8 @@ const RegisterForm = props => {
                 onChangeText={(text) => props.onLNameChange(text)}
             />
             <BlockInput
-                placeholder='Username'
-                value={props.dName}
+                placeholder='Country'
+                value={props.country}
                 inputError={props.dNameError}
                 onChangeText={(text) => props.onDNameChange(text)}
             />
