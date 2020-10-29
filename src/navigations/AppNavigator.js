@@ -21,7 +21,9 @@ import Toast from "react-native-root-toast";
 import PickLocationScreen from "../screens/maps/PickLocationscreen";
 import NotificationScreen from "./../screens/notifications/NotificationScreen";
 import AboutScreen from "./../screens/about/AboutScreen";
+import TodoScreen from "./../screens/todo/TodoScreen";
 import EditScreen from "./../screens/edit/EditProfileScreen";
+
 
 import logo from "../assets/logo_dark.png";
 import { LinearGradient } from "expo-linear-gradient";
@@ -172,6 +174,12 @@ const InitialStack = createStackNavigator(
     },
     editProfile: {
       screen: EditScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    todo: {
+      screen: TodoScreen,
       navigationOptions: {
         header: null,
       },

@@ -64,7 +64,7 @@ export default class Register extends React.Component {
       lNameError,
       dNameError,
     } = this.state;
-    // return this.props.navigation.navigate("User") 
+    // return this.props.navigation.navigate("User")
     if (!email || !password || !country || !phoneNumber) {
       return this.showToast("some fields are blank");
     }
@@ -112,6 +112,7 @@ export default class Register extends React.Component {
       gender,
       avatar,
       _id,
+      verified: false,
     };
 
     firebaseSDK.uploadUserData(data, this.success, this.failure);
@@ -286,5 +287,5 @@ const styles = {
   },
 };
 
-const PROFILE_IMAGE = 
+const PROFILE_IMAGE =
   "https://image.shutterstock.com/image-vector/male-default-placeholder-avatar-profile-260nw-387516193.jpg";

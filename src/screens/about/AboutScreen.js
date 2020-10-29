@@ -18,6 +18,7 @@ import { Badge } from "react-native-elements";
 const AboutScreen = (props) => {
   const [user, setUser] = useState("");
   const [messages, setMessages] = useState(0);
+  const [tasks, setTasks] = useState(0);
 
   const [loading, setIsLoading] = useState(false);
   const getCurrentUser = async () => {
@@ -27,7 +28,7 @@ const AboutScreen = (props) => {
   };
   const getOpenChannel = async () => {
     const uid = firebase.auth().currentUser.uid;
-
+    let unread = 0;
     const myChannels = await firebase
       .firestore()
       .collection("channel_participation")
@@ -38,17 +39,43 @@ const AboutScreen = (props) => {
         try {
           querySnapshot.forEach(async (doc) => {
             const channelData = doc.data();
+            // console.log("the channel data is",channelData)
             channelData.lastMessageDate = doc.data().lastMessageDate.toDate();
             channelData.id = doc.data().channel;
             const uid = firebase.auth().currentUser.uid;
+            unread += channelData.unread
+            data.push(channelData);
+          });
+        } catch (error) {
+          // this.showToast(error);
+        }
+        console.log("the unread is",unread)
+        setMessages(unread);
+        console.log("the snap is", data.length);
+      });
+    // console.log("the snap is", myChannels);
+  };
+  const getTasks = async () => {
+    const uid = firebase.auth().currentUser.uid;
+
+    const myTasks = await firebase
+      .firestore()
+      .collection("todo_list")
+      .doc(uid)
+      .collection("tasks")
+      .onSnapshot((querySnapshot) => {
+        const data = [];
+        try {
+          querySnapshot.forEach(async (doc) => {
+            const channelData = doc.data();
 
             data.push(channelData);
           });
         } catch (error) {
           // this.showToast(error);
         }
-        setMessages(data.length);
-        console.log("the snap is", data.length);
+        setTasks(data.length);
+        console.log("the taks is", data.length);
       });
     // console.log("the snap is", myChannels);
   };
@@ -58,12 +85,13 @@ const AboutScreen = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-
+    getTasks();
     getCurrentUser();
     getOpenChannel();
     setIsLoading(false);
     return () => {
       getOpenChannel();
+      getTasks();
     };
   }, []);
   if (loading || !user) {
@@ -133,25 +161,26 @@ const AboutScreen = (props) => {
                   backgroundColor: "#7623A8",
                   position: "absolute",
                   right: -9,
-                  zIndex:10
+                  zIndex: 10,
                 }}
               />
               <Ionicons color="#fff" size={40} name="ios-mail" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                // props.navigation.navigate("Roc");
+                console.log("btn pressed");
+                props.navigation.navigate("todo");
               }}
             >
-               <Badge
-                value={8}
+              <Badge
+                value={tasks}
                 status="success"
                 badgeStyle={{
                   marginBottom: 0,
                   backgroundColor: "#D770A6",
                   position: "absolute",
                   right: -9,
-                  zIndex:10
+                  zIndex: 10,
                 }}
               />
               <Ionicons name="ios-notifications" color="#fff" size={40} />

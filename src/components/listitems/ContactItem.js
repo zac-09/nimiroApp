@@ -7,7 +7,7 @@ const ContactItem = (props) => {
   const avator = props.avatar
     ? { uri: props.avatar }
     : require("../../assets/placeholder.png");
-  const status = props.status || "Hey there! I am using RotaApp";
+  const status = props.status || "Hey there! I am using NimiroApp";
   const isAdded = props.isAdded;
   return (
     <TouchableHighlight

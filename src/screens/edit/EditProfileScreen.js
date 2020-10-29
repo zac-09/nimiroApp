@@ -262,10 +262,10 @@ const EditProfileScreen = (props) => {
               </View>
             </View>
           </View>
-          <View style={styles.emailContainer}>
+          {/* <View style={styles.emailContainer}>
             <Text style={{ color: "#fff" }}>Email</Text>
             <Text style={{ color: "#fff" }}>{userData.email}</Text>
-          </View>
+          </View> */}
 
           <KeyboardAvoidingView keyboardVerticalOffset={20} behavior="padding">
             <View style={styles.inputs}>

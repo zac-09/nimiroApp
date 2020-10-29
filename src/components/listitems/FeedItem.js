@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import VideoView from "../video/Video";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import ProgressiveImage from "../images/ProgressiveImage";
 import MapPreview from "./../mapPreview/MapPreview";
 class FeedItem extends React.Component {
@@ -81,7 +81,17 @@ class FeedItem extends React.Component {
                   thumbnail={require("../../../assets/images/placeholder.png")}
                 />
               </View>
-              <Text style={styles.username}>{user.lName + "  " + user.fName}</Text>
+              <Text style={styles.username}>
+                {user.lName + "  " + user.fName}
+              </Text>
+              {user.verified && (
+                <MaterialCommunityIcons
+                  name="check-decagram"
+                  style={{ marginLeft: 5 }}
+                  size={24}
+                  color="#4291ee"
+                />
+              )} 
             </View>
             <View style={styles.content}>
               {text ? <Text style={styles.contentText}>{text}</Text> : null}
@@ -151,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 0,
     flex: 1,
-    elevation:0
+    elevation: 0,
   },
   header: {
     flexDirection: "row",

@@ -1,3 +1,7 @@
 [1021/142014.423:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 [1022/120941.349:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 [1023/112231.017:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1025/141015.466:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1027/111519.693:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1027/233027.574:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\SHEMIXICINHO\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\a46118d3-4d9f-4b87-a90d-ff00133bad79: The system cannot find the path specified. (0x3)
+[1027/233027.642:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)

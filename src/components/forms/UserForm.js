@@ -129,7 +129,7 @@ const UserForm = (props) => {
 
       <View style={styles.buttonContainer}>
         <NewButton
-        width={200}
+        width={250}
           text="Connect to Other farmers"
           onPress={() => props.onSubmitPress()}
         />
